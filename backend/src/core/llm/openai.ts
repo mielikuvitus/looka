@@ -8,7 +8,7 @@ import process from 'node:process'
 import OpenAI from 'openai'
 
 // Cheap model on purpose — this is a demo, not a product.
-const MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini'
+const MODEL = process.env.OPENAI_MODEL ?? 'gpt-5.4-mini'
 
 let client: OpenAI | null = null
 
