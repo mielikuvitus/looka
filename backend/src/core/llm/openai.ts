@@ -38,7 +38,8 @@ export async function askOpenAI(prompt: string): Promise<{ text: string, ok: boo
     const res = await openai.chat.completions.create({
       model: MODEL,
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 120,
+      // Newer models (gpt-5.x) require max_completion_tokens, not max_tokens.
+      max_completion_tokens: 120,
     })
     const text = res.choices[0]?.message?.content?.trim()
     return { ok: true, text: text || '(empty reply)' }
