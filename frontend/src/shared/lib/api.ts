@@ -15,3 +15,18 @@ export async function pingAgent(member: string): Promise<PingResponse> {
 
   return await res.json() as PingResponse
 }
+
+// Interactive variant: send a free-text message to a member's /report route
+// and get back a brief reply. Used by juan's chat-style card.
+export async function reportAgent(member: string, message: string): Promise<PingResponse> {
+  const res = await fetch(`/api/${member}/report`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: 'looka-room', message }),
+  })
+
+  if (!res.ok)
+    throw new Error(`Report failed (${res.status})`)
+
+  return await res.json() as PingResponse
+}

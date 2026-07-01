@@ -11,6 +11,8 @@ export type Member = 'frank' | 'juan' | 'suvi' | 'joe'
 export interface PingRequest {
   /** Optional caller tag, e.g. "looka-room". */
   from?: string
+  /** Optional free-text ask from the user, e.g. "give me your report". */
+  message?: string
 }
 
 /** Reply from `POST /api/<member>/ping`. */

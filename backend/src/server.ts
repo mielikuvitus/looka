@@ -22,10 +22,19 @@ import { suvi } from './api/suvi'
 import { apiContract } from './contract'
 import { runMigrations } from './core/db/migrate'
 
+const here = dirname(fileURLToPath(import.meta.url))
+
+// Load repo-root .env into process.env for local dev (docker-compose reads it
+// directly, so this only matters for `pnpm dev`). Missing file is fine — env
+// vars from the shell/compose still work either way.
+try {
+  process.loadEnvFile(resolve(here, '../../.env'))
+}
+catch {}
+
 const PORT = Number(process.env.PORT) || 8787
 const isProd = process.env.NODE_ENV === 'production'
 
-const here = dirname(fileURLToPath(import.meta.url))
 // backend/src -> frontend/dist
 const FRONTEND_DIST = process.env.FRONTEND_DIST ?? resolve(here, '../../frontend/dist')
 
