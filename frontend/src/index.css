@@ -45,6 +45,11 @@ body {
   overflow: hidden;
 }
 
+body.landing-mode,
+body.landing-mode #root {
+  overflow: auto;
+}
+
 body {
   margin: 0;
   background: transparent;
