@@ -35,20 +35,20 @@ One of the [initialization properties](../../../concepts/spatial-scenes.md#scene
 **Set defaultSize for a new scene**
 
 ```js
-import { initScene } from "@webspatial/react-sdk";
+import { initScene } from '@webspatial/react-sdk'
 
-initScene("newSceneName", defaultConfig => {
+initScene('newSceneName', (defaultConfig) => {
   return {
     ...defaultConfig,
-    type: "volume",
+    type: 'volume',
     defaultSize: {
       width: 500,
-      height: "1000px",
-      depth: "1m",
+      height: '1000px',
+      depth: '1m',
     },
-  };
-});
-window.open(newSceneUrl, "newSceneName");
+  }
+})
+window.open(newSceneUrl, 'newSceneName')
 ```
 
 ### Using the Web App Manifest

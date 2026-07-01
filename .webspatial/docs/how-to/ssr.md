@@ -17,15 +17,15 @@ In a React project with SSR enabled, there is one extra step when [integrating W
 **client-entry.js**
 
 ```js
-import { hydrateRoot } from "react-dom/client";
-import { SSRProvider } from "@webspatial/react-sdk";
+import { SSRProvider } from '@webspatial/react-sdk'
+import { hydrateRoot } from 'react-dom/client'
 
 hydrateRoot(
-  document.getElementById("root"),
+  document.getElementById('root'),
   <SSRProvider>
     <App />
   </SSRProvider>,
-);
+)
 ```
 
 ## Hydrogen
@@ -33,15 +33,15 @@ hydrateRoot(
 **entry.client.jsx**
 
 ```js
-import { HydratedRouter } from "react-router/dom";
-import { startTransition, StrictMode } from "react";
-import { hydrateRoot } from "react-dom/client";
-import { NonceProvider } from "@shopify/hydrogen";
-import { SSRProvider } from "@webspatial/react-sdk";
+import { NonceProvider } from '@shopify/hydrogen'
+import { SSRProvider } from '@webspatial/react-sdk'
+import { startTransition, StrictMode } from 'react'
+import { hydrateRoot } from 'react-dom/client'
+import { HydratedRouter } from 'react-router/dom'
 
-if (!window.location.origin.includes("webcache.googleusercontent.com")) {
+if (!window.location.origin.includes('webcache.googleusercontent.com')) {
   startTransition(() => {
-    const existingNonce = document.querySelector("script[nonce]")?.nonce;
+    const existingNonce = document.querySelector('script[nonce]')?.nonce
 
     hydrateRoot(
       document,
@@ -52,7 +52,7 @@ if (!window.location.origin.includes("webcache.googleusercontent.com")) {
           </SSRProvider>
         </NonceProvider>
       </StrictMode>,
-    );
-  });
+    )
+  })
 }
 ```

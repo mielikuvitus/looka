@@ -32,7 +32,7 @@ Read-only.
 Example:
 
 ```js
-const ua = navigator.userAgent.toString();
+const ua = navigator.userAgent.toString()
 ```
 
 ## Fallback Behavior

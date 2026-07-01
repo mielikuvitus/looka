@@ -12,20 +12,20 @@ Applies custom configuration to the [initialization properties](../../../concept
 ## Signature
 
 ```js
-import { initScene } from "@webspatial/react-sdk";
+import { initScene } from '@webspatial/react-sdk'
 
-initScene("newSceneName", defaultConfig => {
+initScene('newSceneName', (defaultConfig) => {
   return {
     ...defaultConfig,
-    type: "volume",
+    type: 'volume',
     defaultSize: {
-      width: "1m",
-      height: "100px",
-      depth: "100px",
+      width: '1m',
+      height: '100px',
+      depth: '100px',
     },
-  };
-});
-window.open(newSceneUrl, "newSceneName");
+  }
+})
+window.open(newSceneUrl, 'newSceneName')
 ```
 
 ## Parameters

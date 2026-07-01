@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "lib": ["ES2023"],
+    "moduleDetection": "force",
+    "types": ["node"],
+
+    /* Bundler mode */
+    "allowImportingTsExtensions": true,
+
+    "noFallthroughCasesInSwitch": true,
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": ["vite.config.ts"]
+}

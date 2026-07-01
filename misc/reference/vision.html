@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Looka — Build Plan & Repo Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF9F5; --paper-2:#F0EEE6; --card:#FFFFFF;
+    --ink:#1A1915; --ink-2:#3F3E38; --muted:#83827B;
+    --clay:#CC785C; --clay-deep:#B0552F; --slate:#6E7F8D; --sage:#7C8A6B; --gold:#C8942E;
+    --line:#E7E3D6; --line-2:#DBD6C6;
+    --shadow:0 1px 2px rgba(60,50,30,.04),0 18px 40px -22px rgba(80,60,35,.22);
+    --pad:clamp(20px,5vw,72px);
+    --frank:#CC785C; --juan:#6E7F8D; --suvi:#7C8A6B; --joe:#9B7BA6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Hanken Grotesk',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+  .serif{font-family:'Newsreader',serif}
+  .mono{font-family:'Spline Sans Mono',monospace}
+  a{color:var(--clay-deep)}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;
+    background-image:radial-gradient(var(--line-2) 1px,transparent 1px);background-size:30px 30px;opacity:.45;
+    -webkit-mask-image:radial-gradient(120% 70% at 50% 0%,#000 25%,transparent 80%);mask-image:radial-gradient(120% 70% at 50% 0%,#000 25%,transparent 80%)}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--clay-deep)}
+
+  header{padding:clamp(48px,8vw,92px) 0 clamp(30px,5vw,52px);border-bottom:1px solid var(--line)}
+  .badge{display:inline-flex;align-items:center;gap:9px;font-family:'Spline Sans Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);background:var(--card);padding:8px 15px;border-radius:100px;margin-bottom:24px}
+  .badge .d{width:7px;height:7px;border-radius:50%;background:var(--clay)}
+  h1{font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2.6rem,6.5vw,4.6rem);line-height:1;letter-spacing:-.025em;max-width:16ch}
+  h1 em{font-style:italic;color:var(--clay)}
+  header p.lead{margin-top:22px;font-size:clamp(1.05rem,1.7vw,1.24rem);color:var(--ink-2);max-width:62ch}
+  header p.lead b{color:var(--ink);font-weight:600}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+  .toc a{font-family:'Spline Sans Mono',monospace;font-size:.74rem;text-decoration:none;color:var(--ink-2);border:1px solid var(--line-2);padding:7px 13px;border-radius:100px;transition:.2s}
+  .toc a:hover{border-color:var(--clay);color:var(--clay-deep)}
+
+  section{padding:clamp(46px,7vw,82px) 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  .sec-head{max-width:66ch;margin-bottom:34px}
+  .sec-head h2{font-family:'Newsreader',serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,2.7rem);line-height:1.08;letter-spacing:-.02em;margin:10px 0 12px}
+  .sec-head h2 em{font-style:italic;color:var(--clay)}
+  .sec-head p{color:var(--muted);font-size:1.05rem}
+  p.body{color:var(--ink-2);max-width:68ch;margin-top:12px}
+  p.body strong{color:var(--ink);font-weight:600}
+  code{font-family:'Spline Sans Mono',monospace;font-size:.85em;background:var(--paper-2);padding:2px 6px;border-radius:5px;color:var(--clay-deep)}
+
+  .intent{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--clay);border-radius:14px;padding:28px 30px;box-shadow:var(--shadow)}
+  .intent .q{font-family:'Newsreader',serif;font-style:italic;font-size:1.35rem;line-height:1.4;color:var(--ink)}
+  .intent p{color:var(--ink-2);margin-top:14px;max-width:72ch}
+  .intent p strong{color:var(--ink);font-weight:600}
+
+  .ps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+  @media(max-width:720px){.ps{grid-template-columns:1fr}}
+  .ps .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow)}
+  .ps .box h3{font-size:.78rem;font-family:'Spline Sans Mono',monospace;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+  .ps .box.p h3{color:var(--clay-deep)} .ps .box.s h3{color:var(--sage)}
+  .ps .box p{color:var(--ink-2);font-size:.98rem}
+
+  .team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:900px){.team{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.team{grid-template-columns:1fr}}
+  .member{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--mc);border-radius:14px;padding:24px 22px;box-shadow:var(--shadow)}
+  .member .av{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:700;font-family:'Spline Sans Mono',monospace;background:var(--mc);margin-bottom:14px}
+  .member h3{font-size:1.15rem;font-weight:600}
+  .member .role{font-family:'Spline Sans Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.06em;margin-bottom:10px}
+  .member p{color:var(--ink-2);font-size:.9rem}
+  .member .owns{margin-top:12px;font-family:'Spline Sans Mono',monospace;font-size:.72rem;color:var(--mc);line-height:1.9}
+
+  .arch{display:flex;justify-content:center;margin:8px 0 4px}
+  .arch svg{width:100%;max-width:840px;height:auto}
+  .sk{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sk-clay{stroke:var(--clay)}.sk-slate{stroke:var(--slate)}.sk-sage{stroke:var(--sage)}.sk-joe{stroke:var(--joe)}.sk-dash{stroke-dasharray:4 5}
+  .f-clay{fill:#F3DACF}.f-slate{fill:#DDE3E7}.f-sage{fill:#E1E6D6}.f-joe{fill:#E7DDEE}.f-paper{fill:#fff}
+  .lbl{font-family:'Spline Sans Mono',monospace;font-size:11.5px;fill:var(--muted)}
+  .lbl-i{font-family:'Spline Sans Mono',monospace;font-size:11.5px;fill:var(--ink-2)}
+
+  .example{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;box-shadow:var(--shadow)}
+  .example h3{font-size:1.05rem;font-weight:600;margin-bottom:8px}
+  .example .flow{font-family:'Spline Sans Mono',monospace;font-size:.8rem;color:var(--ink-2);background:var(--paper-2);border-radius:9px;padding:12px 14px;margin-top:12px;overflow-x:auto;white-space:nowrap}
+  .example .flow b{color:var(--clay-deep)}
+
+  .stack{width:100%;border-collapse:collapse;margin-top:6px;font-size:.95rem}
+  .stack th,.stack td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  .stack th{font-family:'Spline Sans Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stack td:first-child{font-weight:600;white-space:nowrap}
+  .stack td .why{color:var(--muted);font-size:.9rem}
+  .stack .mono{color:var(--clay-deep);font-family:'Spline Sans Mono',monospace;font-size:.85rem}
+
+  .trees{display:grid;grid-template-columns:1fr 1.25fr;gap:20px}
+  @media(max-width:960px){.trees{grid-template-columns:1fr}}
+  .tree{background:#232219;border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .tree .bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .tree .bar i{width:10px;height:10px;border-radius:50%}
+  .tree .bar i:nth-child(1){background:#E9967A}.tree .bar i:nth-child(2){background:#E6C67A}.tree .bar i:nth-child(3){background:#9CC08A}
+  .tree .bar span{margin-left:8px;font-family:'Spline Sans Mono',monospace;font-size:.74rem;color:#8f8d7f}
+  .tree pre{margin:0;padding:18px 18px 22px;font-family:'Spline Sans Mono',monospace;font-size:.79rem;line-height:1.65;color:#D7D4C6;overflow-x:auto}
+  .tree .c{color:#7f7d70}
+  .tree .d{color:#9FC0D6}
+  .tree .fr{color:#E9A488}
+  .tree .ju{color:#9FB4C4}
+  .tree .su{color:#AEC194}
+  .tree .jo{color:#C6A9D0}
+  .tree .hl{color:#E6C67A}
+  .tree .new{color:#fff;font-weight:500}
+  .tree .en{color:#9CC08A;font-weight:500}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;font-family:'Spline Sans Mono',monospace;font-size:.74rem;color:var(--muted);align-items:center}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend b{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  .princ{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:6px}
+  @media(max-width:720px){.princ{grid-template-columns:1fr}}
+  .princ .p{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow)}
+  .princ .p .n{font-family:'Newsreader',serif;font-style:italic;color:var(--clay);font-size:1.6rem}
+  .princ .p h3{font-size:1.05rem;font-weight:600;margin:6px 0 6px}
+  .princ .p p{color:var(--muted);font-size:.92rem}
+
+  .road{list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .road li{counter-increment:step;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;box-shadow:var(--shadow)}
+  .road li::before{content:counter(step,decimal-leading-zero);font-family:'Spline Sans Mono',monospace;color:var(--clay-deep);font-size:.85rem}
+  .road li b{font-weight:600} .road li span{color:var(--muted);font-size:.92rem;display:block;margin-top:2px}
+
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;text-align:center}
+  footer p{font-family:'Spline Sans Mono',monospace;font-size:.72rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .note{font-family:'Spline Sans Mono',monospace;font-size:.78rem;color:var(--gold);background:#FBF3E0;border:1px solid #EBD9A8;border-radius:10px;padding:12px 16px;margin-top:20px;display:inline-block}
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.017" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/>
+    </filter>
+  </defs></svg>
+
+  <div class="wrap">
+    <header>
+      <span class="badge"><span class="d"></span> XRCC'26 · Berlin · PICO Tech Layer · build plan v2</span>
+      <h1>Looka — the <em>blueprint</em> for how we build it.</h1>
+      <p class="lead">One page for humans and agents: <b>what we're making</b>, <b>who owns what</b>, and
+        <b>how the repo is organized</b> — a dead-clean root of <code>frontend/</code>, <code>backend/</code>,
+        <code>misc/</code>, moving from today's flat starter to a monorepo you can read in ten seconds.</p>
+      <div class="toc">
+        <a href="#intent">Intent</a>
+        <a href="#team">Team & ownership</a>
+        <a href="#arch">Architecture</a>
+        <a href="#stack">Stack</a>
+        <a href="#now">Current structure</a>
+        <a href="#future">Future structure</a>
+        <a href="#why">Principles</a>
+        <a href="#road">Roadmap</a>
+        <a href="#start">Get started</a>
+        <a href="#deploy">Deploy</a>
+      </div>
+    </header>
+
+    <!-- INTENT -->
+    <section id="intent">
+      <div class="sec-head">
+        <span class="eyebrow">01 — the intention</span>
+        <h2>What we're actually building, said plainly.</h2>
+      </div>
+      <div class="intent">
+        <div class="q">"Managing many agents on a flat screen is a UX problem, not a mind problem. So we
+          give each agent a rectangle and distribute them in space — overview by where things are."</div>
+        <p>We're building <strong>Looka</strong>: a <strong>WebSpatial</strong> room where every AI
+          agent is its own floating, draggable panel. It runs in the browser on <strong>PICO</strong> (and
+          Vision Pro) — no app store, no headset needed to develop, and it's already spatializing live in the
+          <strong>PICO emulator</strong>. The hard spatial parts already work — panels float, you can grab and move them, and they can hold real 3D models — so the job now is simply to give each panel an agent.</p>
+      </div>
+      <div class="ps">
+        <div class="box p"><h3>The problem</h3><p>Run 20 agents in a chat feed and it collapses into noise — one column, no sense of place, nothing fits in your head.</p></div>
+        <div class="box s"><h3>The solution</h3><p>Lift each agent into its own spatial panel and place it around the room. Spatial memory does the organizing; the overview is just <em>there</em>.</p></div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team">
+      <div class="sec-head">
+        <span class="eyebrow">02 — team & ownership</span>
+        <h2>Everyone owns <em>a slice, end to end.</em></h2>
+        <p>Each member has one <strong>feature</strong> on the frontend and one <strong>API module</strong> on the backend — same name on both sides. Read it as a <strong>gentle default, not a rule</strong>: you'll mostly work in your own folder (which quietly avoids collisions), but anyone can fix anything, anywhere, anytime. A judge still sees who did what.</p>
+      </div>
+      <div class="team">
+        <article class="member" style="--mc:var(--frank)">
+          <div class="av">F</div>
+          <h3>Frank</h3>
+          <div class="role">feature + OpenClaw route</div>
+          <p>Owns an agent card whose API module wraps <strong>OpenClaw</strong> (Kami's gateway).</p>
+          <div class="owns">frontend/src/features/frank<br>backend/src/api/frank → openclaw</div>
+        </article>
+        <article class="member" style="--mc:var(--juan)">
+          <div class="av">J</div>
+          <h3>Juan</h3>
+          <div class="role">feature + OpenAI route</div>
+          <p>Owns an agent card whose API module uses the tiny <strong>OpenAI</strong> wrapper.</p>
+          <div class="owns">frontend/src/features/juan<br>backend/src/api/juan → openai</div>
+        </article>
+        <article class="member" style="--mc:var(--suvi)">
+          <div class="av">S</div>
+          <h3>Suvi</h3>
+          <div class="role">feature + OpenAI route</div>
+          <p>Owns an agent card whose API module uses the tiny <strong>OpenAI</strong> wrapper.</p>
+          <div class="owns">frontend/src/features/suvi<br>backend/src/api/suvi → openai</div>
+        </article>
+        <article class="member" style="--mc:var(--joe)">
+          <div class="av">Jo</div>
+          <h3>Joe</h3>
+          <div class="role">feature + OpenAI route</div>
+          <p>Owns an agent card whose API module uses the tiny <strong>OpenAI</strong> wrapper.</p>
+          <div class="owns">frontend/src/features/joe<br>backend/src/api/joe → openai</div>
+        </article>
+      </div>
+      <div class="intent" style="margin-top:22px;border-left-color:var(--sage)">
+        <div class="q">"Build your card however you like — reuse the shared kit or roll your own. In the end, each panel is just HTML on the page."</div>
+        <p>Nobody guards the shared pieces either. <code>app/</code> (the room shell) and <code>shared/</code> (Juan's drag hook, the 3D model, any common bits) are <strong>common ground</strong> — no single owner, edited by whoever needs to. Freedom first; the structure only exists to keep us out of each other's way.</p>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="arch">
+      <div class="sec-head">
+        <span class="eyebrow">03 — architecture</span>
+        <h2>Thin frontend, thinner backend, <em>one small database.</em></h2>
+        <p>A React SPA renders the spatial room. A small TypeScript API gives each member their own route — Frank's wraps OpenClaw; Juan's, Suvi's &amp; Joe's wrap OpenAI. Frontend and backend share <strong>one origin</strong>, so the app just calls <code>/api/…</code> (Vite proxies it in dev) — no CORS to fight. SQLite (Drizzle) sits right beside the backend, and it all boots together in one Docker Compose. We keep the backend deliberately plain: clarity now, hardening later.</p>
+      </div>
+      <div class="arch">
+        <svg viewBox="0 0 840 300" role="img" aria-label="Frontend member pages call per-member API routes; Frank's wraps OpenClaw, Juan and Suvi wrap OpenAI; a core layer talks to SQLite; all in one docker compose">
+          <g filter="url(#sketch)">
+            <text class="lbl" x="30" y="28">FRONTEND · React SPA (WebSpatial)</text>
+            <rect class="sk sk-dash" style="stroke:#B9B4A5" x="24" y="42" width="200" height="224" rx="12"/>
+            <g><rect class="f-clay" x="42" y="58" width="164" height="32" rx="8"/><rect class="sk sk-clay" x="42" y="58" width="164" height="32" rx="8"/><text class="lbl-i" x="55" y="79">features/frank</text></g>
+            <g><rect class="f-slate" x="42" y="100" width="164" height="32" rx="8"/><rect class="sk sk-slate" x="42" y="100" width="164" height="32" rx="8"/><text class="lbl-i" x="55" y="121">features/juan</text></g>
+            <g><rect class="f-sage" x="42" y="142" width="164" height="32" rx="8"/><rect class="sk sk-sage" x="42" y="142" width="164" height="32" rx="8"/><text class="lbl-i" x="55" y="163">features/suvi</text></g>
+            <g><rect class="f-joe" x="42" y="184" width="164" height="32" rx="8"/><rect class="sk sk-joe" x="42" y="184" width="164" height="32" rx="8"/><text class="lbl-i" x="55" y="205">features/joe</text></g>
+            <text class="lbl" x="42" y="248">shared: components · composables · lib</text>
+
+            <g class="sk sk-slate"><path d="M206 74 L338 72"/><path d="M206 116 L338 106"/><path d="M206 158 L338 140"/><path d="M206 200 L338 174"/></g>
+
+            <text class="lbl" x="346" y="28">BACKEND · TypeScript API</text>
+            <rect class="sk sk-dash" style="stroke:#B9B4A5" x="320" y="42" width="214" height="224" rx="12"/>
+            <g><rect class="f-clay" x="338" y="58" width="178" height="28" rx="7"/><rect class="sk sk-clay" x="338" y="58" width="178" height="28" rx="7"/><text class="lbl-i" x="350" y="77">api/frank → openclaw</text></g>
+            <g><rect class="f-slate" x="338" y="92" width="178" height="28" rx="7"/><rect class="sk sk-slate" x="338" y="92" width="178" height="28" rx="7"/><text class="lbl-i" x="350" y="111">api/juan → openai</text></g>
+            <g><rect class="f-sage" x="338" y="126" width="178" height="28" rx="7"/><rect class="sk sk-sage" x="338" y="126" width="178" height="28" rx="7"/><text class="lbl-i" x="350" y="145">api/suvi → openai</text></g>
+            <g><rect class="f-joe" x="338" y="160" width="178" height="28" rx="7"/><rect class="sk sk-joe" x="338" y="160" width="178" height="28" rx="7"/><text class="lbl-i" x="350" y="179">api/joe → openai</text></g>
+            <g><rect class="f-paper" x="338" y="194" width="178" height="28" rx="7"/><rect class="sk" x="338" y="194" width="178" height="28" rx="7"/><text class="lbl-i" x="350" y="213">core · db · llm wrappers</text></g>
+
+            <g class="sk"><path d="M520 208 h50"/><path d="M570 208 l-8 -4 M570 208 l-8 4"/></g>
+            <g transform="translate(584 186)">
+              <path class="sk sk-slate" d="M0 8 a28 8 0 0 1 56 0 v26 a28 8 0 0 1 -56 0 z"/>
+              <path class="sk sk-slate" d="M0 8 a28 8 0 0 0 56 0 M0 21 a28 8 0 0 0 56 0"/>
+              <text class="lbl" x="2" y="60">SQLite · Drizzle</text>
+            </g>
+
+            <g class="sk sk-clay"><path d="M534 68 q64 -14 130 -18"/><path d="M664 48 l-9 -1 M664 48 l-1 9"/></g>
+            <g transform="translate(672 40)"><circle class="sk" cx="18" cy="16" r="15"/><path class="sk" d="M8 14 q5 -11 11 -5 q8 -6 10 4 q7 3 2 11 q3 8 -7 6 q-6 6 -11 -2 q-9 1 -8 -9"/><text class="lbl" x="-8" y="50">OpenClaw / Kami</text><text class="lbl" x="6" y="65">· or OpenAI</text></g>
+
+            <rect class="sk sk-dash" style="stroke:#CBAF73" x="12" y="14" width="816" height="272" rx="16"/>
+            <text class="lbl" x="560" y="278" style="fill:#B8912F">▢ one docker compose · SQLite volume alongside</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="example">
+        <h3>The first thing we wire — a fixed-prompt round-trip</h3>
+        <p class="body" style="margin-top:6px">One button proves the whole loop is alive before anyone builds anything fancy: click it, a fixed prompt goes to the backend, the backend hits the LLM, the answer comes back and renders in the panel. Front ↔ back ↔ model, end to end.</p>
+        <div class="flow">click <b>“Ping agent”</b> &nbsp;→&nbsp; <b>POST /api/juan/ping</b> (fixed prompt) &nbsp;→&nbsp; core → <b>OpenAI wrapper</b> (cheap model) &nbsp;→&nbsp; text &nbsp;→&nbsp; render in the spatial card</div>
+      </div>
+    </section>
+
+    <!-- STACK -->
+    <section id="stack">
+      <div class="sec-head">
+        <span class="eyebrow">04 — the stack (decided)</span>
+        <h2>Boring where it should be, <em>spatial where it counts.</em></h2>
+      </div>
+      <table class="stack">
+        <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Monorepo</td><td class="mono">pnpm workspaces</td><td class="why">One repo: <code>frontend</code>, <code>backend</code>, plus <code>misc</code>. No <code>packages/</code> — kept deliberately flat.</td></tr>
+          <tr><td>Frontend</td><td class="mono">React + TS + WebSpatial + Vite</td><td class="why">SPA. <code>jsxImportSource</code> + <code>enable-xr</code>, already proven spatializing in the PICO emulator. Structure: <code>app/</code> + <code>features/&lt;member&gt;</code> + <code>shared/</code>.</td></tr>
+          <tr><td>Backend</td><td class="mono">Node + TS · one route per member</td><td class="why"><code>api/frank</code> wraps <strong>OpenClaw</strong>; <code>api/juan</code>, <code>api/suvi</code> &amp; <code>api/joe</code> use a tiny <strong>OpenAI</strong> wrapper (cheap model). Same-origin <code>/api</code> (no CORS), kept as plain as possible — security comes later. TS both sides = one mental model.</td></tr>
+          <tr><td>Database</td><td class="mono">SQLite · Drizzle ORM + better-sqlite3</td><td class="why">Typed <code>schema.ts</code>; <code>drizzle-kit generate</code> writes versioned migrations, <code>migrate()</code> runs <strong>on boot</strong> so a redeploy auto-migrates without data loss. (drizzle-kit needs <code>better-sqlite3</code>, not native <code>node:sqlite</code>.) Panels don't persist yet — reload = fresh start, no logins — but the DB is wired up now so the data layer's ready the moment we want it. An <code>example_column</code> proves it works.</td></tr>
+          <tr><td>TS config</td><td class="mono">root tsconfig.base + per-package</td><td class="why">Checked the Vite docs: Vite transpiles via esbuild but <strong>doesn't type-check</strong>, so it can't replace <code>tsconfig</code> — <code>tsc</code>, the IDE and the SDK's <code>jsxImportSource</code> still need it. A small <code>tsconfig.base.json</code> at root; <code>frontend</code> &amp; <code>backend</code> extend it. Not in <code>misc</code>.</td></tr>
+          <tr><td>Types</td><td class="mono">generated from backend OpenAPI</td><td class="why">Backend emits an OpenAPI spec; we generate TS types straight into the frontend — no hand-kept shared package. (DB row types come free from Drizzle's <code>schema.ts</code>.)</td></tr>
+          <tr><td>Lint + format</td><td class="mono">ESLint · @antfu/eslint-config</td><td class="why">One tool lints <em>and</em> formats (ESLint Stylistic) — <strong>no Prettier, no conflicts</strong>. A one-line root <code>eslint.config.ts</code> = <code>antfu({ react: true })</code>; <code>eslint . --fix</code> fixes everything (incl. JSON/MD/YAML). Standard defaults, near-zero opinions.</td></tr>
+          <tr><td>Deploy</td><td class="mono">Docker Compose → Coolify</td><td class="why">Our self-hosted <code>coolify.boxgeist.com</code>. Add the public repo as a Docker Compose resource; push-to-deploy, auto-HTTPS subdomain, SQLite on a persistent volume, SSH to inspect.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CURRENT vs FUTURE -->
+    <section id="now">
+      <div class="sec-head">
+        <span class="eyebrow">05 — from → to</span>
+        <h2>Where the repo is <em>today</em>, and where it's <em>going.</em></h2>
+        <p>Today it's the flat WebSpatial starter — one app, one big <code>App.tsx</code>, already carrying Juan's draggable panels and a 3D model. We reshape it into a monorepo with a dead-clean root — just <code>frontend/</code>, <code>backend/</code>, <code>misc/</code> — where every piece has an obvious home. Nothing Juan built is lost; it simply moves into place.</p>
+      </div>
+      <div class="trees">
+        <div class="tree">
+          <div class="bar"><i></i><i></i><i></i><span>NOW — looka/ · tree -L 2</span></div>
+<pre>looka/
+├── index.html
+├── package.json        <span class="c"># one app, all in src/</span>
+├── vite.config.ts · tsconfig*.json
+├── eslint.config.js
+├── <span class="d">public/</span>
+│   ├── manifest.webmanifest · <span class="d">icons/</span>
+│   └── <span class="d">models/</span>diorama.usdz  <span class="hl"># Juan's 3D model</span>
+├── <span class="d">src/</span>
+│   ├── main.tsx        <span class="en">◀ entry point</span>
+│   ├── App.tsx         <span class="c"># the whole scene: panels + 3D + drag</span>
+│   ├── useSpatialDrag.ts <span class="hl"># Juan's drag hook — keep!</span>
+│   ├── App.css
+│   └── <span class="d">assets/</span>
+├── <span class="d">.webspatial/docs/</span>   <span class="c"># bundled SDK docs</span>
+├── <span class="d">.claude/</span> · CLAUDE.md · AGENTS.md
+└── README.md           <span class="c"># starter blurb only</span></pre>
+        </div>
+
+        <div class="tree" id="future">
+          <div class="bar"><i></i><i></i><i></i><span>FUTURE — looka/ · tree -L 3</span></div>
+<pre><span class="new">looka/</span>              <span class="c"># clean root: 3 dirs + configs</span>
+├── README.md            <span class="c"># 10-sec: problem · solution · map</span>
+├── AGENTS.md            <span class="c"># canonical agent guide (how to work here)</span>
+├── CLAUDE.md            <span class="c"># thin pointer → AGENTS.md</span>
+├── package.json         <span class="c"># workspaces + dev · db · seed · lint · refs:pull</span>
+├── pnpm-workspace.yaml
+├── tsconfig.base.json   <span class="c"># shared TS opts (each side extends)</span>
+├── eslint.config.ts     <span class="c"># @antfu — lint + format, no prettier</span>
+├── docker-compose.yml   <span class="hl"># frontend + backend + sqlite</span>
+├── .env.example · .gitignore
+│
+├── <span class="d">frontend/</span>            <span class="c"># React + WebSpatial SPA (was looka)</span>
+│   ├── README.md        <span class="c"># how the frontend works</span>
+│   ├── index.html · vite.config.ts · tsconfig.json
+│   ├── <span class="d">public/</span> manifest · icons
+│   └── <span class="d">src/</span>
+│       ├── main.tsx     <span class="en">◀ FRONTEND ENTRY — mounts the room</span>
+│       ├── <span class="d">app/</span>         <span class="c"># shell · providers · router · layout</span>
+│       ├── <span class="d">features/</span>    <span class="c"># one self-contained folder per member</span>
+│       │   ├── <span class="fr">frank/</span>   <span class="c"># components · composables · logic</span>
+│       │   ├── <span class="ju">juan/</span>
+│       │   ├── <span class="su">suvi/</span>
+│       │   └── <span class="jo">joe/</span>
+│       └── <span class="d">shared/</span>      <span class="c"># components · composables(hooks) · lib · api-types</span>
+│
+├── <span class="d">backend/</span>             <span class="c"># thin TypeScript API</span>
+│   ├── README.md        <span class="c"># how the API works</span>
+│   ├── tsconfig.json
+│   └── <span class="d">src/</span>
+│       ├── server.ts    <span class="en">◀ BACKEND ENTRY — starts API + opens DB</span>
+│       ├── <span class="d">api/</span>         <span class="c"># one module per member</span>
+│       │   ├── <span class="fr">frank/</span>   <span class="c"># → OpenClaw</span>
+│       │   ├── <span class="ju">juan/</span>    <span class="c"># → OpenAI</span>
+│       │   ├── <span class="su">suvi/</span>    <span class="c"># → OpenAI</span>
+│       │   └── <span class="jo">joe/</span>     <span class="c"># → OpenAI</span>
+│       ├── <span class="d">core/</span>
+│       │   ├── <span class="d">db/</span>      <span class="c"># drizzle: schema · migrate · seed · migrations/</span>
+│       │   └── <span class="d">llm/</span>     <span class="c"># openclaw.ts · openai.ts</span>
+│       └── <span class="d">data/</span>       <span class="hl"># looka.sqlite (drizzle migrate on boot)</span>
+│
+└── <span class="d">misc/</span>                <span class="c"># references + the pull script</span>
+    ├── README.md        <span class="c"># what lives here & why</span>
+    ├── <span class="d">reference/</span>       <span class="c"># our refs + shared clones</span>
+    │   ├── refs.json · vision.html
+    │   ├── <span class="d">xrcc/</span> · <span class="d">webspatial/</span>  <span class="c"># committed</span>
+    │   └── <span class="d">external/</span>    <span class="hl"># cloned repos · gitignored</span>
+    └── pull-references.sh <span class="c"># the clone script</span></pre>
+        </div>
+      </div>
+      <div class="legend">
+        <span><b style="background:var(--frank)"></b> Frank</span>
+        <span><b style="background:var(--juan)"></b> Juan</span>
+        <span><b style="background:var(--suvi)"></b> Suvi</span>
+        <span><b style="background:var(--joe)"></b> Joe</span>
+        <span><b style="background:#E6C67A"></b> data / deploy</span>
+        <span style="color:#7C8A6B">◀ = entry point</span>
+        <span>· member = a feature (front) + an api module (back)</span>
+      </div>
+
+      <div class="intent" style="margin-top:24px;border-left-color:var(--slate)">
+        <div class="q" style="font-size:1.12rem">Why <em>misc/reference/</em>, not <em>docs/</em>? Less
+          misleading — it holds both our own writing and the outside repos that actually help us build.</div>
+        <p>Our material (this vision, architecture, emulator guide, imported XRCC refs, the WebSpatial
+          <code>llms-full.txt</code>) is <strong>committed</strong>. External repos we clone — WebSpatial
+          samples, the OpenClaw command-center kit, SensAI kits — live under
+          <code>misc/reference/external/</code>, are <strong>git-ignored</strong> (no git-in-git), and are
+          pulled by <code>pnpm refs:pull</code> — a script (<code>misc/pull-references.sh</code>) reading
+          <code>misc/reference/refs.json</code>. Everyone shares one list: find a useful reference, add a
+          line, commit, and the team gets it on the next pull. <em>(Submodules are the alternative; we prefer
+          the script — easier to extend, no submodule friction.)</em></p>
+      </div>
+    </section>
+
+    <!-- PRINCIPLES -->
+    <section id="why">
+      <div class="sec-head">
+        <span class="eyebrow">06 — why this shape</span>
+        <h2>Best practices, <em>bent toward a hackathon.</em></h2>
+        <p>Grounded in current pnpm-monorepo and React structure guidance — adapted so a judge grasps it fast. The worst thing that can happen is a judge opening the repo and not getting it; naming and structure exist to prevent exactly that.</p>
+      </div>
+      <div class="princ">
+        <div class="p"><div class="n">i.</div><h3>Dead-clean root</h3><p>Only <code>frontend/</code>, <code>backend/</code>, <code>misc/</code>. Deployables up front; everything else (reference, config, scripts) tucked into <code>misc</code>.</p></div>
+        <div class="p"><div class="n">ii.</div><h3>Ownership = a feature</h3><p>Vue/feature-inspired: each member owns <code>features/&lt;name&gt;</code>, keeping their components, hooks and logic together in one place. Shared UI sits in <code>shared/</code>. Parallel work, zero collisions.</p></div>
+        <div class="p"><div class="n">iii.</div><h3>Progressive disclosure</h3><p>A README at <strong>every</strong> level — <strong>root</strong> (the 10-s "what is this?"), then <code>frontend/</code>, <code>backend/</code>, <code>misc/</code>. For agents, <code>AGENTS.md</code> is the canonical working guide and <code>CLAUDE.md</code> just points to it — humans and LLMs never get lost.</p></div>
+        <div class="p"><div class="n">iv.</div><h3>Types flow one way</h3><p>Backend OpenAPI → generated frontend types. No hand-maintained shared package drifting out of sync.</p></div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="road">
+      <div class="sec-head">
+        <span class="eyebrow">07 — roadmap</span>
+        <h2>How we get from here to there.</h2>
+        <p>Today has one goal: get this running cleanly. Trailer, audio and visuals — that's tomorrow.</p>
+      </div>
+      <ol class="road">
+        <li><div><b>READMEs, AGENTS.md & reference first</b><span>A README at every level (root · frontend · backend · misc) following standard best practices; keep <code>AGENTS.md</code> (canonical agent guide) with <code>CLAUDE.md</code> pointing to it. <code>misc/reference/</code> holds this vision, architecture, emulator guide and XRCC refs, with <code>refs.json</code> + <code>misc/pull-references.sh</code> wired to <code>pnpm refs:pull</code>.</span></div></li>
+        <li><div><b>Init the monorepo</b><span><code>pnpm-workspace.yaml</code> (<code>frontend</code>, <code>backend</code>), root scripts, a one-line <code>eslint.config.ts</code> (<code>@antfu</code> — lint + format, no Prettier), and a small root <code>tsconfig.base.json</code> both sides extend.</span></div></li>
+        <li><div><b>Move looka → frontend/</b><span>Relocate the app; split <code>App.tsx</code> into <code>app/</code> + <code>shared/</code> + <code>features/{frank,juan,suvi,joe}</code>; ship the fixed-prompt "Ping agent" example element.</span></div></li>
+        <li><div><b>Scaffold backend/</b><span>SQLite via <strong>Drizzle</strong> + <code>better-sqlite3</code>; <code>schema.ts</code> → <code>db:generate</code> migrations → <code>migrate()</code> on boot; seed an <code>example_column</code>; <code>api/frank</code>→OpenClaw, <code>api/juan</code>+<code>api/suvi</code>→tiny OpenAI wrapper; wire each frontend feature to <code>/api/&lt;member&gt;</code>.</span></div></li>
+        <li><div><b>One-command up → Coolify</b><span><code>pnpm dev</code> starts frontend + backend together (backend opens SQLite on boot); a <code>docker-compose.yml</code> (front + back + SQLite volume) runs locally and is the exact thing Coolify builds on push.</span></div></li>
+      </ol>
+    </section>
+
+    <!-- GET STARTED -->
+    <section id="start">
+      <div class="sec-head">
+        <span class="eyebrow">08 — get started</span>
+        <h2>Zero clue → running → <em>first commit.</em></h2>
+        <p>You just cloned the repo and know nothing. Here's the shortest path to seeing it run and shipping your first change.</p>
+      </div>
+      <div class="tree">
+        <div class="bar"><i></i><i></i><i></i><span>terminal — first run</span></div>
+<pre><span class="c"># 1 · clone & install everything (all workspaces)</span>
+git clone &lt;repo-url&gt; looka && cd looka
+pnpm install
+
+<span class="c"># 2 · (optional) pull the shared reference repos</span>
+pnpm refs:pull
+
+<span class="c"># 3 · run it all — frontend :5173 + backend :3000, together</span>
+pnpm dev</pre>
+      </div>
+      <p class="body"><strong>See it in space:</strong> with the PICO emulator open, run
+        <code>adb reverse tcp:5173 tcp:5173</code>, browse to <code>http://10.0.2.2:5173</code>, and click
+        <strong>“Run as a standalone app.”</strong> Full walkthrough in <code>misc/reference/emulator.md</code>.</p>
+      <div class="tree" style="margin-top:16px">
+        <div class="bar"><i></i><i></i><i></i><span>terminal — your first change</span></div>
+<pre><span class="c"># 4 · make your first edit — open YOUR feature folder</span>
+frontend/src/features/&lt;you&gt;/…     <span class="c"># save → hot-reloads live in the headset</span>
+
+<span class="c"># 5 · lint + format (one command, no prettier)</span>
+pnpm lint --fix
+
+<span class="c"># 6 · your first commit</span>
+git switch -c &lt;you&gt;/first-change
+git commit -am "feat(&lt;you&gt;): my first change"
+git push</pre>
+      </div>
+      <p class="body"><strong>Changed the DB schema?</strong> Run <code>pnpm db:generate</code> — Drizzle writes the migration file; commit it, and it auto-applies on the next boot / deploy. No manual SQL.</p>
+    </section>
+
+    <!-- DEPLOY -->
+    <section id="deploy">
+      <div class="sec-head">
+        <span class="eyebrow">09 — deploying (Coolify)</span>
+        <h2>Push to Git, <em>Coolify does the rest.</em></h2>
+        <p>We deploy on our self-hosted <strong>Coolify</strong> (<code>coolify.boxgeist.com</code>, v4). The public repo is added once as a <strong>Docker Compose</strong> resource; every push redeploys. Front + back + SQLite are one unit on one subdomain with automatic HTTPS.</p>
+      </div>
+
+      <div class="tree">
+        <div class="bar"><i></i><i></i><i></i><span>terminal — run the exact stack locally first</span></div>
+<pre><span class="c"># prove it runs before Coolify — the same compose Coolify will build</span>
+cp .env.example .env        <span class="c"># OPENAI_API_KEY · OPENCLAW_TOKEN · PORT …</span>
+pnpm build                  <span class="c"># frontend static + backend dist</span>
+docker compose up --build   <span class="c"># front + back + sqlite volume</span></pre>
+      </div>
+
+      <ol class="road" style="margin-top:20px">
+        <li><div><b>Add the resource (once)</b><span>Coolify → project → <b>+ New</b> → <b>Docker Compose</b>; pick the <b>public GitHub repo</b>, file <code>docker-compose.yml</code>, branch <code>main</code>.</span></div></li>
+        <li><div><b>Domain + env</b><span>Set the FQDN (e.g. <code>looka.boxgeist.com</code>) — Traefik gives auto-HTTPS. Add <code>OPENAI_API_KEY</code> &amp; <code>OPENCLAW_TOKEN</code> in the <b>Environment Variables</b> tab — never in the repo.</span></div></li>
+        <li><div><b>Persist the database</b><span>Add <b>Persistent Storage</b> for <code>backend/data</code> so <code>looka.sqlite</code> survives redeploys. On each boot Drizzle's <code>migrate()</code> applies any new migration files — schema changes ship safely with a push.</span></div></li>
+        <li><div><b>Deploy + auto-deploy</b><span>Hit <b>Deploy</b>, then enable the <b>GitHub webhook</b> so each <code>git push main</code> rebuilds automatically.</span></div></li>
+      </ol>
+
+      <div class="princ" style="margin-top:20px">
+        <div class="p"><div class="n">→</div><h3>Where</h3><p>Our Coolify at <code>coolify.boxgeist.com</code> (v4.1, one server) — the same panel already running a dozen of Frank's apps.</p></div>
+        <div class="p"><div class="n">→</div><h3>How it ships</h3><p><code>git push main</code> → webhook → Coolify builds the compose → Traefik serves the subdomain with auto-SSL. No custom CI to babysit.</p></div>
+        <div class="p"><div class="n">→</div><h3>Data & inspect</h3><p>SQLite sits on a Coolify persistent volume. <b>SSH into the server</b> (or use Coolify's terminal/logs) to open the <code>.sqlite</code> and poke around.</p></div>
+        <div class="p"><div class="n">→</div><h3>Secrets</h3><p>Keys live only in Coolify's env tab — never committed. <code>.env.example</code> just documents which are needed.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Looka · XRCC'26 — Berlin · PICO Tech Layer · blueprint v2</p>
+  </footer>
+</body>
+</html>

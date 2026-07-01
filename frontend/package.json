@@ -1,0 +1,28 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "dev:spatial": "npx webspatial-builder run --base=http://localhost:5173/",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@webspatial/core-sdk": "^1.7.0",
+    "@webspatial/react-sdk": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@webspatial/builder": "^1.7.0",
+    "@webspatial/platform-visionos": "^1.7.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1"
+  }
+}

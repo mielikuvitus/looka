@@ -36,21 +36,21 @@ One of the [initialization properties](../../../concepts/spatial-scenes.md#scene
 **Set resizability for a new scene**
 
 ```js
-import { initScene } from "@webspatial/react-sdk";
+import { initScene } from '@webspatial/react-sdk'
 
-initScene("newSceneName", defaultConfig => {
+initScene('newSceneName', (defaultConfig) => {
   return {
     ...defaultConfig,
-    type: "volume",
+    type: 'volume',
     resizability: {
       minWidth: 100,
-      minHeight: "100px",
+      minHeight: '100px',
       maxWidth: 200,
       maxHeight: 200,
     },
-  };
-});
-window.open(newSceneUrl, "newSceneName");
+  }
+})
+window.open(newSceneUrl, 'newSceneName')
 ```
 
 ### Using the Web App Manifest

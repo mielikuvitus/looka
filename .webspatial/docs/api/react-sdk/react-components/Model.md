@@ -15,16 +15,16 @@ The `<Model>` component implements the [static 3D content container element](../
 To enable this enhancement, add the [spatialized HTML element marker (`enable-xr`)](./jsx-marker.md#enable-xr) on `<Model>`:
 
 ```jsx
-import { Model } from "@webspatial/react-sdk";
+import { Model } from '@webspatial/react-sdk'
 
 function Example() {
   return (
     <Model
       enable-xr
       src="/modelasset/vehicle.usdz"
-      style={{ height: "200px", "--xr-depth": "100px" }}
+      style={{ 'height': '200px', '--xr-depth': '100px' }}
     />
-  );
+  )
 }
 ```
 

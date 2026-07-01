@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "NODE_ENV=production tsx src/server.ts",
+    "build": "tsc -b",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/core/db/migrate.ts",
+    "seed": "tsx src/core/db/seed.ts",
+    "gen:types": "tsx src/gen-types.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.4",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.44.6",
+    "hono": "^4.9.10",
+    "openai": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.12.0",
+    "drizzle-kit": "^0.31.5",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3"
+  }
+}

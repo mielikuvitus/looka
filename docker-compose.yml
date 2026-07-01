@@ -1,0 +1,30 @@
+# Looka — single service, single origin.
+#
+# The image builds the frontend, then the backend serves that static build and
+# /api on one port. SQLite lives on a named volume so data survives restarts.
+#
+#   docker compose up --build
+#
+# Reads OPENAI_API_KEY, OPENCLAW_TOKEN, and PORT from a local .env file
+# (copy .env.example -> .env). There is no auth yet — that comes later.
+
+services:
+  looka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # Fall back to 8787 if PORT is not set in .env.
+      PORT: ${PORT:-8787}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      OPENCLAW_TOKEN: ${OPENCLAW_TOKEN:-}
+      OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-}
+    ports:
+      - "${PORT:-8787}:${PORT:-8787}"
+    volumes:
+      # SQLite database persists here (matches backend/data/looka.sqlite).
+      - looka-data:/app/backend/data
+
+volumes:
+  looka-data:

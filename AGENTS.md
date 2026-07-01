@@ -1,3 +1,59 @@
+# Looka — agent guide
+
+Looka is a WebSpatial spatial-web app for the XRCC PICO hackathon: AI agents
+shown as draggable floating panels in a room. This file is the canonical guide.
+`CLAUDE.md` just points here.
+
+## What's in the repo
+
+```
+looka/
+├── frontend/   React + TS + Vite + WebSpatial single-page app (the room)
+├── backend/    thin TypeScript API + SQLite (Drizzle) — no auth yet
+└── misc/       references, the vision doc, and helper scripts
+```
+
+It's a pnpm workspace. `pnpm-workspace.yaml` lists `frontend` and `backend`.
+
+## Ownership is a gentle default, not a rule
+
+Four people work here: **frank, juan, suvi, joe**. Each has a natural home:
+
+- `frontend/src/features/<name>/` — their panel / card UI
+- `backend/src/api/<name>/` — their API routes (each exposes `/api/<name>/ping`)
+
+frank wraps **OpenClaw**; juan, suvi, and joe wrap **OpenAI** (a cheap model,
+key read from env). These folders are just a starting point — anyone can touch
+anything. `frontend/src/app/` and `frontend/src/shared/` are **common ground**
+with no owner. A shared panel/kit is optional; each card is just HTML on the
+page, so build yours however you like.
+
+## How it runs
+
+- **Dev:** `pnpm dev` runs the frontend and backend together. Vite proxies
+  `/api` to the backend (e.g. `http://localhost:8787`), so there's no CORS.
+- **Prod:** the backend serves the built frontend *and* `/api` on one origin.
+- **DB:** SQLite via Drizzle ORM + better-sqlite3. `migrate()` runs on boot.
+  Panels do **not** persist — reload is a fresh start. The DB is wired up now
+  for future data, nothing more.
+
+## Conventions
+
+- Person-only folder names (`frank`, `juan`, `suvi`, `joe`).
+- Lint/format is **ESLint via `@antfu/eslint-config` only** (it formats too).
+  No Prettier. `pnpm lint` runs `eslint . --fix`. Lint never blocks the build.
+- No test framework yet. A trivial `/api/health` endpoint is fine.
+- Keep the backend simple. Security/auth comes later.
+
+## Commands
+
+- `pnpm dev` — run frontend + backend
+- `pnpm build` — build all packages
+- `pnpm lint` — `eslint . --fix`
+- `pnpm db:generate` / `pnpm db:migrate` / `pnpm seed` — database (backend)
+- `pnpm gen:types` — regenerate the shared frontend API types
+- `pnpm refs:pull` — clone the external reference repos into `misc/`
+
 <!-- webspatial-starter:begin:webspatial-project-guidance -->
 ## WebSpatial
 

@@ -31,7 +31,7 @@ Read-only.
 Example:
 
 ```js
-const currentDepth = ref.current.xrClientDepth;
+const currentDepth = ref.current.xrClientDepth
 ```
 
 ## Fallback Behavior

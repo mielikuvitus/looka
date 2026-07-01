@@ -1,0 +1,20 @@
+{
+  "description": "External reference repos, cloned into ./external/ by pull-references.sh (pnpm refs:pull). Read-only inspiration, not part of the Looka build.",
+  "repos": [
+    {
+      "name": "sample-techshop",
+      "url": "https://github.com/webspatial/sample-techshop",
+      "why": "Official WebSpatial e-commerce demo — reference for SDK usage and app structure."
+    },
+    {
+      "name": "webspatial_openclaw_command_center",
+      "url": "https://github.com/nigelhartman/webspatial_openclaw_command_center",
+      "why": "Basically our idea, pre-built: spatial agent panels with per-agent chat and voice, runs in the PICO emulator."
+    },
+    {
+      "name": "SensAI-PICO-Kits",
+      "url": "https://github.com/SensAIHackademy/SensAI-PICO-Kits",
+      "why": "Collection of PICO starter kits (voice, world model, and more)."
+    }
+  ]
+}

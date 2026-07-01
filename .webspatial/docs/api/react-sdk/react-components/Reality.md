@@ -13,28 +13,28 @@ These 3D engine APIs are provided by WebSpatial SDK as React components:
 
 ```js
 import {
-  Reality,
-  Material,
-  ModelAsset,
   AttachmentAsset,
-  World,
-  Entity,
+  AttachmentEntity,
   Box,
-  Sphere,
-  Plane,
   Cone,
   Cylinder,
+  Entity,
+  Material,
+  ModelAsset,
   ModelEntity,
-  AttachmentEntity,
-} from "@webspatial/react-sdk";
+  Plane,
+  Reality,
+  Sphere,
+  World,
+} from '@webspatial/react-sdk'
 ```
 
 ```js
-<Reality style={{ width: "500px", height: "500px", "--xr-depth": 100 }}>
+<Reality style={{ 'width': '500px', 'height': '500px', '--xr-depth': 100 }}>
   <Material type="unlit" id="red" color="#ff0000" />
   <ModelAsset id="teapot" src="https://example.com/model.usdz" />
   <World>
-    <Box materials={["red"]} width={0.2} height={0.2} depth={0.2} />
+    <Box materials={['red']} width={0.2} height={0.2} depth={0.2} />
   </World>
 </Reality>
 ```
@@ -164,7 +164,7 @@ All of these primitive entities support the `materials` prop, which can referenc
       width={0.2}
       height={0.2}
       depth={0.2} // meters (0.1 = 10cm)
-      materials={["glass"]}
+      materials={['glass']}
       cornerRadius={0.01} // rounded edges
     />
   </World>
@@ -178,11 +178,11 @@ All of these primitive entities support the `materials` prop, which can referenc
 Using a "spaceship fleet" as an example: download and load the spaceship model into memory once, then reference it to create three separate Model Entities and render three spaceships:
 
 ```js
-import { Reality, World, ModelAsset, ModelEntity } from "@webspatial/react-sdk";
+import { ModelAsset, ModelEntity, Reality, World } from '@webspatial/react-sdk'
 
 function SpaceshipFleet() {
   return (
-    <Reality style={{ width: "100%", height: "500px" }}>
+    <Reality style={{ width: '100%', height: '500px' }}>
       {/* --- 1. THE RESOURCE --- */}
       {/* This downloads the file once. It is INVISIBLE right now. */}
       <ModelAsset
@@ -214,7 +214,7 @@ function SpaceshipFleet() {
         />
       </World>
     </Reality>
-  );
+  )
 }
 ```
 
@@ -222,19 +222,19 @@ For animation requirements, you can implement them by polling and updating Trans
 Example:
 
 ```js
-const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 })
 
 useEffect(() => {
-  let id;
+  let id
   function animate() {
-    setRotation(prev => ({ ...prev, y: prev.y + 0.02 }));
-    id = requestAnimationFrame(animate);
+    setRotation(prev => ({ ...prev, y: prev.y + 0.02 }))
+    id = requestAnimationFrame(animate)
   }
-  animate();
-  return () => cancelAnimationFrame(id);
-}, []);
+  animate()
+  return () => cancelAnimationFrame(id)
+}, [])
 
-<Box rotation={rotation} />;
+<Box rotation={rotation} />
 ```
 
 ## Attachment Entity
@@ -249,7 +249,7 @@ useEffect(() => {
 ```js
 <Reality>
   <AttachmentAsset name="info">
-    <div style={{ width: "100%" }}>
+    <div style={{ width: '100%' }}>
       <p>Some text</p>
     </div>
   </AttachmentAsset>

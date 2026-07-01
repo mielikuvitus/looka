@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+
+    /* WebSpatial JSX runtime — do not change these two lines. */
+    "jsx": "react-jsx",
+    "jsxImportSource": "@webspatial/react-sdk",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "moduleDetection": "force",
+    "useDefineForClassFields": true,
+    "types": ["vite/client"],
+
+    /* Bundler mode */
+    "allowImportingTsExtensions": true,
+
+    "noFallthroughCasesInSwitch": true,
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": ["src"]
+}

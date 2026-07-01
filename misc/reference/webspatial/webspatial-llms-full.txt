@@ -1,0 +1,3271 @@
+# WebSpatial
+
+> WebSpatial is a set of spatial APIs and ready-to-use SDK that extend the standard 2D Web ecosystem to support spatial computing across platforms. It enables the entire HTML/CSS-based Web world to step into the spatial era, gaining spatial power on par with native apps (like visionOS apps) while keeping the advantages they already have.
+
+This file merges the latest English WebSpatial documentation into a single Markdown context.
+It excludes legacy 1.0.x docs and localized copies. For the lighter linked index, use llms.txt.
+
+Linked index: https://webspatial.dev/llms.txt
+
+## Contents
+
+- [Getting Started](https://webspatial.dev/docs/introduction/getting-started.md): Understand what WebSpatial adds to the Web, how the SDK works, and how to integrate it into a React project.
+- [Concepts overview](https://webspatial.dev/docs/concepts.md): Core concepts behind WebSpatial, spatial computing, scenes, interactions, and 2D + 3D composition.
+- [Spatial Computing](https://webspatial.dev/docs/concepts/spatial-computing.md): Learn how spatial computing differs from traditional XR, including spatial apps, runtimes, and unified rendering.
+- [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md): See how a standard Web App becomes a WebSpatial App, including the roles of the runtime and packaged app.
+- [Spatial Scenes](https://webspatial.dev/docs/concepts/spatial-scenes.md): Understand Spatial Scene containers, scene types, initialization, and how WebSpatial apps open multiple scenes.
+- [Spatialized HTML Elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md): Learn how ordinary HTML elements become spatialized surfaces with Z-axis layout, transforms, and spatial state.
+- [3D Content Containers](https://webspatial.dev/docs/concepts/3d-content-containers.md): Explore the 2D containing 3D model, static and dynamic 3D containers, and the local 3D spaces they create.
+- [Natural Interactions](https://webspatial.dev/docs/concepts/natural-interactions.md): Understand gaze, pinch, touch, and the spatial events WebSpatial exposes for natural interaction.
+- [How-to overview](https://webspatial.dev/docs/how-to.md): Practical setup guides for PWA requirements, JSX runtime configuration, SSR, Xcode, and app-store workflows.
+- [How to meet the minimum PWA requirements](https://webspatial.dev/docs/how-to/minimal-pwa.md): Prepare the minimum manifest, icons, and installability requirements needed for WebSpatial and packaged app workflows.
+- [How to configure the JSX runtime in non-TypeScript projects](https://webspatial.dev/docs/how-to/non-ts.md): Configure the WebSpatial JSX runtime in JavaScript-based React projects without TypeScript support.
+- [How to configure the JSX runtime in Rspack-based projects](https://webspatial.dev/docs/how-to/rspack.md): Set up the WebSpatial JSX runtime in Rspack or Rsbuild projects through swc-loader configuration.
+- [How to enable WebSpatial in SSR-enabled projects](https://webspatial.dev/docs/how-to/ssr.md): Enable WebSpatial in SSR projects by wrapping the app with SSRProvider and preserving the client-runtime split.
+- [How to install Xcode and visionOS-related components](https://webspatial.dev/docs/how-to/xcode.md): Install Xcode, simulators, and visionOS platform components required to run Packaged WebSpatial Apps locally.
+- [How to test on visionOS devices and submit to the App Store](https://webspatial.dev/docs/how-to/app-store-connect.md): Test Packaged WebSpatial Apps on visionOS devices and submit builds through App Store Connect.
+- [API overview](https://webspatial.dev/docs/api.md): Reference docs for WebSpatial Builder and the WebSpatial React SDK.
+- [React SDK overview](https://webspatial.dev/docs/api/react-sdk.md): Reference docs for React components, CSS APIs, DOM APIs, events, JS APIs, and scene configuration.
+- [React SDK / React Components overview](https://webspatial.dev/docs/api/react-sdk/react-components.md): React components and JSX markers for rendering 3D and spatial content.
+- [React SDK / React Components / JSX Markers](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md): Mark JSX elements so the WebSpatial SDK can turn them into spatialized HTML elements.
+- [React SDK / React Components / `<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md): Render a static 3D model inside a spatialized container using the Web-standard-inspired `<model>` API.
+- [React SDK / React Components / `<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md): Render dynamic 3D content inside a spatialized container with the unified-rendering engine API.
+- [React SDK / CSS API overview](https://webspatial.dev/docs/api/react-sdk/css-api.md): CSS properties for spatial layout, depth, transforms, and material surfaces.
+- [React SDK / CSS API / `back`](https://webspatial.dev/docs/api/react-sdk/css-api/back.md): Lift an HTML element along the Z axis and position it in front of the page plane.
+- [React SDK / CSS API / Spatial Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md): Apply true 3D translation, rotation, and scale to spatialized HTML elements and 3D containers.
+- [React SDK / CSS API / `background-material`](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md): Give scene and element backplates a transparent or real-time translucent material background.
+- [React SDK / CSS API / `depth`](https://webspatial.dev/docs/api/react-sdk/css-api/depth.md): Set the depth of 3D container elements so they render with real thickness in space.
+- [React SDK / DOM API overview](https://webspatial.dev/docs/api/react-sdk/dom-api.md): DOM properties for depth, back offset, and runtime environment detection.
+- [React SDK / DOM API / `userAgent`](https://webspatial.dev/docs/api/react-sdk/dom-api/userAgent.md): Inspect the current device, operating system, and whether the app is running in WebSpatial mode.
+- [React SDK / DOM API / `offsetBack`](https://webspatial.dev/docs/api/react-sdk/dom-api/offsetBack.md): Read how far a spatialized HTML element has moved forward from its original 2D position.
+- [React SDK / DOM API / `clientDepth`](https://webspatial.dev/docs/api/react-sdk/dom-api/clientDepth.md): Read the current rendered depth of a 3D container element in pixels.
+- [React SDK / DOM API / `innerDepth`](https://webspatial.dev/docs/api/react-sdk/dom-api/innerDepth.md): Read the current depth of a volume Spatial Scene through the DOM interface.
+- [React SDK / Event API overview](https://webspatial.dev/docs/api/react-sdk/event-api.md): Spatial interaction events for tap, drag, magnify, and rotate gestures.
+- [React SDK / Event API / Spatial Tap](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-tap.md): Handle completed tap interactions on spatialized elements and 3D content.
+- [React SDK / Event API / Spatial Drag](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-drag.md): Handle spatial drag gestures, including their phases and position payload.
+- [React SDK / Event API / Spatial Magnify](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-magnify.md): Handle two-handed magnify gestures and read the scale factor produced by the interaction.
+- [React SDK / Event API / Spatial Rotate](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-rotate.md): Handle two-handed rotate gestures and read the rotation produced in 3D space.
+- [React SDK / JS API overview](https://webspatial.dev/docs/api/react-sdk/js-api.md): JavaScript APIs for scene setup, metrics, and coordinate conversion.
+- [React SDK / JS API / `initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md): Configure initialization options for a new Spatial Scene before it opens.
+- [React SDK / JS API / `useMetrics`](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md): Convert between 2D pixel units and real-world meter units inside WebSpatial layouts.
+- [React SDK / JS API / `convertCoordinate`](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md): Convert points between the local and global coordinate systems used by scenes and spatial content.
+- [React SDK / Manifest Options overview](https://webspatial.dev/docs/api/react-sdk/manifest-options.md): Manifest options for configuring the main scene of a WebSpatial app.
+- [React SDK / Manifest Options / `main_scene`](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md): Configure the Start Scene from the Web App Manifest before any page code runs.
+- [React SDK / Scene Options overview](https://webspatial.dev/docs/api/react-sdk/scene-options.md): Scene configuration options for sizing, scaling, alignment, and window behavior.
+- [React SDK / Scene Options / `type`](https://webspatial.dev/docs/api/react-sdk/scene-options/type.md): Choose whether a new Spatial Scene behaves like a window or a volume.
+- [React SDK / Scene Options / `defaultSize`](https://webspatial.dev/docs/api/react-sdk/scene-options/defaultSize.md): Set the initial width, height, and depth a Spatial Scene requests when it is created.
+- [React SDK / Scene Options / `resizability`](https://webspatial.dev/docs/api/react-sdk/scene-options/resizability.md): Limit how far users can resize a Spatial Scene after it opens.
+- [React SDK / Scene Options / `worldScaling`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md): Control whether a Spatial Scene keeps a constant apparent size or scales with distance.
+- [React SDK / Scene Options / `worldAlignment`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldAlignment.md): Control whether a Spatial Scene stays upright, faces the user, or behaves more like a real object.
+- [React SDK / Scene Options / `baseplateVisibility`](https://webspatial.dev/docs/api/react-sdk/scene-options/baseplateVisibility.md): Show or hide the baseplate under a volume Spatial Scene.
+- [Builder overview](https://webspatial.dev/docs/api/builder.md): Command reference for previewing, building, and publishing packaged WebSpatial apps.
+- [Builder / `webspatial-builder run`](https://webspatial.dev/docs/api/builder/run.md): Launch a Packaged WebSpatial App in the simulator for local preview and debugging.
+- [Builder / `webspatial-builder build`](https://webspatial.dev/docs/api/builder/build.md): Build a Packaged WebSpatial App that can be installed on test devices or prepared for release workflows.
+- [Builder / `webspatial-builder publish`](https://webspatial.dev/docs/api/builder/publish.md): Upload a built Packaged WebSpatial App to App Store Connect for TestFlight or App Store submission.
+
+## Introduction
+
+### Getting Started
+
+Source: https://webspatial.dev/docs/introduction/getting-started.md
+
+Understand what WebSpatial adds to the Web, how the SDK works, and how to integrate it into a React project.
+
+## Overview
+
+WebSpatial is a set of [minimal extensions to HTML/CSS/DOM APIs](https://tpac2025.webspatial.dev/) plus a [polyfill](https://www.w3.org/2001/tag/doc/polyfills/)-style open-source [SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk). It brings [spatialized UI capabilities](https://webspatial.dev/docs/introduction/getting-started.md#features) equivalent to [native spatial apps](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app) and a [2D containing 3D](https://webspatial.dev/docs/introduction/getting-started.md#philosophy) developer experience into Web standards and mainstream Web frameworks. This allows HTML content on [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platforms to break free from the screen, enter real space, gain real volume, support natural spatial interactions and flexible 3D programming, while preserving the Web's original [cross-platform nature](https://webspatial.dev/docs/introduction/getting-started.md#philosophy), mental model, and [development workflow](https://webspatial.dev/docs/introduction/getting-started.md#preview). The goal is to let the mainstream Web ecosystem and Web developers move seamlessly into the era of [spatial computing and multimodal AI](https://tpac2025.webspatial.dev/).
+
+## Features
+
+### WebSpatial API
+
+1. **Spatial scenes**: The [start page](https://webspatial.dev/docs/concepts/spatial-scenes.md#start-scene) of a Web App (PWA), and every page of the same app [opened in a new window](https://webspatial.dev/docs/concepts/spatial-scenes.md#new-scenes), becomes a [spatial scene container](https://webspatial.dev/docs/concepts/spatial-scenes.md) integrated with the surrounding space. Different [initialization settings](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) can be applied to these containers.
+2. **Material backplates**: For webpages using the [window scene type](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-type), the [background panel](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md) can use a native-feeling translucent material rendered dynamically based on viewpoint and environment, or it can be made fully transparent with no visible border so that elements appear to float separately in space.
+3. **Volumetric windows**: A webpage window can change its [behavior in space](https://webspatial.dev/docs/concepts/spatial-computing.md) from serving 2D GUI needs first to [simulating a real-world object, so the window behaves like a "box"](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-type) with real volume and [depth](https://webspatial.dev/docs/api/react-sdk/dom-api/innerDepth.md).
+4. **Spatialized HTML elements**: HTML elements can be "lifted" into the 3D space in front of the page plane while still participating in the CSS layout system. These [spatialized](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) HTML elements keep their original state and APIs [on the X and Y axes](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), while also becoming 2D planes floating in a spatial scene. They can have [material backplates](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md), be [laid out and positioned](https://webspatial.dev/docs/api/react-sdk/css-api/back.md) along the Z axis with CSS, receive 3D [transformations](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md) such as rotation, and expose [related state](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) through DOM APIs.
+5. **Material backgrounds**: The background of an HTML element can use a [real-time rendered translucent material](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md), instead of being limited to fixed colors.
+6. **3D container elements**: Two new kinds of 3D HTML elements act as containers for 3D content with real volume. These 3D container elements still participate in the CSS layout system [as 2D planes](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), support Z-axis [layout](https://webspatial.dev/docs/api/react-sdk/css-api/back.md) and [transforms](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md), and also create a local space in front of the 2D plane based on a [3D development paradigm](https://webspatial.dev/docs/concepts/3d-content-containers.md). Real volumetric 3D content can be rendered there so it fits into the 2D layout system and the [rendering model of 2D GUI frameworks](https://react.dev/learn/thinking-in-react), enabling a [2D containing 3D development paradigm](https://webspatial.dev/docs/introduction/getting-started.md#philosophy).
+7. **Static 3D container elements**: The 3D content inside a container can be rendered from [prebuilt 3D model asset files](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md). The API for this kind of 3D container element [is fully based on the Web standard model element](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md).
+8. **Dynamic 3D container elements**: The 3D content inside a container can be rendered dynamically through a [flexibly programmable, HTML-style 3D engine API](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api).
+9. **HTML-style 3D engine APIs**: These APIs include [3D asset declarations](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api) such as models and materials, built-in capability modules, and ready-to-use [3D entities](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md) such as primitive shapes. These entities can be freely composed in a [3D coordinate system](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d) using a tree structure and [Transform props](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md), enabling arbitrary 3D scenes and animations.
+10. **2D attachment entities**: [2D HTML content can be attached to plane-shaped 3D entities](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md), so fully functional 2D content can also be embedded inside 3D content.
+11. **Spatial interactions**: New [spatial interaction events](https://webspatial.dev/docs/concepts/natural-interactions.md#spatial-interactions) such as tap, drag, and rotate can be triggered on the 2D planes corresponding to spatialized HTML elements and on 3D content inside 3D container elements (on 3D mesh surfaces or bounding boxes), providing interaction information in 3D space such as positions in a 3D coordinate system.
+12. **Mixed 2D + 3D content**: 2D content based on the CSS layout system and dynamic 3D container content based on the 3D engine can be combined through APIs such as [coordinate conversion and unit conversion](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d), enabling alignment, coupling, and other integration patterns.
+
+### WebSpatial SDK
+
+1. **Forward-looking pre-implementation**: Together with a [native runtime implementation](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), the proposed HTML/DOM/CSS APIs are [polyfilled (or "prollyfilled")](https://www.w3.org/2001/tag/doc/polyfills/) within the JSX, refs, and CSS of React projects. This makes the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) available immediately, without waiting for browser engines on each platform to formally support these APIs.
+2. **Cross-version compatibility**: The SDK shields developers from instability, changes, and platform differences while WebSpatial APIs enter Web standards (HTML/CSS/DOM). The APIs exposed by the SDK remain backward compatible, so older code keeps working.
+3. **Cross-platform compatibility**: On platforms that support [spatial computing and unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md), platform differences are hidden as much as possible so apps get unified spatial app concepts and spatialized UI features. On platforms that do not support spatial computing and unified rendering, the SDK will automatically ignore WebSpatial APIs, skip loading the full SDK implementation, and avoid affecting the behavior or performance of webpages in ordinary browsers on desktop computers, phones, and other screen-based devices.
+4. **Custom cross-platform logic**: The SDK provides feature detection and [runtime detection](https://webspatial.dev/docs/api/react-sdk/dom-api/userAgent.md), so developers can add custom cross-platform handling for the small number of JS API / DOM API calls that can't be ignored automatically, and enable custom enhancements and platform-specific features on spatial computing platforms.
+5. **App packaging**: A PWA can be packaged as a [native app bundle with its own WebSpatial Runtime and no external dependency](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app), such as a visionOS app. Like a native app, it can be installed on simulators or real devices for [preview and debugging](https://webspatial.dev/docs/introduction/getting-started.md#preview), and [submitted to app stores such as the visionOS App Store](https://webspatial.dev/docs/introduction/getting-started.md#distribution).
+
+## Philosophy
+
+1. WebSpatial adopts a new ["2D containing 3D"](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d) development paradigm. It is built on the 2D Web ecosystem and HTML/CSS APIs, continuing the 2D mental model and development style developers already know. It only adds [Z-axis APIs for 2D elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), plus APIs that [let a local 3D space behave like a 2D element](https://webspatial.dev/docs/concepts/3d-content-containers.md). The [3D development paradigm](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api) is confined inside local 3D spaces, and those local 3D renderings are integrated into the overall 2D rendering model. Developers can use 3D capabilities only where needed, instead of rebuilding an entire app as a 3D app and disconnecting from the mainstream 2D ecosystem.
+2. WebSpatial only makes minimal extensions to HTML/CSS/DOM APIs. For [X/Y-axis-related functionality](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), it continues to use existing Web standard APIs, which can be combined with the newly added [Z-axis-related APIs](https://webspatial.dev/docs/api/react-sdk/css-api/back.md).
+3. Inside local 3D spaces, WebSpatial avoids doing [independent rendering](https://tpac2025.webspatial.dev/#webxr-not-enough) with low-level 3D graphics APIs as WebXR does. Instead, it uses a [declarative 3D engine API that combines ECS and HTML](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api), so spatial computing platforms can understand this 3D content and [render it together](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) with content from other apps in the same space.
+4. WebSpatial avoids implementing all content for a [spatial app](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app) inside a single webpage the way a [WebXR session](https://developer.picoxr.com/document/web/introduce-webxr-standards/) does. Instead, it preserves standard Web development patterns such as multi-page sites, hyperlinks, and PWAs, and uses the [Web App Manifest](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app) and ["open links in a new window"](https://webspatial.dev/docs/concepts/spatial-scenes.md#new-scenes) to provide spatial app and [spatial container](https://webspatial.dev/docs/concepts/spatial-scenes.md) capabilities.
+5. The [SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) should keep its [simulated pre-implementation](https://www.w3.org/2001/tag/doc/polyfills/) of the proposed HTML/CSS/DOM APIs moderate, not overly complex or uncontrollable. For that reason, modifying [spatial styles/state](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) and [listening to spatial events](https://webspatial.dev/docs/concepts/natural-interactions.md#spatial-interactions) is only supported in declarative code that follows the [Rules of React](https://react.dev/reference/rules), and [reading spatial styles/state (read-only)](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) is only supported on objects obtained through [Hook APIs](https://react.dev/reference/react/hooks), such as [Refs](https://react.dev/learn/referencing-values-with-refs). Directly selecting DOM objects with imperative code is not supported for these operations.
+6. The [SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) should integrate into existing standard Web projects with as little cost as possible, in a way that is [close to one-click installation](https://webspatial.dev/docs/introduction/getting-started.md#installation), without changing the project's [original development, build, or deployment workflow](https://webspatial.dev/docs/introduction/getting-started.md#preview), and while ensuring that the site's existing behavior, performance, and debugging experience on desktop/mobile platforms and ordinary browsers are not affected.
+7. With WebSpatial APIs and the SDK, building a new [spatial app](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app) should feel just like building a normal website. If developers want, the app can still be distributed as a standard website, preserving the Web's original cross-platform capability and its [URL-based usage model](https://tpac2025.webspatial.dev/#instant-apps).
+
+## Supported Web Projects
+
+The open-source [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) currently provides a [React SDK](https://webspatial.dev/docs/api/react-sdk.md). Any standard website project built with React should be able to enable the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) by integrating this SDK.
+
+The React SDK needs to be integrated into the [JSX Runtime](https://www.typescriptlang.org/docs/handbook/jsx.html). In React projects that use TypeScript, this requires only [one line of configuration](https://webspatial.dev/docs/introduction/getting-started.md#set-up-your-project) (a few web build tools need [extra configuration](https://webspatial.dev/docs/how-to/rspack.md)). In JavaScript projects, you [can only configure the JSX Runtime in the web build tool](https://webspatial.dev/docs/how-to/non-ts.md).
+The web build tools that have been tested and used most often so far are:
+
+- Vite
+- Next.js, Remix ([SSR is supported](https://webspatial.dev/docs/how-to/ssr.md))
+- Rspack / Rsbuild / Webpack
+
+:::caution[Current limitation]
+The latest version of WebSpatial SDK currently has a bug that temporarily prevents support for styled-components.
+:::
+
+## Supported Platforms
+
+The [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platforms currently supported are:
+
+- ✅ [visionOS](https://developer.apple.com/visionos/) (for example, Vision Pro devices): with WebSpatial SDK, a website can be packaged as a [hybrid app](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) that includes the full [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), submitted to the App Store, and run with native spatial behavior
+- ✅ [PICO OS 6](https://developer.picoxr.com/document/discover/pico-os-6-overview/) (for example, [Project Swan](https://developer.picoxr.com/blog/pico-developer-special-event-2026/) devices): its OS-level [Web App Runtime](https://developer.picoxr.com/zh/document/web/web-app/) includes the [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), so WebSpatial APIs on websites can work directly
+
+Spatial computing platforms currently working toward WebSpatial Runtime implementations are:
+
+- ⏳ [JSAR Runtime](https://jsar-project.github.io/runtime/) (for example, Rokid glasses)
+- ⏳ [IRIS OS](https://www.irisview.cn/)
+
+Spatial computing platforms planned for priority support, but currently waiting for stable native APIs, are:
+
+- ⏳ [Android XR](https://www.android.com/xr/) (for example, XREAL glasses)
+- ⏳ [Meta Horizon OS](https://developers.meta.com/horizon/) (for example, Meta Quest devices)
+
+## Installation
+
+### Step 1: Runtime SDK
+
+To enable the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) in a React project, install the React SDK and the underlying Core SDK provided by the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) project:
+
+```bash npm2yarn
+npm install @webspatial/react-sdk @webspatial/core-sdk
+```
+
+### Step 2 (Optional): Builder
+
+For spatial computing platforms that do not have a built-in [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), the website must be packaged as a [native app that includes WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app). That requires these additional installation steps:
+
+:::tip[PICO OS 6 does not need packaging]
+The [Web App Runtime](https://developer.picoxr.com/document/web/web-app/) in [PICO OS 6](https://developer.picoxr.com/document/discover/pico-os-6-overview/) already includes WebSpatial Runtime and can make the WebSpatial APIs on a website work directly, so packaging is not required and none of the extra installation steps below are needed.
+:::
+
+1. Install the packaging tool ([WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder)) provided by the WebSpatial SDK project in the React project:
+
+```bash npm2yarn
+npm install -D @webspatial/builder
+```
+
+2. The WebSpatial Runtime implementation for each platform is provided as a separate npm package and must be installed independently. For example, to support visionOS, install:
+
+```bash npm2yarn
+npm install -D @webspatial/platform-visionos
+```
+
+3. To generate native app bundles, WebSpatial Builder must invoke the native development tools for the target platform. For visionOS, that means you must [install Xcode and visionOS-related components](https://webspatial.dev/docs/how-to/xcode.md).
+
+## Set Up Your Project
+
+### Step 1: JSX Runtime
+
+Before using the WebSpatial API, integrate the React SDK into the current React project's [JSX Runtime](https://www.typescriptlang.org/docs/handbook/jsx.html).
+
+For TypeScript React projects, you only need to configure the [`jsxImportSource`](https://www.typescriptlang.org/tsconfig/jsxImportSource.html) field in `tsconfig`:
+
+```json title="tsconfig.json" {4}
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@webspatial/react-sdk",
+// ...
+```
+
+:::tip[Related setup guides]
+- For TS projects based on Rspack, you also need to [configure `swc-loader`](https://webspatial.dev/docs/how-to/rspack.md).
+- For JavaScript React projects, you need to [configure the JSX Runtime in the web build tool](https://webspatial.dev/docs/how-to/non-ts.md).
+- For projects with SSR enabled, you need to [add the Context required by the SDK](https://webspatial.dev/docs/how-to/ssr.md).
+:::
+
+### Step 2: Minimal PWA
+
+To provide the app information required by a spatial app and the [settings for the start window](https://webspatial.dev/docs/concepts/spatial-scenes.md#start-scene), the current site must [provide a Web App Manifest following the PWA standard](https://webspatial.dev/docs/how-to/minimal-pwa.md).
+
+:::tip[Sample files]
+[webspatial-icon-examples.zip](https://webspatial.dev/assets/guide/webspatial-icon-examples.zip) contains icon files and manifest file that already satisfy the PWA requirements.
+You just need to unzip it into a directory on your website that can be publicly accessed via URL, then embed the manifest file's URL in your HTML with `<link rel="manifest" href="/app.webmanifest" />`.
+:::
+
+:::tip[Already a PWA?]
+If the current site is already a PWA and can be installed as a PWA in Chrome, you can skip this step.
+:::
+
+## Boilerplate
+
+If you want to get started quickly, use the [`@webspatial/starter`](https://www.npmjs.com/package/@webspatial/starter) CLI.
+
+To scaffold a new WebSpatial project:
+
+```bash title="Create a new WebSpatial project"
+npx @webspatial/starter create my-webspatial-app
+```
+
+To add WebSpatial AI resources to an existing web project in one command:
+
+```bash title="Add WebSpatial AI resources to an existing project"
+npx @webspatial/starter ai
+```
+
+The `ai` command generates a project-local set of WebSpatial AI resources for the current web project, including the full documentation set, project guidance, and agent skills. These resources are designed to be embedded into developers' own web projects, so an agent can use them to understand the recommended WebSpatial workflow and help with setup, integration, and follow-up development tasks.
+
+## Preview
+
+To preview and debug [WebSpatial effects](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api), first run the current Web project as a website just as you would in normal website development, and get an accessible URL. For example, using the [Dev Server](https://vite.dev/guide/#command-line-interface) from Vite:
+
+```bash title="Start the local dev server" {1}
+vite dev
+# result:
+# -> Local: http://localhost:5173/
+```
+
+### Website Mode
+
+For spatial computing platforms with a [built-in WebSpatial Runtime](https://developer.picoxr.com/document/web/web-platform/) (for example, [PICO OS 6](https://developer.picoxr.com/document/discover/pico-os-6-overview/)):
+
+Just visit the current website URL in the PICO Browser on the [official simulator](https://developer.picoxr.com/document/spatial-toolkit/learn-about-pico-emulator/) or on a real PICO OS 6 device, then click the "Run as a standalone app" button in the address bar - the website will run as a [Web App with WebSpatial enabled](https://developer.picoxr.com/document/web/install-free/), and you can see the spatialized UI effects and volumetric 3D content produced by WebSpatial.
+
+:::tip[PICO OS 6 simulator networking]
+When previewing a local URL as a Web App on the PICO OS 6 simulator, the [URL is not required to use HTTPS](https://developer.picoxr.com/document/web/manifest/), and you need to use the default IP address `10.0.2.2`. For example, `http://10.0.2.2:5173/`.
+
+To access the Vite dev server via `10.0.2.2`, you need to [set `server: { host: true }` in Vite](https://vitejs.dev/config/server-options) so it allows IPs beyond `localhost` or `127.0.0.1`.
+:::
+
+### Packaged App Mode
+
+For spatial computing platforms without a built-in [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) (for example, visionOS):
+
+You cannot preview and debug directly from a website URL. You need [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder):
+
+Running Builder's [`run` command](https://webspatial.dev/docs/api/builder/run.md) gives you a "one-click preview" workflow. It automatically packages the current website as a [native app bundle that includes WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app), launches the official simulator (for example, the [visionOS simulator](https://webspatial.dev/docs/how-to/xcode.md)), transfers the app bundle into the simulator, installs it, and launches the app.
+
+```bash title="Preview the app in the simulator" {1}
+webspatial-builder run --base="http://localhost:5173/"
+```
+
+:::info[`run` can use a temporary manifest]
+The `run` command allows the Web project to skip providing a Web App Manifest during the early development and debugging phase. In that case, Builder will provide temporary default [app information](https://webspatial.dev/docs/how-to/minimal-pwa.md) (`start_url` is `''`).
+:::
+
+:::caution[Offline packaging slows iteration]
+If [`start_url` is incomplete and missing the domain](https://webspatial.dev/docs/api/builder/run.md#--manifest), and you do not [use `--base` to fill in the base part for `start_url`](https://webspatial.dev/docs/api/builder/run.md#--base), Builder will automatically package the website output into the native app bundle. During runtime, website files are loaded offline from local files inside the app bundle.
+
+During development and debugging, this mode means every code change requires rerunning Builder and waiting for packaging and installation to finish, which is inefficient. It is recommended to always provide the `--base` parameter during development and debugging.
+:::
+
+To preview on a personal test device, run Builder's [`build` command](https://webspatial.dev/docs/api/builder/build.md) to generate an app bundle. For visionOS devices, you need to [obtain extra parameters from App Store Connect, register the test device in Xcode, and install the app](https://webspatial.dev/docs/how-to/app-store-connect.md).
+
+## Debug
+
+Whether you run on a simulator or a test device, whether you access the website URL directly or package and install the website as a standalone app with WebSpatial Builder, you can remotely connect from DevTools in a browser on your local computer to the Web Runtime in the spatial computing environment for debugging.
+
+WebSpatial apps on visionOS are implemented on top of WebView. You can use Safari Web Inspector on macOS to remotely debug the state and Web code inside each WebView instance, just as you would when debugging webpages on iOS devices.
+See Apple's official documentation: [Inspecting iOS and iPadOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios)
+
+For Android-based spatial computing platforms such as PICO OS 6, you can use Chrome DevTools on a computer to remotely debug Web Apps with WebSpatial enabled.
+See Google's official documentation: [Remote debug Android devices](https://developer.chrome.com/docs/devtools/remote-debugging)
+
+## Distribution
+
+There are two ways to distribute a Web App that includes WebSpatial:
+
+The first is to distribute it as a cross-platform website, spread it through URLs, and get traffic that way. On spatial computing platforms with a built-in WebSpatial Runtime, it can be [accessed on demand by URL](https://tpac2025.webspatial.dev/#instant-apps), used temporarily, or [installed onto a device as a PWA](https://developer.picoxr.com/document/web/installable/).
+
+:::tip[Web Apps on PICO OS 6]
+On [PICO OS 6](https://developer.picoxr.com/document/discover/pico-os-6-overview/) devices, a Web App can also [run independently](https://developer.picoxr.com/document/web/install-free/) outside the browser without being installed, and WebSpatial effects are enabled automatically.
+:::
+
+The second is app-store distribution, where users discover the app in an app store, install it first, and then use it.
+
+Publishing to the visionOS App Store requires using the [`publish` command](https://webspatial.dev/docs/api/builder/publish.md) from [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder) to generate the app bundle and upload it automatically to App Store Connect. This requires some [extra parameters and registration steps](https://webspatial.dev/docs/how-to/app-store-connect.md).
+
+The [PICO app store](https://developer.picoxr.com/document/distribute/) supports publishing a Web App directly by submitting a URL, without packaging and uploading it through WebSpatial Builder first. However, at the current stage, the PICO developer platform does not yet provide self-service Web App submission, so Web Apps must be published to the PICO app store through PICO's business partnership channels.
+
+## Concepts
+
+### Concepts overview
+
+Source: https://webspatial.dev/docs/concepts.md
+
+Core concepts behind WebSpatial, spatial computing, scenes, interactions, and 2D + 3D composition.
+
+#### Spatial Computing
+
+Source: https://webspatial.dev/docs/concepts/spatial-computing.md
+
+Learn how spatial computing differs from traditional XR, including spatial apps, runtimes, and unified rendering.
+
+Spatial computing is a new capability of computing devices and operating systems. It is a further evolution of traditional XR devices and XR operating systems, including [virtual reality, mixed reality, and augmented reality](https://developer.picoxr.com/document/web/introduce-xr/).
+
+Traditional XR operating systems continuously track objects in the surrounding space and the user, obtaining their 3D positions and poses. Software interfaces and virtual digital content can use this low-level data to dynamically integrate with the surrounding space, for example by staying fixed at a location in space while always facing the user, or by following the user's wrist and always appearing beside it. But traditional XR operating systems do not define exactly how software should integrate with space. Each XR app has to use the low-level data provided by the OS and design and implement its own behavior and effects.
+
+A spatial computing operating system (Spatial OS) implements this integration between software and space in a unified way. It performs substantial spatial computation inside the OS, exposes the resulting new capabilities, such as [spatialized UI](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) and mixed 2D/3D coexistence, to [spatial apps](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app), and performs [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) for those apps.
+
+[visionOS](https://developer.apple.com/visionos/) and [PICO OS 6](https://developer.picoxr.com/document/discover/pico-os-6-overview/) are both Spatial OS platforms.
+
+## Unified Rendering
+
+The purpose of unified rendering is to let a Spatial OS perform [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) for different apps in a unified way, so the 2D and 3D content of multiple [spatial apps](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app) can coexist in the same space and share the same coordinate system and lighting environment, including effects such as spatial relationships, occlusion, and shadows.
+
+To make this possible, each spatial app cannot render its own content in isolation or implement interactions arbitrarily. Instead, apps must provide content through [OS-managed 2D/3D content containers called spatial scenes](https://webspatial.dev/docs/concepts/spatial-scenes.md), and implement that content through [APIs the operating system can understand](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api). This allows the OS to understand app content as much as possible, perform unified rendering, and give that content consistent space-aware behavior and natural interaction capabilities.
+
+## Spatial Runtime
+
+To continuously perform [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) and [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering), a Spatial OS needs to run a single 3D space and a single 3D rendering engine. This is effectively a runtime responsible for all [spatial apps](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app): all spatial apps run in that 3D space and are rendered by that engine.
+
+When multiple spatial apps coexist, this 3D space is called Shared Space. When other spatial apps are hidden and the whole space is reserved for one app, it is called Full Space.
+
+In Shared Space, spatial apps cannot access private data such as eye tracking, hand movement, and spatial environment information by default. Apps can only access such data after the user authorizes Full Space mode and the app exclusively occupies the entire space, allowing it to perform custom spatial computation.
+
+## Spatial App
+
+A spatial app is an app that runs in [Shared Space or Full Space](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime), is [rendered in a unified way](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) by the operating system, and automatically gains [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) capabilities.
+
+Spatial apps adopt the ["2D containing 3D"](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d) development paradigm. Existing 2D apps, such as [Web Apps](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app), can become spatial apps as long as they can use [new spatial computing APIs such as WebSpatial APIs](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api). Developers can add code where needed to let 2D content enter 3D space, add real volumetric 3D content mixed with 2D content, and make content support spatial interactions and integration with the surrounding space.
+
+If spatial computing APIs are not used, the UI of a 2D app is not automatically spatialized or turned into 3D content, and the app does not automatically become a spatial app.
+
+Apps built on OpenXR and low-level 3D graphics APIs, including WebXR content in webpages, are not spatial apps, because they need to render themselves independently and occupy the entire space exclusively. They cannot coexist with other apps in the same space and cannot reuse the full spatial computing capabilities of the Spatial OS.
+
+#### WebSpatial App
+
+Source: https://webspatial.dev/docs/concepts/webspatial-app.md
+
+See how a standard Web App becomes a WebSpatial App, including the roles of the runtime and packaged app.
+
+A [Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app) that uses the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) becomes a spatial app when it runs as a standalone app on a [spatial computing platform](https://webspatial.dev/docs/concepts/spatial-computing.md) and enables spatial computing capabilities with the help of the [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime). This is called a WebSpatial App.
+
+A WebSpatial App is an enhancement of a standard Web App, and that enhancement is activated only under suitable conditions.
+
+If the same Web App runs on platforms that do not support spatial computing, such as browsers on desktop computers or phones, it is still a normal webpage or PWA with no spatial computing effects, and WebSpatial does not affect it.
+
+For the same Web App to run as a WebSpatial App and enable spatial computing capabilities, the operating system must support spatial computing and unified rendering, and the runtime environment must also include WebSpatial Runtime.
+Current browser UIs are designed for screen-based devices and for efficiently browsing multiple 2D webpages. They conflict with spatial app UI patterns such as transparent backgrounds and UI elements that float or protrude in space. Because of that, those browsers, such as Safari on visionOS and the default browser on PICO OS 6, cannot currently include WebSpatial Runtime and will run such a Web App as a normal webpage.
+
+If the same Web App runs independently outside the browser on PICO OS 6 through the [Web App Runtime](https://developer.picoxr.com/document/web/web-platform/), or is packaged with [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder) as a [Packaged Hybrid App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) and run on visionOS, it gains a runtime environment with WebSpatial Runtime, becomes a WebSpatial App, and enables spatial computing capabilities.
+
+WebXR content can be "contained" inside a WebSpatial App, because a WebSpatial App is still a standard Web App composed of normal webpages. A webpage in the app can start a WebXR session through JS APIs, take over the entire space, and render WebXR content with low-level 3D graphics APIs such as WebGL or WebGPU. But that space is not [Full Space](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime), and it is not [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering). Rendering is handled independently by the WebXR code itself. Once a WebXR session starts, the original webpages and spatialized UI of the WebSpatial App are hidden and are not shown at the same time.
+
+:::caution[Current limitation on visionOS]
+Because WKWebView on visionOS does not currently support WebXR, Packaged WebSpatial Apps on visionOS cannot start a WebXR session for now.
+:::
+
+## Web App
+
+Broadly speaking, any website that provides complete app functionality is a Web App.
+
+But a traditional website is just a set of webpages or URLs linked to one another. These pages or URLs run as separate tabs in a browser and have weak relationships with each other. There is no standardized way for a page to expose information about the entire Web App, such as the app name, app icon, or which URLs belong to the app.
+
+The [Web App Manifest](https://webspatial.dev/docs/how-to/minimal-pwa.md), which was added to Web standards as part of the PWA standard, lets webpages provide information about the Web App they belong to. This allows the Web App to run independently outside the browser, be installed like a native app, and gain more native-like experiences and capabilities.
+
+So in WebSpatial documentation, "Web App" specifically means PWA. A website [only needs to include a Web App Manifest to become a PWA](https://webspatial.dev/docs/how-to/minimal-pwa.md); other PWA technologies are not required.
+
+## Web Runtime
+
+Web Runtime refers to a runtime that can run Web Apps, webpages, and Web code such as HTML/CSS/JS according to Web standards. This runtime is composed of the browser engine and other native implementations.
+
+Safari and WKWebView on visionOS are both Web Runtimes. A [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) generated by [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder) that includes [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) renders webpages and all HTML/CSS/JS code through WKWebView, so these hybrid apps are also Web Runtimes.
+
+The [Web App Runtime](https://developer.picoxr.com/document/web/web-app/) on PICO OS 6, which includes [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), is also a kind of Web Runtime and uses the [same Chromium core](https://developer.picoxr.com/document/web/web-platform/) as the PICO browser.
+
+In other words, WebSpatial Runtime is always built into a Web Runtime and is part of that Web Runtime. That is why a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) retains the original capabilities of a [standard Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app) and inherits the code and development model of a standard Web App.
+
+## WebSpatial Runtime
+
+WebSpatial Runtime builds on top of a [Web Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#web-runtime) and additionally implements the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api). It exposes the operating system's [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) capabilities to [standard Web Apps](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app), so those apps are enhanced when running on such systems.
+
+Eventually, WebSpatial Runtime will be implemented entirely inside browser engines. But at the current stage, to make the proposed WebSpatial standards available immediately, the implementation combines browser engines and hybrid techniques, and must be used together with the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk).
+
+Some spatial computing operating systems include WebSpatial Runtime, such as [PICO OS 6](https://developer.picoxr.com/document/web/web-app/). On those platforms, standard Web Apps that use WebSpatial SDK can run independently by URL and enable spatial computing directly.
+
+Some spatial computing operating systems do not include WebSpatial Runtime, such as visionOS. To enable spatial computing on those platforms, a standard Web App that uses WebSpatial SDK must be packaged with [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder) as a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) that includes WebSpatial Runtime.
+The WebSpatial Runtime implementations for those specific platforms, which can be packaged into hybrid apps, are provided as separate npm packages. For example, WebSpatial SDK [provides `@webspatial/platform-visionos` for visionOS](https://webspatial.dev/docs/introduction/getting-started.md#step-2-optional-builder).
+
+## Packaged WebSpatial App
+
+A Packaged WebSpatial App is a native [spatial app](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app) that includes both [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) and [Web Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#web-runtime). It is effectively a native app shell that runs a [Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app), behaving much like an installed PWA running independently. Based on the [Web App Manifest](https://webspatial.dev/docs/how-to/minimal-pwa.md), it loads the start page in its own standalone window and also supports opening more pages from the same Web App in additional windows. If the Web App uses the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) through the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk), spatial computing is automatically enabled in this environment.
+
+Such an app can be [previewed](https://webspatial.dev/docs/introduction/getting-started.md#preview) and [debugged](https://webspatial.dev/docs/introduction/getting-started.md#debug) on the official simulator and test devices for the target spatial computing platform, such as visionOS, and can also be [submitted to app stores](https://webspatial.dev/docs/introduction/getting-started.md#distribution). The target spatial computing platform itself does not need to include WebSpatial Runtime, but the environment used for packaging the app must have the required WebSpatial Runtime prepared in advance. For visionOS, for example, the project must install [`@webspatial/platform-visionos`](https://webspatial.dev/docs/introduction/getting-started.md#step-2-optional-builder).
+
+To obtain a Packaged WebSpatial App, you first need a [website project integrated with WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#supported-web-projects), and you use a [Web Build Tool](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) to compile it into website output files that can be deployed to a server.
+At that point, you can already package it directly with [WebSpatial Builder](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-builder). Builder will automatically [copy the website output into the app bundle](https://webspatial.dev/docs/introduction/getting-started.md#packaged-app-mode), and at runtime the app will load HTML/CSS/JS and other Web files locally from the bundle instead of over the network.
+If you additionally [serve the output from the Web Build Tool as a website](https://webspatial.dev/docs/introduction/getting-started.md#preview) and get a URL that the simulator or spatial computing device can access, then [pass that URL to WebSpatial Builder](https://webspatial.dev/docs/api/builder/run.md#--base), you can generate an app bundle that does not include the website output itself, and the app will load HTML/CSS/JS and other Web files online during runtime.
+
+## Web Build Tool
+
+A Web Build Tool refers to tools such as Vite, Rspack, and Webpack that compile and build source code based on Web frameworks into the HTML pages, CSS, JS, and other static Web files actually served by a Web server.
+
+Web frameworks such as Next.js include their own Web Build Tool.
+
+At the current stage, the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) needs [a Web framework (React) and a Web Build Tool](https://webspatial.dev/docs/introduction/getting-started.md#supported-web-projects) in order to let developers use the [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) in source code.
+
+## WebSpatial Builder
+
+WebSpatial SDK provides a development tool called WebSpatial Builder (package name [`@webspatial/builder`](https://webspatial.dev/docs/introduction/getting-started.md#installation)) to simplify generating, [previewing](https://webspatial.dev/docs/introduction/getting-started.md#preview), and [distributing](https://webspatial.dev/docs/introduction/getting-started.md#distribution) a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app).
+
+This tool provides three commands:
+
+- [`run`](https://webspatial.dev/docs/api/builder/run.md): preview in a simulator
+- [`build`](https://webspatial.dev/docs/api/builder/build.md): preview on a test device
+- [`publish`](https://webspatial.dev/docs/api/builder/publish.md): submit to an app store
+
+#### Spatial Scenes
+
+Source: https://webspatial.dev/docs/concepts/spatial-scenes.md
+
+Understand Spatial Scene containers, scene types, initialization, and how WebSpatial apps open multiple scenes.
+
+A Spatial Scene, also called a Spatial Container, is the most basic container that a spatial computing operating system provides for [spatial apps](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-app). It is used to enable [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) and provide the [basic capabilities that integrate software with space](https://webspatial.dev/docs/concepts/spatial-computing.md). All content in a spatial app must be provided through this kind of container, just as app content in desktop operating systems is provided through windows.
+
+For a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md), each Spatial Scene is effectively a webpage loaded and run by URL inside an independent "window".
+A WebSpatial App is composed entirely of these "windows", and all content comes from the HTML/CSS/JS code running inside them.
+
+This kind of "window" does not include browser tabs, an address bar, or similar browser UI. The space is left to the webpage itself. It only provides a [minimal menu similar to a PWA window](https://web.dev/learn/pwa/app-design#standalone_experience), floating above the webpage content and collapsed by default, with essential Web App functions such as "copy current URL" and "open in browser". By default, it also includes navigation buttons such as "Back". If the `display` mode in the Web App Manifest is [set to `standalone`](https://developer.mozilla.org/docs/Web/Progressive_web_apps/Manifest/Reference/display), the navigation buttons are hidden and navigation relies entirely on UI inside the webpage.
+
+## Scene Type
+
+Spatial Scenes currently have three types:
+
+The default is the `window` type. Its main content is a 2D plane floating in space. Users can drag to resize its width and height, subject to [initialization constraints](https://webspatial.dev/docs/api/react-sdk/scene-options/resizability.md), and can drag it to move it in space, subject to the spatial computing logic in the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime). During movement, it will also always [keep a constant size relative to the user's field of view](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md), because this type of Spatial Scene primarily serves GUI needs and needs to keep content and text clear and readable.
+
+By default, webpage content is located on this 2D plane. The viewport size and window size exposed through existing Web APIs, such as `window.innerHeight`, are equal to the size of this plane. The height returned by `window.outerHeight` additionally includes the height of the PWA menu.
+
+The backplate of this 2D plane can be set to [fully transparent with no border](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md), making webpage content look as if it were floating separately in the air. It can also use a native-feeling translucent material, such as a frosted-glass effect on visionOS, rendered dynamically in real time based on viewpoint and environment.
+
+[Spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) can be "lifted" from this 2D plane into the 3D space in front of it, toward the user, and can receive Z-axis [layout](https://webspatial.dev/docs/api/react-sdk/css-api/back.md) and [transforms](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md).
+If the webpage adds [3D content container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md), volumetric 3D content is also rendered in the space in front of this 2D plane.
+So a `window` Spatial Scene is not just a flat plane and is not limited to pure 2D content. It can also contain spatialized UI and volumetric 3D content.
+
+Spatial Scenes can also be set to the `volume` type. This type no longer prioritizes GUI needs and is instead used to simulate real-world objects.
+
+Accordingly, this kind of Spatial Scene has an additional depth dimension besides width and height. Depth can be set through [`defaultSize`](https://webspatial.dev/docs/api/react-sdk/scene-options/defaultSize.md) and read through [`innerDepth`](https://webspatial.dev/docs/api/react-sdk/dom-api/innerDepth.md). When users drag it to move it in space, its behavior is still constrained by the Spatial Runtime's spatial computing logic, but unlike the `window` type, it shows a distance-based scaling effect by default unless the [`worldScaling` property](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md) is changed during initialization. Another default behavior is that it always faces the user, unless the [`worldAlignment` property](https://webspatial.dev/docs/api/react-sdk/scene-options/worldAlignment.md) is changed during initialization to make it behave more like a real object.
+
+Webpage content is still located on the back face of the `volume` by default, and the webpage size is equal to the size of that back face. Spatialized 2D HTML elements and volumetric content inside 3D container elements can all appear in the space in front of that back face, with the same capabilities and behavior as the `window` type.
+
+Both of these Spatial Scene types are effectively bounded local spaces inside the [entire 3D space (Shared Space or Full Space)](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) run by the Spatial Runtime. A WebSpatial App can only show webpage content inside the bounds of these local spaces. Anything beyond them is clipped.
+
+The third Spatial Scene type is `stage`, which has no bounds and can only be created in [Full Space](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) mode. WebSpatial SDK does not support this type yet.
+
+## Scene Initialization
+
+Browser windows in desktop operating systems can use Web APIs to set size and even position in webpage code, and these properties can continue to be controlled and modified.
+
+The integration between a Spatial Scene and the surrounding space, and the associated spatial computing behavior, are managed uniformly by the operating system. So once these containers are created, their own properties, such as size and position, are not allowed to be modified by spatial app code. However, during the initialization phase before a container is created, spatial app code can provide custom initialization properties, such as the [`defaultSize`](https://webspatial.dev/docs/api/react-sdk/scene-options/defaultSize.md), [`resizability`](https://webspatial.dev/docs/api/react-sdk/scene-options/resizability.md), and [`worldScaling`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md) mentioned above, to influence the initial state of the Spatial Scene and its subsequent spatial computing behavior.
+
+In a WebSpatial App, the Spatial Scene type is also configured through custom initialization properties, using the [`type` property](https://webspatial.dev/docs/api/react-sdk/scene-options/type.md).
+
+## Start Scene
+
+When a WebSpatial App starts, the first Spatial Scene is created automatically. This is called the Start Scene. The webpage URL loaded into it is determined by the [`start_url` field](https://webspatial.dev/docs/how-to/minimal-pwa.md) in the [Web App Manifest](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app) by default.
+
+Before the Start Scene is created, no webpage code can run. So if you want to provide custom initialization properties for the Start Scene, they can only be [configured through the Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md).
+
+## New Scenes
+
+A WebSpatial App can create more Spatial Scenes through the existing Web standard capability to open links in a new window, allowing more content to coexist and making fuller use of the surrounding space. For example:
+
+- `<a href={newSceneUrl} target="_blank">`
+- `<a href={newSceneUrl} target="newSceneName">`
+- `window.open(newSceneUrl);`
+- `window.open(newSceneUrl, "newSceneName");`
+
+The URLs of these links must belong to the current Web App, meaning they match the [`scope` in the Web App Manifest](https://developer.mozilla.org/docs/Web/Progressive_web_apps/Manifest/Reference/scope). Otherwise they are opened in a browser window as third-party URLs.
+
+Before these links are opened and the new Spatial Scene is created, the WebSpatial SDK can use the [`initScene` API to provide custom initialization properties for the new Spatial Scene, as long as the new scene has a `name`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md).
+
+#### Spatialized HTML Elements
+
+Source: https://webspatial.dev/docs/concepts/spatialized-html-elements.md
+
+Learn how ordinary HTML elements become spatialized surfaces with Z-axis layout, transforms, and spatial state.
+
+Spatialized HTML elements are HTML elements that are not limited to the page plane and can enter the space in front of the webpage.
+
+Most existing 2D HTML elements in Web standards can be [marked as spatialized HTML elements](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md#enable-xr) through the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk).
+
+The [3D content container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md) provided by WebSpatial SDK as React components are also spatialized HTML elements. The element itself is treated as a 2D plane and has the same characteristics and behavior as a spatialized 2D HTML element, while additionally rendering 3D content in the space in front of that 2D plane.
+
+All spatialized HTML elements are effectively 2D planes floating in the space of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md). Even after leaving the webpage plane, they still participate in the overall HTML/CSS layout system of the page and keep their original place in the page plane. The width and height of these 2D planes, and their positions on the X and Y axes, are entirely determined by the existing HTML/CSS layout system. In effect, they stay synchronized with the place they occupy in the webpage plane.
+
+:::note[Transform does not change layout bounds]
+[CSS Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md) changes how spatialized HTML elements appear in position and size, but does not change their actual position and size in the layout system.
+:::
+
+WebSpatial API only adds Z-axis-related CSS capabilities and DOM APIs for these spatialized HTML elements, allowing these 2D planes to be [laid out and positioned](https://webspatial.dev/docs/api/react-sdk/css-api/back.md) and [transformed](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md) along the Z axis, and allowing their current related state to be [read](https://webspatial.dev/docs/api/react-sdk/dom-api/offsetBack.md).
+
+:::caution[Current limitation]
+For spatialized HTML elements whose 2D planes rotate or otherwise change in space because of [CSS Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md), WebSpatial SDK does not currently support using [`getBoundingClientRect()`](https://developer.mozilla.org/docs/Web/API/Element/getBoundingClientRect) to obtain their projected bounds, and also does not yet support using `getBoundingClientCube()`, newly added in WebSpatial API, to obtain their 3D bounding-box range in space.
+:::
+
+These new Z-axis CSS/DOM APIs can be combined with existing X/Y-axis CSS/DOM APIs from Web standards.
+
+Existing Web standard APIs such as `opacity`, `display: none`, and `visibility: hidden` continue to work on spatialized HTML elements.
+
+Like a `window` Spatial Scene, a spatialized 2D HTML element can give itself a [real-time rendered translucent material backplate](https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md), which can be combined with `border-radius`, or keep the default fully transparent state with no backplate, effectively `background: none`.
+
+Because spatialized HTML elements are independent 2D planes in space, they are no longer affected by `z-index`. They will not be occluded by ordinary HTML elements, and can only be occluded by other spatialized HTML elements depending on parent-child nesting relationships and Z-axis positions.
+
+Inside a spatialized 2D HTML element, other 2D elements or 3D container elements [marked as spatialized HTML elements](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md#enable-xr) can be used as children. Unless the child element is set to `position: fixed`, the child's Z-axis position is [relative to the nearest spatialized HTML element in the parent chain](https://webspatial.dev/docs/api/react-sdk/css-api/back.md).
+The rest of the content inside a spatialized 2D HTML element is still ordinary 2D HTML/CSS content, all located on the 2D plane corresponding to the nearest spatialized HTML element in the parent chain.
+
+All spatialized HTML elements support the new [spatial interaction events](https://webspatial.dev/docs/concepts/natural-interactions.md#spatial-interactions). The [local coordinate system](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d) used in event results is the coordinate system of the 2D plane corresponding to the spatialized HTML element, with the origin at the top-left corner and the same point unit (`px`) used by the 2D layout system.
+
+For performance and complexity reasons, WebSpatial SDK only supports CSS updates in declarative code that follows the [Rules of React](https://react.dev/reference/rules), such as changing `className` or `style` in JSX. If you want to query the current state through DOM APIs, you need to use React's `useRef` to obtain the DOM object for the spatialized HTML element. Direct DOM queries through non-React approaches such as `querySelector` are not supported.
+
+WebSpatial SDK does not currently support adding CSS properties of spatialized HTML elements into CSS animations. Only JS-based animation approaches are supported.
+
+#### 3D Content Containers
+
+Source: https://webspatial.dev/docs/concepts/3d-content-containers.md
+
+Explore the 2D containing 3D model, static and dynamic 3D containers, and the local 3D spaces they create.
+
+Existing HTML elements can only display content in 2D planes. Even the WebGL-based `<canvas>` element and the new `<model>` element can only render 3D content inside a flat canvas. From the perspective of [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md), they are still part of 2D content.
+
+Although the WebXR API can render volumetric 3D content in 3D space with WebGL, that content [can only be displayed inside a WebXR session](https://webspatial.dev/docs/concepts/webspatial-app.md) and cannot participate in the HTML/CSS system as a 3D HTML element or be displayed directly in a Web App.
+
+The [WebSpatial API](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-api) adds two real 3D HTML elements on top of existing HTML standards. These elements are both [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md). They are used as floating 2D planes in space, continue to participate in the HTML/CSS layout system, and have the same capabilities and usage patterns as spatialized 2D HTML elements. In addition, they can render truly volumetric 3D content in the local space in front of their 2D plane using a [3D development paradigm](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api), support [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering), and let 3D content [coexist and integrate with 2D content](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d).
+
+In addition to using existing Web standards to determine the width and height of the 2D plane, 3D container elements can also use the new WebSpatial CSS property [`depth`](https://webspatial.dev/docs/api/react-sdk/css-api/depth.md) to set the depth of the local 3D space in front of the 2D plane, and can use the new DOM API [`clientDepth`](https://webspatial.dev/docs/api/react-sdk/dom-api/clientDepth.md) to query the current depth.
+
+The [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) provides these two 3D container elements as React components.
+
+## Static 3D Containers
+
+The first kind of 3D container element is [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md). It renders static 3D content from prebuilt 3D model files in the local space in front of the 2D plane. "Static" means that while APIs can control playback of animations embedded in the model file and adjust how the model file is rendered inside this local space, application code cannot dynamically render arbitrary 3D content at runtime.
+
+## Dynamic 3D Containers
+
+The second kind of 3D container element is [`<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md). It can dynamically render arbitrary 3D content in the local space in front of the 2D plane using a [3D Engine API](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api) that supports unified rendering.
+
+## 3D Engine API
+
+For the [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) operating system and the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) to understand the 3D content inside a dynamic 3D container and perform [unified rendering](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) together with other 2D and 3D content in space, arbitrary Web 3D engines built directly on WebGL/WebGPU or other low-level 3D graphics APIs cannot be used directly inside the dynamic 3D container's content.
+
+WebSpatial API includes a built-in declarative 3D engine API that combines ECS style and HTML style and supports unified rendering.
+
+This API provides a variety of ready-to-use [3D Entities](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity) in the form of HTML elements. Their underlying implementations include different built-in Component capabilities based on an ECS architecture, where "Component" refers to the ECS concept rather than a UI component. These capabilities are configured through HTML attributes, such as referencing [predeclared 3D assets](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-assets) or setting dimensions for [primitive entities](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#primitive-entities).
+
+These HTML elements can only be used inside [`<World>` as the Scene Graph root node](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#scene-graph) in a dynamic 3D container. They do not support CSS or the 2D layout system. Instead, they use [Transform props](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity) from the 3D engine system to render inside a 3D coordinate system.
+
+These 3D Entities can not only be integrated into the 2D layout system and HTML/CSS content through dynamic 3D containers, but can also [attach HTML/CSS content onto the entity itself](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#attachment-entity), letting 2D content enter the 3D rendering system as well.
+
+These [HTML elements used inside `<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md) are also provided as React components in the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk).
+
+## 2D containing 3D
+
+3D container elements act like a bridge between the CSS-based 2D layout system outside the container and the 3D rendering system based on a 3D engine inside the container, creating the new "2D containing 3D" paradigm:
+The entire WebSpatial App can be developed as a 2D Web App by default, using mainstream 2D Web frameworks such as React and mainstream Web APIs based on HTML/CSS. Only the local regions that truly need 3D content use the 3D-engine development paradigm on demand. The rendering performed by the 3D engine can also be integrated into the 2D rendering system, because the HTML-style 3D engine APIs provided by WebSpatial SDK can initialize and update 3D content through React's rendering model.
+
+The [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) in a WebSpatial App, including the results of [spatial events](https://webspatial.dev/docs/concepts/natural-interactions.md#spatial-interactions) triggered on those elements, and HTML/CSS-based 2D content all belong to the 2D development paradigm. They use a left-handed coordinate system, with the origin at the top-left corner of the 2D plane, Y pointing downward, Z pointing toward the user, and lengths expressed by default in the GUI-oriented point unit (`px`).
+
+The 3D content inside a 3D container element uses the 3D development paradigm. It uses a right-handed coordinate system, with the origin at the center of the local 3D space corresponding to the container, Y pointing upward, Z pointing toward the user, and lengths expressed by default in physical world units (`m`) oriented toward real-world objects.
+
+Because all of this content is [rendered in a unified way](https://webspatial.dev/docs/concepts/spatial-computing.md#unified-rendering) by the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime), these coordinate systems and units can be converted freely, allowing 2D-paradigm content and 3D-paradigm content to work together, for example by aligning in space, following automatically, or interacting with each other.
+
+WebSpatial SDK provides this capability through the [unit conversion](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md) and [coordinate conversion](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) APIs exported by its npm package.
+
+#### Natural Interactions
+
+Source: https://webspatial.dev/docs/concepts/natural-interactions.md
+
+Understand gaze, pinch, touch, and the spatial events WebSpatial exposes for natural interaction.
+
+Natural interactions mean that when users interact with software interfaces and virtual content in space, the interaction feels like manipulating real objects in the physical world. No control device such as an XR controller is used. Interaction relies only on hands and eyes in an intuitive and efficient way.
+
+There are two modes of natural interaction:
+
+1. Direct interaction: the most intuitive mode, where one or both hands directly touch virtual content elements.
+2. Indirect interaction: a more efficient mode that does not require raising a hand to touch. The user first "selects" a virtual content element by looking at it, then pinches fingers together to "confirm". Keeping the pinch held can continue into gestures such as drag, rotate, or magnify.
+
+## 2D Content Interactions
+
+For 2D content, these two natural interaction modes are equivalent in effect. They are both equivalent to touch interaction on traditional screen devices. Performing direct interaction on an HTML element, where a finger directly touches it, or indirect interaction, where the user first looks at it and then pinches fingers together, both trigger Touch Events and Pointer Events. To remain compatible with older webpage code, Mouse Events and `click` are also triggered. The behavior of these Web APIs is completely equivalent to touch interaction on webpages on traditional screen devices.
+
+Taking indirect interaction as an example:
+
+1. Before the fingers pinch together, moving the gaze position does not trigger any JS events or CSS hover state. This is equivalent to the state in touch interaction before a finger touches the screen, where webpage code has no knowledge of what the user is doing.
+2. When the fingers pinch and then immediately release, the following JS events are triggered in order:
+   1. At the moment of pinch, the "contact" event (`pointerover`), the "enter" event (`pointerenter`), and the "down" event (`pointerdown`) are triggered at the same time. Only at the moment of pinch can the webpage obtain the interaction target and interaction position from these events, meaning it only then learns where the user is looking.
+   2. Next, the "touch start" event (`touchstart`) is triggered.
+   3. At the moment the fingers release, the "out" event (`pointerout`), the "leave" event (`pointerleave`), and the "up" event (`pointerup`) are triggered at the same time.
+   4. Next, the "touch end" event (`touchend`) is triggered.
+   5. To remain compatible with older webpage code, a series of mouse events is then simulated, including the "contact" event (`mouseover`), the "enter" event (`mouseenter`), the "move" event (`mousemove`), the "down" event (`mousedown`), and the "up" event (`mouseup`). CSS hover state is also triggered. Because this state is simulated, it is only cleared after interacting with another element.
+   6. Finally, the "click" event (`click`) is triggered.
+3. If the fingers pinch and are not released, movement while the pinch is held continuously triggers the following events after `touchstart`, until the fingers are released:
+   1. The "move" event (`pointermove`), where finger movement corresponds to movement relative to the initial interaction position
+   2. The "touch move" event (`touchmove`)
+
+## Hover Effect
+
+In indirect interaction mode, before the fingers pinch, the webpage does not know where the user is looking, so it cannot trigger any JS events or change any CSS state. That means a hover effect cannot be implemented in webpage code. Instead, the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) must take unified responsibility for automatically rendering hover effects on the HTML element being looked at.
+
+To do this, the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) needs to know which "Interactive Regions" are currently visible in the webpage.
+
+Any HTML element that would make the mouse pointer change to the pointer cursor in a desktop browser is automatically recognized as an Interactive Region, including:
+
+1. Link elements (`<a>`)
+2. Interactive form elements (`<button>`, `<input>`, `<select>`, etc.)
+3. Elements made semantically equivalent to the elements above through Web standard accessibility APIs (ARIA), such as `<div role="button">`
+4. HTML elements that explicitly set the mouse pointer to the pointer cursor through the CSS style `cursor: pointer`
+
+## Spatial Interactions
+
+Unlike flat 2D content, all [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) are treated as 2D planes floating in space. They can be [positioned and moved](https://webspatial.dev/docs/api/react-sdk/css-api/back.md) along the X, Y, and Z axes in 3D space, can [rotate](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md) in space, and their interactive hit targets are no longer points on a plane but points on 2D planes and [3D meshes](https://webspatial.dev/docs/concepts/3d-content-containers.md) in space.
+
+Existing JS interaction events in Web standards can only hit the point where these spatial objects or 3D content project onto a 2D plane, and can only provide X/Y positions. They cannot support interaction within a 3D spatial range.
+
+For that reason, the [Spatial Runtime](https://webspatial.dev/docs/concepts/spatial-computing.md#spatial-runtime) defines and implements new spatial gestures in a unified way. The [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) currently supports four spatial gestures: tap, drag, rotate, and magnify:
+
+| Type                                                             | Event Name                                              | React API                                                     | Event Results                                                          |
+| ---------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [Spatial Tap](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-tap.md)         | `spatialtap`                                            | `onSpatialTap`                                                | `SpatialTapEvent`                                                      |
+| [Spatial Drag](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-drag.md)       | `spatialdragstart`<br />`spatialdrag`<br />`spatialdragend` | `onSpatialDragStart`<br />`onSpatialDrag`<br />`onSpatialDragEnd` | `SpatialDragStartEvent`<br />`SpatialDragEvent`<br />`SpatialDragEndEvent` |
+| [Spatial Rotate](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-rotate.md)   | `spatialrotate`<br />`spatialrotateend`                   | `onSpatialRotate`<br />`onSpatialRotateEnd`                     | `SpatialRotateEvent`<br />`SpatialRotateEndEvent`                        |
+| [Spatial Magnify](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-magnify.md) | `spatialmagnify`<br />`spatialmagnifyend`                 | `onSpatialMagnify`<br />`onSpatialMagnifyEnd`                   | `SpatialMagnifyEvent`<br />`SpatialMagnifyEndEvent`                      |
+
+## How-to
+
+### How-to overview
+
+Source: https://webspatial.dev/docs/how-to.md
+
+Practical setup guides for PWA requirements, JSX runtime configuration, SSR, Xcode, and app-store workflows.
+
+#### How to meet the minimum PWA requirements
+
+Source: https://webspatial.dev/docs/how-to/minimal-pwa.md
+
+Prepare the minimum manifest, icons, and installability requirements needed for WebSpatial and packaged app workflows.
+
+## Checklist
+
+| Requirement | Why it matters |
+| --- | --- |
+| Serve the Web App over HTTPS. | Installable PWAs require a secure origin. |
+| Expose a [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) from every page in the app. | The manifest defines app-level identity and startup behavior. |
+| Provide the minimum manifest fields required by WebSpatial Runtime. | The runtime needs app identity, icon assets, and start-scene settings. |
+
+## Add the manifest link
+
+```html title="Add the manifest link to every HTML document" {1}
+<link rel="manifest" href="/app.webmanifest" />
+```
+
+The manifest URL should return a [JSON MIME type](https://mimesniff.spec.whatwg.org/#json-mime-type) response, such as `application/manifest+json`.
+
+:::info[Further reading]
+See [MDN](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable) and [web.dev](https://web.dev/learn/pwa/web-app-manifest/) for more detail on installable PWAs.
+:::
+
+## Provide the minimum manifest fields
+
+| Field | What it does | Notes |
+| --- | --- | --- |
+| [`name`](https://developer.mozilla.org/en-US/docs/Web/Manifest/name) or [`short_name`](https://developer.mozilla.org/en-US/docs/Web/Manifest/short_name) | Provides the app name. | At least one of these fields must be present. |
+| [`icons`](https://developer.mozilla.org/en-US/docs/Web/Manifest/icons) | Provides app icons. | Include at least one `"purpose": "any"` icon and one `"purpose": "maskable"` icon that is at least `1024×1024`, has no transparent background, and has no rounded corners. |
+| [`start_url`](https://developer.mozilla.org/en-US/docs/Web/Manifest/start_url) | Configures the URL for the start scene. | This determines which page loads first when the app starts. |
+| [`display`](https://developer.mozilla.org/en-US/docs/Web/Manifest/display) | Configures the display mode of the webpage window. | WebSpatial Runtime currently supports only `"standalone"` and `"minimal-ui"`. |
+
+
+```json title="Minimum manifest for a WebSpatial-ready PWA" {2-5,7-16}
+{
+  "name": "My Awesome App",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "icons": [
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-1024x1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
+```
+
+## Recommended Icons for Web Apps {#recommended-icons-for-web-apps}
+
+:::tip[Sample files]
+[webspatial-icon-examples.zip](https://webspatial.dev/assets/guide/webspatial-icon-examples.zip) contains icon files that already satisfy the requirements below.
+:::
+
+| Size | Purpose | Where It Appears | Transparent Background Allowed | Rounded Corners Allowed | How to Provide It |
+| --- | --- | --- | --- | --- | --- |
+| 48 × 48 | favicon.ico | Browser tab | Required | Allowed | [HTML `<link>`](https://github.com/joshbuchea/HEAD#icons) |
+| 180 × 180 | [iOS app icon](https://developer.apple.com/design/human-interface-guidelines/app-icons#iOS-iPadOS-app-icon-sizes) | iOS "Add to Home Screen" | Not allowed | Not allowed | [HTML `<link>`](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html) |
+| 192 × 192 | Standard PWA icon | Small icon on the home screen | Required | Required | Web App Manifest |
+| **512 × 512** | Standard PWA icon | Various launch surfaces, app markets, and similar places | Required | Required | Web App Manifest |
+| **1024 × 1024** | Spatial app icon | [visionOS](https://developer.apple.com/design/human-interface-guidelines/app-icons#visionOS-app-icon-sizes), PICO OS 6 | **Not allowed** | **Not allowed** | Web App Manifest |
+
+#### How to configure the JSX runtime in non-TypeScript projects
+
+Source: https://webspatial.dev/docs/how-to/non-ts.md
+
+Configure the WebSpatial JSX runtime in JavaScript-based React projects without TypeScript support.
+
+:::info[Current coverage]
+For Rspack and Rsbuild projects, use the dedicated [Rspack guide](https://webspatial.dev/docs/how-to/rspack.md).
+:::
+
+Configuration methods for more web build tools will be added to this document later.
+
+#### How to configure the JSX runtime in Rspack-based projects
+
+Source: https://webspatial.dev/docs/how-to/rspack.md
+
+Set up the WebSpatial JSX runtime in Rspack or Rsbuild projects through swc-loader configuration.
+
+React projects based on [Rspack](https://www.rspack.dev/)/[Rsbuild](https://rsbuild.rs/) cannot [configure the JSX Runtime with `jsxImportSource` in `tsconfig`](https://webspatial.dev/docs/introduction/getting-started.md#set-up-your-project). Instead, they need to configure it in `swc-loader`.
+
+:::tip[What to look for]
+The key setting is `importSource: "@webspatial/react-sdk"`. That is what redirects JSX compilation to the WebSpatial SDK runtime.
+:::
+
+## Rsbuild
+
+```js title="rsbuild.config.ts" {7-9}
+import { defineConfig } from "@rsbuild/core";
+import { pluginReact } from "@rsbuild/plugin-react";
+
+export default defineConfig({
+  plugins: [
+    pluginReact({
+      swcReactOptions: {
+        runtime: "automatic",
+        importSource: "@webspatial/react-sdk",
+      },
+    }),
+  ],
+});
+```
+
+## Rspack
+
+```js title="rspack.config.mjs" {10-11}
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "builtin:swc-loader",
+          options: {
+            jsc: {
+              parser: { syntax: "typescript", tsx: true },
+              transform: {
+                react: {
+                  runtime: "automatic",
+                  importSource: "@webspatial/react-sdk",
+                },
+              },
+            },
+          },
+        },
+        type: "javascript/auto",
+      },
+    ],
+  },
+};
+```
+
+#### How to enable WebSpatial in SSR-enabled projects
+
+Source: https://webspatial.dev/docs/how-to/ssr.md
+
+Enable WebSpatial in SSR projects by wrapping the app with SSRProvider and preserving the client-runtime split.
+
+In a React project with SSR enabled, there is one extra step when [integrating WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#set-up-your-project): add the `SSRProvider` from the SDK.
+
+:::info[Why this wrapper exists]
+`SSRProvider` gives the SDK the extra context it needs to bridge server rendering and client hydration correctly.
+:::
+
+## Generic React
+
+```js title="client-entry.js" {2,6-8}
+import { hydrateRoot } from "react-dom/client";
+import { SSRProvider } from "@webspatial/react-sdk";
+
+hydrateRoot(
+  document.getElementById("root"),
+  <SSRProvider>
+    <App />
+  </SSRProvider>,
+);
+```
+
+## Hydrogen
+
+```js title="entry.client.jsx" {5,13-15}
+import { HydratedRouter } from "react-router/dom";
+import { startTransition, StrictMode } from "react";
+import { hydrateRoot } from "react-dom/client";
+import { NonceProvider } from "@shopify/hydrogen";
+import { SSRProvider } from "@webspatial/react-sdk";
+
+if (!window.location.origin.includes("webcache.googleusercontent.com")) {
+  startTransition(() => {
+    const existingNonce = document.querySelector("script[nonce]")?.nonce;
+
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <NonceProvider value={existingNonce}>
+          <SSRProvider>
+            <HydratedRouter />
+          </SSRProvider>
+        </NonceProvider>
+      </StrictMode>,
+    );
+  });
+}
+```
+
+#### How to install Xcode and visionOS-related components
+
+Source: https://webspatial.dev/docs/how-to/xcode.md
+
+Install Xcode, simulators, and visionOS platform components required to run Packaged WebSpatial Apps locally.
+
+:::info[Prerequisite]
+You need a Mac computer.
+:::
+
+| Step | What to do | Why it matters |
+| --- | --- | --- |
+| 1 | Open the Mac App Store, search for `Xcode`, and install it. | This installs the core Apple development environment. |
+| 2 | Launch Xcode once, accept the license agreement, and enter the administrator password if prompted. | Xcode installs additional required components on first launch. |
+| 3 | Open `Xcode > Settings > Components`, then install both `visionOS` and `visionOS Simulator` under `Platform Support`. | These platform packages are required to build and preview visionOS apps. |
+
+#### How to test on visionOS devices and submit to the App Store
+
+Source: https://webspatial.dev/docs/how-to/app-store-connect.md
+
+Test Packaged WebSpatial Apps on visionOS devices and submit builds through App Store Connect.
+
+## Prerequisites {#prerequisites}
+
+| What you need | Where to get it | How it is used later |
+| --- | --- | --- |
+| **Team ID** | [Apple developer account dashboard](https://developer.apple.com/account) | Passed to Builder as `--teamId`. |
+| **Bundle ID** | [Certificates, Identifiers & Profiles -> Identifiers](https://developer.apple.com/account/resources/identifiers/list) | Passed to Builder as `--bundle-id`. |
+
+## Device Testing {#device-testing}
+
+1. Sign in to [App Store Connect](https://appstoreconnect.apple.com/) and create an app record that uses the **Bundle ID** you created earlier.
+2. Connect the test device to a Mac that has **Xcode** installed and signed in to your developer account, then open **Window -> Devices and Simulators** and record the device **Identifier** (UDID).
+3. Register that device in [Certificates, Identifiers & Profiles -> Devices](https://developer.apple.com/account/resources/devices/list).
+4. Run the [WebSpatial Builder `build` command](https://webspatial.dev/docs/api/builder/build.md) in the Web project with both **Team ID** and **Bundle ID**:
+
+```bash title="Build an IPA for a registered test device" {2-3}
+webspatial-builder build \
+  --base=$PREVIEW_SERVER \
+  --bundle-id=$APPLE_BUNDLE_ID \
+  --teamId=$APPLE_TEAM_ID
+```
+
+5. After the build succeeds, find the IPA file in the repository's `build/` directory, open **Window -> Devices and Simulators** in Xcode again, select the test device, and add the IPA file under **Installed Apps**.
+
+## Submission to the App Store {#submission-to-the-app-store}
+
+:::tip[Complete App Store Connect metadata first]
+Before uploading, fill in the screenshots, marketing copy, review information, pricing, regulatory information, and privacy details for the app record in App Store Connect.
+:::
+
+1. Open the app record from [App Store Connect](https://appstoreconnect.apple.com/apps).
+2. Run the [WebSpatial Builder `publish` command](https://webspatial.dev/docs/api/builder/publish.md) with the version and account credentials in addition to **Team ID** and **Bundle ID**:
+
+```bash title="Build and upload an App Store submission" {2-6}
+webspatial-builder publish \
+  --base=$PRODUCT_SERVER \
+  --bundle-id=$APPLE_BUNDLE_ID \
+  --teamId=$APPLE_TEAM_ID \
+  --version=$APP_VERSION \
+  --u=$APPLE_DEV_NAME \
+  --p=$APPLE_DEV_PASSWORD
+```
+
+3. After the upload completes, add the new build version under **Build Versions** in App Store Connect and submit it for review.
+
+## API
+
+### API overview
+
+Source: https://webspatial.dev/docs/api.md
+
+Reference docs for WebSpatial Builder and the WebSpatial React SDK.
+
+#### React SDK overview
+
+Source: https://webspatial.dev/docs/api/react-sdk.md
+
+Reference docs for React components, CSS APIs, DOM APIs, events, JS APIs, and scene configuration.
+
+##### React Components overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/react-components.md
+
+React components and JSX markers for rendering 3D and spatial content.
+
+###### JSX Markers
+
+Source: https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md
+
+Mark JSX elements so the WebSpatial SDK can turn them into spatialized HTML elements.
+
+The [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) can turn most ordinary HTML elements into [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), but for performance, compatibility with the open-source ecosystem, and similar reasons, developers currently need to add special markers to these HTML elements in JSX code.
+
+## `enable-xr`
+
+This special marker turns an HTML element into a spatialized HTML element.
+
+To remain compatible with third-party open-source libraries, the SDK supports three marking styles:
+
+1. Pass the `enable-xr` attribute as an HTML attribute on the element:
+
+```html
+<div className="card" enable-xr></div>
+```
+
+2. Add `__enableXr__` to the element's `className`:
+
+```html
+<div className="card __enableXr__"></div>
+```
+
+3. Add `enableXr: true` in the element's inline style:
+
+```js
+<div className="card" style={{ enableXr: true, marginTop: "10px" }}></div>
+```
+
+:::info[What this enables on `<Model>`]
+Using this marker on [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md) upgrades the element from the Web standard model element, which can only render a 3D model inside a flat canvas, into a [static 3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) that can render a 3D model in space.
+:::
+
+## `enable-xr-monitor`
+
+Adding this special marker to a parent element of a [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) allows WebSpatial SDK to monitor changes to the content inside that parent. If those changes affect the [size or X/Y layout position](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) of the spatialized HTML element, the SDK can synchronize the updates to the spatialized HTML element in time.
+
+```js
+function CardList() {
+  const [showFirstCard, setShowFirstCard] = useState(true);
+
+  const onClick = () => {
+    setShowFirstCard(prevState => !prevState);
+  };
+
+  return (
+    <div enable-xr-monitor>
+      {showFirstCard && <div>first card</div>}
+      <div enable-xr>second card</div>
+      <button onClick={onClick}>toggle</button>
+    </div>
+  );
+}
+```
+
+###### `<Model>`
+
+Source: https://webspatial.dev/docs/api/react-sdk/react-components/Model.md
+
+Render a static 3D model inside a spatialized container using the Web-standard-inspired `<model>` API.
+
+The `<Model>` component implements the [static 3D content container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) in the WebSpatial API. This element is compatible with the API of the `<model>` element in Web standards, while also enhancing the standard capability so that the 2D plane corresponding to the element gains the capabilities of a [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), and the 3D model can render truly volumetric 3D content in the space in front of that 2D plane.
+
+:::info[Behavior of the standard model element]
+In Web standards, the model element can only render a 3D model inside the element's own "canvas". That canvas looks like an opening, and the 3D content appears "inside" or "behind" that opening. See the [WebKit documentation](https://webkit.org/blog/17118/a-step-into-the-spatial-web-the-html-model-element-in-apple-vision-pro/) and [demo](https://webkit.org/demos/model-demos/index.html).
+:::
+
+To enable this enhancement, add the [spatialized HTML element marker (`enable-xr`)](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md#enable-xr) on `<Model>`:
+
+```jsx
+import { Model } from "@webspatial/react-sdk";
+
+function Example() {
+  return (
+    <Model
+      enable-xr
+      src="/modelasset/vehicle.usdz"
+      style={{ height: "200px", "--xr-depth": "100px" }}
+    />
+  );
+}
+```
+
+## Fallback
+
+If the `enable-xr` marker is not added, or if the current runtime environment does not have [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), the `<Model>` component automatically falls back to the `<model>` element from Web standards and is rendered by the browser engine. The browser engine on the current platform may not support this new standard yet. You can use `typeof HTMLModelElement !== "undefined"` for feature detection.
+
+In the current version of WebSpatial SDK, `<Model>` supports the following model element APIs:
+
+## Attributes
+
+`src`
+
+The URL of the 3D model to embed.
+
+## Lifecycle Events
+
+`onLoad`
+
+Triggered when the 3D model has loaded successfully and is ready to display.
+
+`onError`
+
+Triggered when the model fails to load.
+
+## JavaScript API
+
+`currentSrc`
+
+A read-only string that returns the URL of the currently loaded resource.
+
+`ready`
+
+This Promise resolves when the model source file has finished loading and processing.
+If the source file cannot be fetched, or the file cannot be parsed as a valid 3D model resource, this Promise rejects.
+
+`entityTransform`
+
+A readable and writable `DOMMatrixReadOnly` representing the [relationship between the 3D model and the internal space of the 3D content container](https://github.com/immersive-web/model-element/blob/main/explainer.md#visual-presentation-control).
+
+By default, the 3D model fills as much of `<Model>`'s width or height as possible while preserving its original proportions, so you can control the size of the 3D model by controlling the size of the 2D plane corresponding to `<Model>`.
+
+###### `<Reality>`
+
+Source: https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md
+
+Render dynamic 3D content inside a spatialized container with the unified-rendering engine API.
+
+## Overview
+
+Like [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md), which is also a [3D content container element](https://webspatial.dev/docs/concepts/3d-content-containers.md), `<Reality>` has the capabilities of a [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md). It is used as a 2D plane floating in space and participates in HTML/CSS layout. The difference is that `<Reality>` is a [dynamic 3D content container](https://webspatial.dev/docs/concepts/3d-content-containers.md#dynamic-3d-containers). Its 3D content is not implemented with prebuilt static 3D model files. Instead, arbitrary 3D content can be rendered dynamically in the local space in front of the 2D plane through a [3D Engine API](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api) that supports unified rendering.
+
+These 3D engine APIs are provided by WebSpatial SDK as React components:
+
+```js
+import {
+  Reality,
+  Material,
+  ModelAsset,
+  AttachmentAsset,
+  World,
+  Entity,
+  Box,
+  Sphere,
+  Plane,
+  Cone,
+  Cylinder,
+  ModelEntity,
+  AttachmentEntity,
+} from "@webspatial/react-sdk";
+```
+
+```js
+<Reality style={{ width: "500px", height: "500px", "--xr-depth": 100 }}>
+  <Material type="unlit" id="red" color="#ff0000" />
+  <ModelAsset id="teapot" src="https://example.com/model.usdz" />
+  <World>
+    <Box materials={["red"]} width={0.2} height={0.2} depth={0.2} />
+  </World>
+</Reality>
+```
+
+## Scene Graph
+
+These 3D engine APIs include two categories:
+
+The first is [3D Entity](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity). These React components can only be used inside `<World>`, which can also be written as `<SceneGraph>`. `<World>` is the root node of all 3D content inside a dynamic 3D container.
+
+The second is [3D asset declarations](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-assets), such as `<Material>`. These React components can only be used as top-level children of `<Reality>`, outside `<World>`, and only affect actual rendering when referenced by a 3D Entity.
+
+## 3D Assets
+
+The following 3D asset declarations can appear among the top-level children of `<Reality>`:
+
+1. Predeclared materials can be referenced.
+
+```js
+<Reality>
+  <Material type="unlit" id="solid" color="#00ff00" />
+  <Material type="unlit" id="glass" color="#0000ff" transparent opacity={0.5} />
+  <World>
+```
+
+2. 3D model files can be declared.
+
+```js
+<Reality>
+  <ModelAsset
+    id="ship-blueprint"
+    src="https://example.com/fighter.usdz"
+    onLoad={() => {}}
+    onError={() => {}} />
+  <World>
+```
+
+3. 2D HTML/CSS content to be attached onto an Entity can be declared.
+
+```js
+<Reality>
+  <AttachmentAsset name="info">
+    <div style={{ width: '100%' }}>
+      <p>Some text</p>
+    </div>
+  </AttachmentAsset>
+  <World>
+```
+
+## 3D Entity
+
+3D Entity components do not participate in HTML layout. They are rendered only inside the `<Reality>` container according to the 3D engine system. They do not support CSS styles. Instead, they use "Transform props" from the 3D engine system:
+
+```js
+<Entity
+  // Position: x (left/right), y (down/up), z (away/toward)
+  position={{ x: 0.1, y: -0.2, z: 0.3 }}
+
+  // Rotation: radians (Math.PI = 180°)
+  rotation={{ x: 0, y: Math.PI / 2, z: 0 }}  // 90° on Y-axis
+
+  // Scale: 1 = normal, 2 = double, 0.5 = half
+  scale={{ x: 1, y: 2, z: 1 }}  // stretched vertically
+  >
+```
+
+Transform props use the coordinate system of the local 3D space in front of the 2D plane corresponding to `<Reality>` by default, with the origin at the center point of that space. It uses a right-handed coordinate system, with Y pointing upward, Z pointing toward the user, and lengths expressed by default in the physical world unit (`m`) oriented toward real-world objects.
+
+:::tip[Related APIs]
+The depth of this space can be set with [`depth`](https://webspatial.dev/docs/api/react-sdk/css-api/depth.md) and the current depth can be queried with [`clientDepth`](https://webspatial.dev/docs/api/react-sdk/dom-api/clientDepth.md).
+:::
+
+For Entity nodes directly under `<World>`, the `position` value in Transform props is relative to the coordinate-system origin. For other Entity nodes used as children, the `position` value in Transform props is relative to the parent Entity's `position`.
+
+The ready-to-use [Entities](https://webspatial.dev/docs/concepts/3d-content-containers.md#3d-engine-api) currently provided by WebSpatial SDK fall into the following categories:
+
+### Base Entity
+
+`<Entity>` is invisible and is used as a parent component and group container for other Entities. You can use it to include multiple Entities in one group.
+
+```js
+<Reality>
+  <World>
+    <Entity position={{ x: 1, y: 0, z: 0 }}>
+      <Box />
+      <Box />
+    </Entity>
+    <Box position={{ x: 2, y: 0, z: 0 }} />
+  </World>
+```
+
+### Primitive Entities
+
+Primitive entities include the following geometric shapes, each with its own additional props:
+
+- `<Box>`
+  - props: `width`, `height`, `depth`, `cornerRadius`
+- `<Plane>`
+  - props: `width`, `height`, `cornerRadius`
+- `<Sphere>`
+  - props: `radius`
+- `<Cone>`
+  - props: `height`, `radius`
+- `<Cylinder>`
+  - props: `height`, `radius`
+
+Example:
+
+```js
+<Box
+  width={0.2}
+  height={0.2}
+  depth={0.2} // meters (0.1 = 10cm)
+  cornerRadius={0.01} // rounded edges
+/>
+```
+
+All of these primitive entities support the `materials` prop, which can reference [predeclared materials](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-assets).
+
+```js
+<Reality>
+  <Material type="unlit" id="solid" color="#00ff00" />
+  <Material type="unlit" id="glass" color="#0000ff" transparent opacity={0.5} />
+  <World>
+    <Box
+      width={0.2}
+      height={0.2}
+      depth={0.2} // meters (0.1 = 10cm)
+      materials={["glass"]}
+      cornerRadius={0.01} // rounded edges
+    />
+  </World>
+</Reality>
+```
+
+### Model Entity
+
+`<ModelEntity>` is an Entity that renders content from a prebuilt 3D model file.
+
+Using a "spaceship fleet" as an example: download and load the spaceship model into memory once, then reference it to create three separate Model Entities and render three spaceships:
+
+```js
+import { Reality, World, ModelAsset, ModelEntity } from "@webspatial/react-sdk";
+
+function SpaceshipFleet() {
+  return (
+    <Reality style={{ width: "100%", height: "500px" }}>
+      {/* --- 1. THE RESOURCE --- */}
+      {/* This downloads the file once. It is INVISIBLE right now. */}
+      <ModelAsset
+        id="ship-blueprint"
+        src="https://example.com/fighter-jet.usdz"
+      />
+
+      {/* --- 2. THE SCENE --- */}
+      <World>
+        {/* Leader Ship: Center, Normal Size */}
+        <ModelEntity
+          model="ship-blueprint" // Points to the ID above
+          position={{ x: 0, y: 0, z: 0 }}
+          scale={{ x: 1, y: 1, z: 1 }}
+        />
+
+        {/* Left Wingman: Moved left, slightly smaller */}
+        <ModelEntity
+          model="ship-blueprint" // Reuses the same loaded file!
+          position={{ x: -0.5, y: -0.2, z: 0.3 }}
+          scale={{ x: 0.8, y: 0.8, z: 0.8 }}
+        />
+
+        {/* Right Wingman: Moved right, slightly smaller */}
+        <ModelEntity
+          model="ship-blueprint" // Reuses the same loaded file
+          position={{ x: 0.5, y: -0.2, z: 0.3 }}
+          scale={{ x: 0.8, y: 0.8, z: 0.8 }}
+        />
+      </World>
+    </Reality>
+  );
+}
+```
+
+For animation requirements, you can implement them by polling and updating Transform props with JS.
+Example:
+
+```js
+const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+
+useEffect(() => {
+  let id;
+  function animate() {
+    setRotation(prev => ({ ...prev, y: prev.y + 0.02 }));
+    id = requestAnimationFrame(animate);
+  }
+  animate();
+  return () => cancelAnimationFrame(id);
+}, []);
+
+<Box rotation={rotation} />;
+```
+
+## Attachment Entity
+
+`<AttachmentEntity>` is an Entity similar to `<Plane>`. It can reference [predeclared 2D HTML/CSS content](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-assets) and attach that content onto its own surface.
+
+:::caution[Current limitation]
+In a later version of WebSpatial SDK, `<AttachmentEntity>` will support `width` and `height` like `<Plane>` does, which it does not currently support, and full [Transform props](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity), whereas the current version only supports `position`. For now, you need to use the `size` prop to set the size, with the same `px` unit used by 2D content.
+:::
+
+```js
+<Reality>
+  <AttachmentAsset name="info">
+    <div style={{ width: "100%" }}>
+      <p>Some text</p>
+    </div>
+  </AttachmentAsset>
+  <World>
+    <Box position={{ x: 0.5, y: -0.2, z: 0.3 }} />
+    <Entity position={{ x: -0.5, y: -0.2, z: 0.3 }}>
+      <AttachmentEntity
+        attachment="info"
+        position={{ x: 0, y: 0, z: 0 }}
+        size={{ width: 100, height: 100 }}
+      />
+    </Entity>
+  </World>
+</Reality>
+```
+
+##### CSS API overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/css-api.md
+
+CSS properties for spatial layout, depth, transforms, and material surfaces.
+
+###### `back`
+
+Source: https://webspatial.dev/docs/api/react-sdk/css-api/back.md
+
+Lift an HTML element along the Z axis and position it in front of the page plane.
+
+## Summary
+
+`back` is a new CSS property added by WebSpatial on top of existing Web standards. It provides the most basic layout capability in 3D space, allowing an HTML element to be "lifted" as a 2D plane into the space in front of the webpage plane.
+
+## Applies To
+
+When using `back` on an HTML element through the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk), the element must be [marked as a spatialized HTML element](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md).
+
+[3D container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md), namely [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md) and [`<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md), are also [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), so they can use this property as a 2D plane as well, effectively the backplate of the 3D container.
+
+It only applies to [positioned elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position) with `position: relative`, `position: absolute`, or `position: fixed`.
+
+## Mental Model
+
+Like `top`, `left`, `bottom`, and `right`, it is an [inset property](https://developer.mozilla.org/en-US/docs/Glossary/Inset_properties), but instead of affecting the HTML element's position on the X and Y axes, it affects the element's position on the Z axis. In effect, it positions the element along the Z axis that is perpendicular to the webpage plane, so the element floats as a 2D plane in the 3D space in front of the webpage plane.
+
+After this 2D plane is "lifted", its X/Y position in space is still determined by the webpage's HTML/CSS layout system.
+
+`back` represents the distance between this 2D plane and what lies "behind" it. Which 2D plane counts as "behind" depends on the value of `position`:
+
+When `back` is used with `position: absolute`, it can be understood as positioning the current element relative to the 2D plane corresponding to the nearest [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) in the parent hierarchy. If there is no spatialized HTML element in the parent hierarchy, it is positioned relative to the 2D plane corresponding to the current webpage.
+This is equivalent to positioning the current element relative to the 2D plane where the element originally existed.
+
+:::info[Why this still matches existing Web standards]
+In Web standards, when inset properties are used with `position: absolute` or `position: fixed`, the element is positioned relative to the nearest [containing block](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Containing_block#identifying_the_containing_block) in the parent hierarchy, which can be understood as the nearest element whose `position` is not `static`.
+
+Once an HTML element is marked as a spatialized HTML element, it automatically becomes a containing block, effectively as if it had `position: relative`.
+
+If there are other parent elements with `position: relative` between the current element and the nearest spatialized HTML element, those parent elements cannot "float" because they are not spatialized HTML elements, so they must remain on the 2D plane of the nearest spatialized HTML element. As a result, the final effect of `back` is still positioning relative to that 2D plane.
+:::
+
+When `back` is used with `position: fixed`, the current element is always positioned relative to the [initial containing block](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Containing_block#identifying_the_containing_block), which is the `<html>` element and effectively the 2D plane corresponding to the current webpage, and it does not move with page scrolling.
+
+When `back` is used with `position: relative`, it can be understood as positioning the current element relative to the 2D plane where the element originally existed.
+
+## Syntax
+
+:::caution[Temporary prefixed CSS name]
+Before standardization is complete, CSS properties in the WebSpatial API need the `-xr-` prefix.
+In the current implementation of WebSpatial SDK, for performance reasons, new CSS APIs are implemented through CSS custom properties, so the property name for `back` must be written as `--xr-back` both in CSS styles and in the `style` attribute.
+:::
+
+Examples:
+
+```css
+p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  --xr-back: 20px;
+}
+```
+
+```css
+.product-detail-info {
+  border-radius: 50px;
+  padding: 50px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  --xr-back: 20px;
+  margin: auto;
+  width: 400px;
+}
+```
+
+```css
+.link-card {
+  position: relative;
+  --xr-back: 50px;
+}
+```
+
+```js
+export default function Demo() {
+  return (
+    <div
+      style={{
+        "--xr-back": "50px",
+        left: "0",
+      }}></div>
+  );
+}
+```
+
+## Value Grammar
+
+In the current implementation of WebSpatial SDK, `back` only supports `px` as the unit, which is equivalent to the point unit used by 2D GUI. See the [unit conversion API](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md).
+
+All of the following are `px` values:
+
+```css
+--xr-back: 20px;
+--xr-back: 20;
+```
+
+For numeric values, precision is allowed up to one decimal place:
+
+```css
+--xr-back: 1px;
+--xr-back: 0.5px;
+```
+
+## Initial Value
+
+The initial value is effectively:
+
+```css
+--xr-back: 0;
+```
+
+## Inherited
+
+Child elements do not inherit the `back` property of their parent element.
+
+However, when used with `position: relative` or `position: absolute`, if a spatialized HTML element in the parent has been displaced along the Z axis because of `back`, child elements, including spatialized HTML elements, are displaced accordingly because they are positioned relative to the parent.
+
+## Animatable
+
+In the current implementation of WebSpatial SDK, `back` is not yet supported inside CSS animations.
+
+:::caution[Current limitation]
+Spatialized HTML elements as a whole do not currently support CSS animations.
+:::
+
+`back` does support JS-based animation approaches, where JS repeatedly updates the `--xr-back` value in an element's `style`.
+
+JSX API example:
+
+```js
+export default function Demo({ animatedOffsetZ, animatedOffsetX }) {
+  return (
+    <div
+      style={{
+        "--xr-back": animatedOffsetZ,
+        left: animatedOffsetX,
+      }}></div>
+  );
+}
+```
+
+DOM API example:
+
+```js
+ref.current.style["--xr-back"] = animatedOffsetZ;
+```
+
+## Interaction with Other CSS APIs
+
+`back` is a layout property. Using `back` to "lift" an element means changing its layout position on the Z axis. [CSS Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md) further changes the rendered appearance of the element relative to that layout position without affecting its actual layout position.
+
+`back` can be combined with `top`, `left`, `bottom`, and `right` to change the X, Y, and Z layout positions of the element's 2D plane in 3D space.
+
+## DOM and JS Reflection
+
+After an element is "lifted" with `back`, the new DOM API property [`offsetBack`](https://webspatial.dev/docs/api/react-sdk/dom-api/offsetBack.md) can be used to read the distance that the element has been lifted relative to the 2D plane where it originally existed.
+
+The interaction position information relative to the global coordinate system (`clientZ`) returned by spatial interaction events [`SpatialTapEvent`](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-tap.md) and [`SpatialDragStartEvent`](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-drag.md) triggered on a 2D HTML element is also determined by `back`.
+
+After obtaining a ref for an element, you can also directly read and write the `back` value in `style`:
+
+```js
+const currentOffsetZ = ref.current.style["--xr-back"];
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `back` is ignored automatically.
+
+###### Spatial Transform
+
+Source: https://webspatial.dev/docs/api/react-sdk/css-api/transform.md
+
+Apply true 3D translation, rotation, and scale to spatialized HTML elements and 3D containers.
+
+## Summary
+
+WebSpatial makes the existing CSS Transform in Web standards produce true 3D spatial transform effects, including translation, rotation, and scale, on [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), instead of effects projected onto a 2D plane.
+
+## Applies To
+
+When using Spatial Transform on an HTML element through the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk), the element must be [marked as a spatialized HTML element](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md).
+
+[3D container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md), namely [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md) and [`<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md), are also [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md), so they can use Spatial Transform as a 2D plane as well, effectively the backplate of the 3D container.
+
+## Mental Model
+
+Spatial Transform preserves the existing characteristics of CSS Transform. It does not change the element's actual position in HTML/CSS layout, but only changes its visual appearance through translation, rotation, scaling, and similar transforms.
+
+For that reason, Spatial Transform also does not change the [local coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) corresponding to a spatialized HTML element. The local coordinate system is determined only by the element's layout position.
+
+## Syntax
+
+`transform: perspective()` is no longer needed and is ignored.
+
+In the current implementation of WebSpatial SDK, spatialized HTML elements already have [special markers](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md), and CSS Transform on spatialized HTML elements can only produce spatial transform effects rather than 2D projection mode, so `transform-style` is no longer needed and is ignored.
+
+All other Spatial Transform syntax is the same as CSS Transform. It supports the `transform` and `transform-origin` properties.
+
+WebSpatial SDK currently supports these transform functions:
+
+- `translateZ()` and `translate3d()`: translate along the Z axis perpendicular to the webpage plane
+- `rotateX()`, `rotateY()`, `rotateZ()`, and `rotate3d()`: rotate the element's corresponding 2D plane around the X/Y axes, pushing part of the plane into 3D space
+- `scaleZ()` and `scale3d()`: if the element's 2D plane has partly entered 3D space because of rotation, scaling along the Z axis changes the size of those parts in space
+
+Spatial Transform reuses and enhances CSS Transform without adding any new API, so it does not need the [`-xr-` prefix](https://webspatial.dev/docs/api/react-sdk/css-api/back.md#syntax).
+
+Example:
+
+```css
+.list-menu {
+  position: fixed;
+  top: 200px;
+  left: 0;
+  transform-origin: top left;
+  transform: translateZ(320px) rotateY(80deg);
+}
+```
+
+## Value Grammar
+
+In the current implementation of WebSpatial SDK, translate values in Spatial Transform only support `px` as the unit, which is equivalent to the point unit used by 2D GUI. See the [unit conversion API](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md). Precision is allowed up to one decimal place.
+
+## Initial Value
+
+The initial value is effectively:
+
+```css
+transform: none;
+```
+
+or:
+
+```
+transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+```
+
+## Inherited
+
+Child elements do not inherit the `transform` property of their parent element.
+
+However, like CSS Transform, if a parent spatialized HTML element uses Spatial Transform, and a child spatialized HTML element also uses Spatial Transform, the child's transform is applied relative to its own visually transformed position after following the parent's transform.
+
+## Animatable
+
+In the current implementation of WebSpatial SDK, Spatial Transform properties are not yet supported inside CSS animations.
+
+:::caution[Current limitation]
+Spatialized HTML elements as a whole do not currently support CSS animations.
+:::
+
+Spatial Transform does support JS-based animation approaches, where JS repeatedly updates the Spatial Transform value in an element's `style`.
+
+JSX API example:
+
+```js
+export default function Demo({ animatedOffsetZ, animatedOffsetX }) {
+  return (
+    <div
+      style={{
+        transform: `translateZ(${animatedOffsetZ}) translateX(${animatedOffsetX})`,
+      }}></div>
+  );
+}
+```
+
+DOM API example:
+
+```js
+ref.current.style.transform = `translateZ(${animatedOffsetZ})`;
+```
+
+## Interaction with Other CSS APIs
+
+If a spatialized HTML element [uses `back` to change its layout position on the Z axis](https://webspatial.dev/docs/api/react-sdk/css-api/back.md), the `translateZ` in Spatial Transform further shifts the element's visual position along the Z axis relative to that Z-axis layout position.
+
+## DOM and JS Reflection
+
+Because Spatial Transform does not change an element's layout position and does not change the [local coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) corresponding to a spatialized HTML element, it also does not affect the local-coordinate position information, such as `offsetX` and `offsetZ`, returned by spatial interaction events [`SpatialTapEvent`](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-tap.md) and [`SpatialDragStartEvent`](https://webspatial.dev/docs/api/react-sdk/event-api/spatial-drag.md) triggered on that element, and it does not affect the results of converting between local and global coordinate systems with [`convertCoordinate`](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md).
+
+After obtaining a ref for an element, you can directly read and write the `transform` value in `style`:
+
+```js
+const currentOffsetZ =
+  ref.current.style.transform.match(/translateZ\(([^)]+)\)/)?.[1] ?? "0px";
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, Spatial Transform styles fall back to ordinary CSS Transform behavior.
+
+###### `background-material`
+
+Source: https://webspatial.dev/docs/api/react-sdk/css-api/background-material.md
+
+Give scene and element backplates a transparent or real-time translucent material background.
+
+## Summary
+
+`background-material` is a new CSS property added by WebSpatial on top of existing Web standards. It allows both [webpage windows floating in space](https://webspatial.dev/docs/concepts/spatial-scenes.md) and [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) to be fully transparent or to use a real-time rendered translucent material as their background, instead of being limited to fixed opaque colors.
+
+## Applies To
+
+The current WebSpatial SDK only supports `background-material` on the HTML element that represents the webpage window itself, and on 2D HTML elements [marked as spatialized HTML elements](https://webspatial.dev/docs/api/react-sdk/react-components/jsx-marker.md), excluding [3D container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md).
+
+## Mental Model
+
+When the value of `background-material` is `none`:
+
+The webpage window keeps its default opaque fixed-color backplate.
+
+Spatialized HTML elements keep their default state with no backplate.
+
+When the value of `background-material` is `transparent`:
+
+For the webpage window, this removes the original opaque fixed-color backplate and makes it fully transparent with no border, so the elements inside the webpage appear to float separately in space.
+
+For spatialized HTML elements, this is equivalent to keeping the default no-backplate state.
+
+When the value of `background-material` is a translucent material such as `translucent`:
+
+For the webpage window, this replaces the original opaque fixed-color backplate with a translucent material backplate rendered dynamically in real time according to the viewpoint and environment.
+
+For spatialized HTML elements, this adds such a translucent material backplate.
+
+## Syntax
+
+:::caution[Temporary prefixed CSS name]
+Before standardization is complete, CSS properties in the WebSpatial API need the `-xr-` prefix.
+In the current implementation of WebSpatial SDK, for performance reasons, new CSS APIs are implemented through CSS custom properties, so the property name for `background-material` must be written as `--xr-background-material` both in CSS styles and in the `style` attribute.
+:::
+
+Example for the webpage window:
+
+```css
+html {
+  --xr-background-material: transparent;
+}
+```
+
+Example for a spatialized HTML element:
+
+```css
+div {
+  position: absolute;
+  --xr-back: 100px;
+  --xr-background-material: translucent;
+}
+```
+
+## Value Grammar
+
+`background-material` takes an enum value:
+
+- `translucent`
+- `transparent`
+- `none`
+
+## Initial Value
+
+The initial value is effectively:
+
+```css
+--xr-background-material: none;
+```
+
+## Inherited
+
+Child elements do not inherit the `background-material` property of their parent element.
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `background-material` is ignored automatically.
+
+###### `depth`
+
+Source: https://webspatial.dev/docs/api/react-sdk/css-api/depth.md
+
+Set the depth of 3D container elements so they render with real thickness in space.
+
+## Summary
+
+`depth` is a new CSS property added by WebSpatial on top of existing Web standards. It lets [3D container elements](https://webspatial.dev/docs/concepts/3d-content-containers.md) control not only width and height in CSS, but also "thickness/depth".
+
+## Applies To
+
+Only the static 3D container element [`<Model>`](https://webspatial.dev/docs/api/react-sdk/react-components/Model.md) and the dynamic 3D container element [`<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md) support this property.
+
+## Mental Model
+
+3D content container elements are also [spatialized HTML elements](https://webspatial.dev/docs/concepts/spatialized-html-elements.md). They still participate in HTML/CSS layout as 2D planes. The container's content is effectively a box-like local 3D space in front of the 2D plane. That local 3D space always uses the 2D plane as its "backplate", so its width and height are determined by the size of that backplate, while its depth defaults to the depth of the current [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md).
+
+`width` and `height` in CSS affect the size of this backplate, the 2D plane, and therefore affect the width and height of the space inside the container.
+
+The new `depth` property directly determines the depth of the local 3D space in front of the backplate.
+
+Changing the depth of a 3D content container element also changes [the origin position of the internal 3D coordinate system, whose origin is the center point of the local 3D space corresponding to the container](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity).
+
+## Syntax
+
+:::caution[Temporary prefixed CSS name]
+Before standardization is complete, CSS properties in the WebSpatial API need the `-xr-` prefix.
+In the current implementation of WebSpatial SDK, for performance reasons, new CSS APIs are implemented through CSS custom properties, so the property name for `depth` must be written as `--xr-depth` both in CSS styles and in the `style` attribute.
+:::
+
+Examples:
+
+```css
+.product-preview {
+  width: 100px;
+  height: 100px;
+  --xr-depth: 100px;
+}
+```
+
+```js
+export default function ProductPreview() {
+  return (
+    <Model
+      style={{
+        width: "100px",
+        height: "100px",
+        "--xr-depth": "100px",
+      }}
+      src="/assets/product.usdz"
+    />
+  );
+}
+```
+
+```js
+export default function ProductPreview() {
+  return (
+    <Reality
+      style={{
+        width: "1360px",
+        height: "1360px",
+        "--xr-depth": "1360px",
+      }}>
+      <World>
+        <Box width="0.5" height="0.5" depth="0.5" />
+      </World>
+    </Reality>
+  );
+}
+```
+
+## Value Grammar
+
+In the current implementation of WebSpatial SDK, `depth` only supports `px` as the unit, which is equivalent to the point unit used by 2D GUI. See the [unit conversion API](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md).
+
+For numeric values, precision is allowed up to one decimal place.
+
+## Initial Value
+
+The initial value is effectively:
+
+```css
+--xr-depth: 0;
+```
+
+## Inherited
+
+3D content container elements cannot use other 3D content container elements as children, so `depth` has no parent-child inheritance or interaction.
+
+## Animatable
+
+In the current implementation of WebSpatial SDK, `depth` is not yet supported inside CSS animations.
+
+:::caution[Current limitation]
+Spatialized HTML elements as a whole do not currently support CSS animations.
+:::
+
+`depth` does support JS-based animation approaches, where JS repeatedly updates the `--xr-depth` value in an element's `style`.
+
+JSX API example:
+
+```js
+export default function ProductPreview({ animatedWidth, animatedDepth }) {
+  return (
+    <Reality
+      style={{
+        width: animatedWidth,
+        "--xr-depth": animatedDepth,
+      }}>
+      <World>
+        <Box width="0.5" height="0.5" depth="0.5" />
+      </World>
+    </Reality>
+  );
+}
+```
+
+DOM API example:
+
+```js
+ref.current.style["--xr-depth"] = animatedDepth;
+```
+
+## Interaction with Other CSS APIs
+
+`depth` can be combined with `width` and `height` to change the dimensions of the local 3D space corresponding to a 3D container element.
+
+## DOM and JS Reflection
+
+The new DOM API [clientDepth](https://webspatial.dev/docs/api/react-sdk/dom-api/clientDepth.md) can be used to obtain the current depth of a 3D container element.
+
+After [`<Reality>`](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md) changes depth through `depth`, the origin of its [local coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) moves accordingly along the Z axis in the global coordinate system. For example, if depth increases by 10px, the origin moves forward by 5px.
+Therefore, `depth` affects the results of converting between the local and global coordinate systems with [`convertCoordinate`](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md), and also affects the rendering of 3D content inside `<Reality>`.
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `depth` is ignored automatically.
+
+##### DOM API overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/dom-api.md
+
+DOM properties for depth, back offset, and runtime environment detection.
+
+###### `userAgent`
+
+Source: https://webspatial.dev/docs/api/react-sdk/dom-api/userAgent.md
+
+Inspect the current device, operating system, and whether the app is running in WebSpatial mode.
+
+## Summary
+
+Obtains information about the current device, operating system, and runtime environment, including information about the [Web Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#web-runtime) and [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime).
+
+## Exposed On
+
+This property is available on the `navigator` object.
+
+## Mental Model
+
+If the User Agent string matches `/WebSpatial\/(\S+)/`, the current runtime environment has WebSpatial Runtime, and the captured version number is the npm package version of the [React SDK](https://webspatial.dev/docs/introduction/getting-started.md#installation) that this runtime fully supports.
+
+If the User Agent string matches `/\sVR\s/`, the current runtime environment supports WebXR.
+
+If the User Agent string matches `\swv\)`, the current Web Runtime is WebView.
+
+If the User Agent string matches `/WSAppShell\/(\S+)/`, the current runtime environment is a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) that includes WebSpatial Runtime. If it also matches `"Macintosh"`, the environment is visionOS.
+
+If the User Agent string matches `/PicoWebApp\/(\S+)/`, the current runtime environment is the [Web App Runtime of PICO OS 6](https://developer.picoxr.com/document/web/web-platform/).
+
+## Read / Write Semantics
+
+Read-only.
+
+Example:
+
+```js
+const ua = navigator.userAgent.toString();
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, meaning there is no WebSpatial Runtime, the User Agent string does not contain a `WebSpatial` field.
+
+###### `offsetBack`
+
+Source: https://webspatial.dev/docs/api/react-sdk/dom-api/offsetBack.md
+
+Read how far a spatialized HTML element has moved forward from its original 2D position.
+
+## Summary
+
+Reads how far a [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) has been "lifted" along the Z axis relative to its pre-spatialized position.
+
+## Exposed On
+
+In the current implementation of the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk), this property is only available on `ref.current` for spatialized HTML elements.
+
+## Mental Model
+
+`offsetBack` is effectively the Z-axis distance between the current spatialized HTML element and the 2D plane corresponding to the nearest spatialized HTML element in the parent hierarchy, or the webpage itself if there is none. Before becoming spatialized, a spatialized HTML element necessarily sits on that 2D plane.
+
+Like `HTMLElement.offsetHeight`: read-only and unaffected by [CSS Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md).
+
+## Syntax
+
+:::caution[Temporary prefixed DOM name]
+Before standardization is complete, DOM properties in the WebSpatial API need the `xr` prefix and the original first letter becomes uppercase, so `offsetBack` must be written as `xrOffsetBack`.
+:::
+
+## Read / Write Semantics
+
+Read-only.
+
+Example:
+
+```js
+const currentOffsetZ = ref.current.xrOffsetBack;
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `offsetBack` does not exist.
+
+###### `clientDepth`
+
+Source: https://webspatial.dev/docs/api/react-sdk/dom-api/clientDepth.md
+
+Read the current rendered depth of a 3D container element in pixels.
+
+## Summary
+
+Reads the current depth of a [3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md).
+
+## Exposed On
+
+In the current implementation of the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk), this property is only available on `ref.current` for 3D container elements.
+
+## Mental Model
+
+Like `Element.clientWidth`: read-only and unaffected by [CSS Transform](https://webspatial.dev/docs/api/react-sdk/css-api/transform.md).
+
+## Syntax
+
+:::caution[Temporary prefixed DOM name]
+Before standardization is complete, DOM properties in the WebSpatial API need the `xr` prefix and the original first letter becomes uppercase, so `clientDepth` must be written as `xrClientDepth`.
+:::
+
+## Read / Write Semantics
+
+Read-only.
+
+Example:
+
+```js
+const currentDepth = ref.current.xrClientDepth;
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `clientDepth` does not exist.
+
+###### `innerDepth`
+
+Source: https://webspatial.dev/docs/api/react-sdk/dom-api/innerDepth.md
+
+Read the current depth of a volume Spatial Scene through the DOM interface.
+
+## Summary
+
+Reads the depth/thickness of a [Spatial Scene container of type Volume](https://webspatial.dev/docs/concepts/spatial-scenes.md).
+
+## Exposed On
+
+This property is available on the `window` object.
+
+## Mental Model
+
+Like `window.innerHeight`: read-only and does not include the height of native window UI outside the webpage.
+
+## Syntax
+
+:::caution[Temporary prefixed DOM name]
+Before standardization is complete, DOM properties in the WebSpatial API need the `xr` prefix and the original first letter becomes uppercase, so `innerDepth` must be written as `xrInnerDepth`.
+:::
+
+## Read / Write Semantics
+
+Read-only.
+
+Example:
+
+```js
+const currentVolumeDepth = window.xrInnerDepth;
+```
+
+## Fallback Behavior
+
+In environments that do not support WebSpatial, `innerDepth` does not exist.
+
+##### Event API overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/event-api.md
+
+Spatial interaction events for tap, drag, magnify, and rotate gestures.
+
+###### Spatial Tap
+
+Source: https://webspatial.dev/docs/api/react-sdk/event-api/spatial-tap.md
+
+Handle completed tap interactions on spatialized elements and 3D content.
+
+## Summary {#summary}
+
+Represents a completed one-handed "select and activate" action on a target in space, whether the interaction is [performed through indirect "gaze + pinch" or direct touch](https://webspatial.dev/docs/concepts/natural-interactions.md).
+
+## Trigger Conditions {#trigger-conditions}
+
+| Target | Triggered when |
+| --- | --- |
+| [Spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) | After the 3D spatial position occupied by its own content is tapped. |
+| [3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) | After the 3D spatial position occupied by its own interactive content is tapped. |
+
+## Mental Model {#mental-model}
+
+Spatial Tap can be understood as a `click` event in 3D space.
+
+## Event Type Signature {#event-type-signature}
+
+| Stage | DOM event |
+| --- | --- |
+| Completed tap | `spatialtap` |
+
+## React Usage {#react-usage}
+
+| Stage | JSX prop |
+| --- | --- |
+| Completed tap | `onSpatialTap` |
+
+## Native DOM Usage {#native-dom-usage}
+
+:::info[Current limitation]
+At the current stage, the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) does not allow listening to spatial events directly on DOM elements, including those obtained from refs.
+:::
+
+## Event Lifecycle {#event-lifecycle}
+
+No event is triggered during the "selection" phase. Pinch and release immediately, and `spatialtap` is triggered.
+
+## SpatialTapEvent Payload {#spatialtapevent-payload}
+
+| Fields | Unit | Meaning | Coordinate system |
+| --- | --- | --- | --- |
+| `offsetX`, `offsetY`, `offsetZ` | `px` | The X, Y, and Z coordinates of the tapped position. | The [local coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) of the [spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) that triggered the event, including 3D container elements. It uses a left-handed coordinate system with the origin at the top-left corner of the element's 2D plane, Y pointing downward, and Z pointing toward the user. |
+| `clientX`, `clientY`, `clientZ` | `px` | The X, Y, and Z coordinates of the tapped position. | The [global coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) of the current [Spatial Scene container](https://webspatial.dev/docs/concepts/spatial-scenes.md). It uses a left-handed coordinate system with the origin at the top-left corner of the Spatial Scene's backplate, Y pointing downward, and Z pointing toward the user. |
+
+###### Spatial Drag
+
+Source: https://webspatial.dev/docs/api/react-sdk/event-api/spatial-drag.md
+
+Handle spatial drag gestures, including their phases and position payload.
+
+## Summary {#summary}
+
+Represents a completed one-handed "select, activate, and hold" action on a target in space, whether the interaction [is performed through indirect "gaze + pinch" or direct touch](https://webspatial.dev/docs/concepts/natural-interactions.md).
+
+## Trigger Conditions {#trigger-conditions}
+
+| Target | Triggered when |
+| --- | --- |
+| [Spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) | After the 3D spatial position occupied by its own content is pinched and held. |
+| [3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) | After the 3D spatial position occupied by its own interactive content is pinched and held. |
+
+## Mental Model {#mental-model}
+
+You can drag in any direction in 3D space and place the target at any location in space.
+
+## Event Type Signature {#event-type-signature}
+
+| Stage | DOM event |
+| --- | --- |
+| Drag start | `spatialdragstart` |
+| Dragging | `spatialdrag` |
+| Drag end | `spatialdragend` |
+
+## React Usage {#react-usage}
+
+| Stage | JSX prop |
+| --- | --- |
+| Drag start | `onSpatialDragStart` |
+| Dragging | `onSpatialDrag` |
+| Drag end | `onSpatialDragEnd` |
+
+## Native DOM Usage {#native-dom-usage}
+
+:::info[Current limitation]
+At the current stage, the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) does not allow listening to spatial events directly on DOM elements, including those obtained from refs.
+:::
+
+## Event Lifecycle {#event-lifecycle}
+
+No event is triggered during the "selection" phase. When pinch-and-hold begins, `spatialdragstart` is triggered. After activation, holding continues to trigger `spatialdrag`. Releasing ends the action and triggers `spatialdragend`.
+
+## SpatialDragStartEvent Payload {#spatialdragstartevent-payload}
+
+| Fields | Unit | Meaning | Coordinate system |
+| --- | --- | --- | --- |
+| `offsetX`, `offsetY`, `offsetZ` | `px` | The X, Y, and Z coordinates of the activation position. | The [local coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) of the [spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) that triggered the event, including 3D container elements. It uses a left-handed coordinate system with the origin at the top-left corner of the element's 2D plane, Y pointing downward, and Z pointing toward the user. |
+| `clientX`, `clientY`, `clientZ` | `px` | The X, Y, and Z coordinates of the activation position. | The [global coordinate system](https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md) of the current [Spatial Scene container](https://webspatial.dev/docs/concepts/spatial-scenes.md). It uses a left-handed coordinate system with the origin at the top-left corner of the Spatial Scene's backplate, Y pointing downward, and Z pointing toward the user. |
+
+## SpatialDragEvent Payload {#spatialdragevent-payload}
+
+| Fields | Unit | Meaning |
+| --- | --- | --- |
+| `translationX`, `translationY`, `translationZ` | `px` | The offset relative to the drag start position. |
+
+## SpatialDragEndEvent Payload {#spatialdragendevent-payload}
+
+:::info[No extra payload]
+The `SpatialDragEndEvent` object passed to the `spatialdragend` callback has no extra properties.
+:::
+
+###### Spatial Magnify
+
+Source: https://webspatial.dev/docs/api/react-sdk/event-api/spatial-magnify.md
+
+Handle two-handed magnify gestures and read the scale factor produced by the interaction.
+
+## Summary {#summary}
+
+Represents a completed two-handed "select, activate, and hold" action on a target in space that produces scaling, whether the interaction is [performed through indirect "gaze + pinch" or direct touch](https://webspatial.dev/docs/concepts/natural-interactions.md).
+
+## Trigger Conditions {#trigger-conditions}
+
+| Target | Triggered when |
+| --- | --- |
+| [Spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) | After the 3D spatial position occupied by its own content is pinched and held. |
+| [3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) | After the 3D spatial position occupied by its own interactive content is pinched and held. |
+
+## Mental Model {#mental-model}
+
+The line between the two hands, effectively like a real object, can be stretched in 3D space.
+
+## Event Type Signature {#event-type-signature}
+
+| Stage | DOM event |
+| --- | --- |
+| Magnifying | `spatialmagnify` |
+| Magnify end | `spatialmagnifyend` |
+
+## React Usage {#react-usage}
+
+| Stage | JSX prop |
+| --- | --- |
+| Magnifying | `onSpatialMagnify` |
+| Magnify end | `onSpatialMagnifyEnd` |
+
+## Native DOM Usage {#native-dom-usage}
+
+:::info[Current limitation]
+At the current stage, the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) does not allow listening to spatial events directly on DOM elements, including those obtained from refs.
+:::
+
+## Event Lifecycle {#event-lifecycle}
+
+No event is triggered during the "selection" phase. After pinch-and-hold activates, `spatialmagnify` is triggered continuously while the hold continues. Releasing ends the action and triggers `spatialmagnifyend`.
+
+## SpatialMagnifyEvent Payload {#spatialmagnifyevent-payload}
+
+| Field | Value | Meaning |
+| --- | --- | --- |
+| `magnification` | A percentage-like number such as `1` (100%) or `1.5` (150%). | The amount of scaling relative to the initial state. |
+
+## SpatialMagnifyEndEvent Payload {#spatialmagnifyendevent-payload}
+
+:::info[No extra payload]
+The `SpatialMagnifyEndEvent` object passed to the `spatialmagnifyend` callback has no extra properties.
+:::
+
+###### Spatial Rotate
+
+Source: https://webspatial.dev/docs/api/react-sdk/event-api/spatial-rotate.md
+
+Handle two-handed rotate gestures and read the rotation produced in 3D space.
+
+## Summary {#summary}
+
+Represents a completed two-handed "select, activate, and hold" action on a target in space that produces rotation, whether the interaction is [performed through indirect "gaze + pinch" or direct touch](https://webspatial.dev/docs/concepts/natural-interactions.md).
+
+## Trigger Conditions {#trigger-conditions}
+
+| Target | Triggered when |
+| --- | --- |
+| [Spatialized 2D HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md) | After the 3D spatial position occupied by its own content is pinched and held. |
+| [3D container element](https://webspatial.dev/docs/concepts/3d-content-containers.md) | After the 3D spatial position occupied by its own interactive content is pinched and held. |
+
+## Mental Model {#mental-model}
+
+The line between the two hands, effectively like a real object, can rotate at arbitrary angles in 3D space.
+
+## Event Type Signature {#event-type-signature}
+
+| Stage | DOM event |
+| --- | --- |
+| Rotating | `spatialrotate` |
+| Rotate end | `spatialrotateend` |
+
+## React Usage {#react-usage}
+
+| Stage | JSX prop |
+| --- | --- |
+| Rotating | `onSpatialRotate` |
+| Rotate end | `onSpatialRotateEnd` |
+
+## Native DOM Usage {#native-dom-usage}
+
+:::info[Current limitation]
+At the current stage, the [WebSpatial SDK](https://webspatial.dev/docs/introduction/getting-started.md#webspatial-sdk) does not allow listening to spatial events directly on DOM elements, including those obtained from refs.
+:::
+
+## Event Lifecycle {#event-lifecycle}
+
+No event is triggered during the "selection" phase. After pinch-and-hold activates, `spatialrotate` is triggered continuously while the hold continues. Releasing ends the action and triggers `spatialrotateend`.
+
+## SpatialRotateEvent Payload {#spatialrotateevent-payload}
+
+| Field | Value | Meaning |
+| --- | --- | --- |
+| `quaternion` | A quaternion. | The amount of rotation relative to the initial state, including the rotation axis. |
+
+## SpatialRotateEndEvent Payload {#spatialrotateendevent-payload}
+
+:::info[No extra payload]
+The `SpatialRotateEndEvent` object passed to the `spatialrotateend` callback has no extra properties.
+:::
+
+##### JS API overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/js-api.md
+
+JavaScript APIs for scene setup, metrics, and coordinate conversion.
+
+###### `initScene`
+
+Source: https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md
+
+Configure initialization options for a new Spatial Scene before it opens.
+
+## Summary
+
+Applies custom configuration to the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a Spatial Scene [before a new Spatial Scene is created](https://webspatial.dev/docs/concepts/spatial-scenes.md#new-scenes).
+
+## Signature
+
+```js
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    defaultSize: {
+      width: "1m",
+      height: "100px",
+      depth: "100px",
+    },
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+## Parameters
+
+### sceneName
+
+The name of the Spatial Scene to initialize, equivalent to the `name` of the new window opened by the link.
+
+If `initScene` is called while the Spatial Scene for that `name` is already open, it only affects the initialization properties the next time a new Spatial Scene is created with the same `name` after the current one is closed.
+
+If `initScene` is called multiple times for the same `name`, the custom initialization properties for that `name` are updated repeatedly.
+
+### configure
+
+A callback function. Its parameter, `defaultConfig`, is the latest state of the custom initialization properties for that `name`, and the callback returns the new custom initialization properties.
+
+If this is the first time `initScene` is called for that `name`, the parameter `defaultConfig` contains the default initialization properties.
+
+## Return Shape
+
+No return value.
+
+###### `useMetrics`
+
+Source: https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md
+
+Convert between 2D pixel units and real-world meter units inside WebSpatial layouts.
+
+## Summary
+
+Performs [unit conversion](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d) between the point unit (`px`) used by 2D GUI and the physical world unit (`m`) used by 3D space.
+
+On visionOS, the default mapping is roughly `1360px ≈ 1 meter`, but this conversion is not always fixed:
+
+If the [Spatial Scene container](https://webspatial.dev/docs/concepts/spatial-scenes.md) is of type `window`, or if the scene type is `volume` and [`worldScaling` in the initialization properties is set to `dynamic`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md), then the conversion between these two units is not fixed. See [`worldScalingCompensation`](https://webspatial.dev/docs/api/react-sdk/js-api/useMetrics.md#return-shape).
+
+The conversion ratio also differs across spatial computing platforms, so this API should be used consistently for unit conversion.
+
+## Signature
+
+```js
+import { useMetrics } from "@webspatial/react-sdk";
+
+function UnitConvertTest() {
+  const { pointToPhysical, physicalToPoint } = useMetrics();
+
+  return (
+    <>
+      <pre>
+        Scaled conversion
+        {"\n"}
+        physicalToPoint(1): {physicalToPoint(1)}
+        {"\n"}
+        pointToPhysical(1): {pointToPhysical(1)}
+      </pre>
+
+      <pre>
+        Unscaled conversion
+        {"\n"}
+        physicalToPoint(1):{" "}
+        {physicalToPoint(1, { worldScalingCompensation: "unscaled" })}
+        {"\n"}
+        pointToPhysical(1):{" "}
+        {pointToPhysical(1, { worldScalingCompensation: "unscaled" })}
+      </pre>
+    </>
+  );
+}
+```
+
+## Parameters
+
+None.
+
+## Return Shape
+
+```ts
+type WorldScalingCompensation = "scaled" | "unscaled";
+
+type MetricConvertOptions = {
+  worldScalingCompensation?: WorldScalingCompensation;
+};
+
+type UseMetricsReturn = {
+  pointToPhysical: (value: number, options?: MetricConvertOptions) => number;
+  physicalToPoint: (value: number, options?: MetricConvertOptions) => number;
+};
+```
+
+`worldScalingCompensation` determines whether the current Spatial Scene container's `worldScaling` should be compensated during the conversion.
+
+- `scaled`: the conversion result matches the size perceived by the user after automatic scaling from `worldScaling`
+- `unscaled`: returns a stable physical-world value that does not change with `worldScaling`
+
+### pointToPhysical
+
+```ts
+pointToPhysical(value: number, options?: MetricConvertOptions): number
+```
+
+### physicalToPoint
+
+```ts
+physicalToPoint(value: number, options?: MetricConvertOptions): number
+```
+
+###### `convertCoordinate`
+
+Source: https://webspatial.dev/docs/api/react-sdk/js-api/convertCoordinate.md
+
+Convert points between the local and global coordinate systems used by scenes and spatial content.
+
+## Summary
+
+Converts coordinates between [different coordinate systems](https://webspatial.dev/docs/concepts/3d-content-containers.md#2d-containing-3d), including:
+
+- The global coordinate system of a [Spatial Scene container](https://webspatial.dev/docs/concepts/spatial-scenes.md): based on the 2D layout system, using a left-handed coordinate system, with the origin at the top-left corner of the backplate, Y pointing downward, Z pointing toward the user, and lengths expressed by default in the GUI-oriented point unit (`px`)
+- The local coordinate system of a [spatialized HTML element](https://webspatial.dev/docs/concepts/spatialized-html-elements.md): based on the 2D layout system, using a left-handed coordinate system, with the origin at the top-left corner of the 2D plane, Y pointing downward, Z pointing toward the user, and lengths expressed by default in the GUI-oriented point unit (`px`)
+- The local coordinate system of a [3D entity](https://webspatial.dev/docs/api/react-sdk/react-components/Reality.md#3d-entity): based on the 3D engine system, using a right-handed coordinate system, with the origin at the center point of the local 3D space corresponding to the 3D content container, Y pointing upward, Z pointing toward the user, and lengths expressed by default in the physical world unit (`m`) oriented toward real-world objects
+
+## Signature
+
+```js
+import { convertCoordinate } from "@webspatial/react-sdk";
+
+const e2e = await convertCoordinate(position, {
+  from: elementOrEntity,
+  to: elementOrEntity,
+});
+const e2w = await convertCoordinate(position, {
+  from: elementOrEntity,
+  to: window,
+});
+const w2e = await convertCoordinate(position, {
+  from: window,
+  to: elementOrEntity,
+});
+```
+
+## Parameters
+
+### position
+
+```ts
+type CoordinateLike = { x: number; y: number; z: number };
+```
+
+The position point to convert.
+This position must use the coordinate values and default unit of the coordinate system specified by `options.from`.
+
+### options
+
+- `options.from`: source coordinate system
+- `options.to`: target coordinate system
+
+## Return Shape
+
+```ts
+Promise<CoordinateLike>;
+```
+
+Returns a Promise that resolves to the converted coordinate point.
+
+##### Manifest Options overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/manifest-options.md
+
+Manifest options for configuring the main scene of a WebSpatial app.
+
+###### `main_scene`
+
+Source: https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md
+
+Configure the Start Scene from the Web App Manifest before any page code runs.
+
+In the [Web App Manifest](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app) of a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md), this new field can be used to configure the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of the [Start Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md#start-scene).
+
+:::caution[Temporary prefixed manifest key]
+Because this is a new property added by WebSpatial API to the Web App Manifest standard, it needs the `xr_` prefix before standardization is complete, so `main_scene` must be written as `xr_main_scene`.
+:::
+
+The following initialization properties are supported:
+
+- [`type`](https://webspatial.dev/docs/api/react-sdk/scene-options/type.md)
+- [`default_size`](https://webspatial.dev/docs/api/react-sdk/scene-options/defaultSize.md)
+- [`resizability`](https://webspatial.dev/docs/api/react-sdk/scene-options/resizability.md)
+- [`world_scaling`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md)
+- [`world_alignment`](https://webspatial.dev/docs/api/react-sdk/scene-options/worldAlignment.md)
+- [`baseplate_visibility`](https://webspatial.dev/docs/api/react-sdk/scene-options/baseplateVisibility.md)
+
+## Schema
+
+```ts
+{
+  type?: "volume" | "window"
+  default_size?: {
+    width?: number | string
+    height?: number | string
+    depth?: number | string
+  }
+  resizability?: {
+    min_width?: number | string
+    max_width?: number | string
+    min_height?: number | string
+    max_height?: number | string
+  }
+  world_scaling?: "automatic" | "dynamic"
+  world_alignment?: "automatic" | "gravityAligned"
+  baseplate_visibility?: "automatic" | "hidden"
+}
+```
+
+Example:
+
+```json
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "type": "volume",
+    "default_size": {
+      "width": 100,
+      "height": 100,
+      "depth": "1m"
+    },
+    "resizability": {
+      "min_width": 50,
+      "max_width": 500,
+      "min_height": 50,
+      "max_height": 500
+    },
+    "world_scaling": "dynamic",
+    "world_alignment": "gravityAligned",
+    "baseplate_visibility": "hidden"
+  }
+}
+```
+
+##### Scene Options overview
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options.md
+
+Scene configuration options for sizing, scaling, alignment, and window behavior.
+
+###### `type`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/type.md
+
+Choose whether a new Spatial Scene behaves like a window or a volume.
+
+During the [initialization phase](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), you can set the [scene type](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-type).
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | All Spatial Scenes. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md) before calling `window.open(...)`. |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | `"window"` |
+
+## Type Signature {#type}
+
+`"window" | "volume"`
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set the type for a new scene" {6}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+```json title="Set the type for the start scene" {5}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "type": "volume"
+  }
+}
+```
+
+## Default Value {#default-value}
+
+`"window"`
+
+## Accepted Values {#accepted-values}
+
+| Value | Meaning |
+| --- | --- |
+| `"window"` | Primarily serves [GUI needs](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-type). |
+| `"volume"` | Simulates a [real-world object](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-type). |
+
+###### `defaultSize`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/defaultSize.md
+
+Set the initial width, height, and depth a Spatial Scene requests when it is created.
+
+One of the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), `defaultSize` affects the size of a Spatial Scene immediately after it is created. It does not necessarily match the values in `defaultSize` exactly, because the operating system's [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) logic still takes priority.
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | `window` scenes support `width` and `height`; `volume` scenes also support `depth`. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md). |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | None. |
+
+## Type Signature {#type}
+
+```ts title="defaultSize type"
+{
+  width?: number | string
+  height?: number | string
+  depth?: number | string
+}
+```
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set defaultSize for a new scene" {6-11}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    defaultSize: {
+      width: 500,
+      height: "1000px",
+      depth: "1m",
+    },
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+:::caution[Manifest key naming]
+In a Web App Manifest, convert camelCase keys such as `defaultSize` to lowercase snake_case such as `default_size`.
+:::
+
+```json title="Set default_size for the start scene" {5-8}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "default_size": {
+      "width": 500,
+      "height": "1000px"
+    }
+  }
+}
+```
+
+## Default Value {#default-value}
+
+None.
+
+## Accepted Values {#accepted-values}
+
+| Field | Accepted value |
+| --- | --- |
+| `width` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+| `height` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+| `depth` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+
+###### `resizability`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/resizability.md
+
+Limit how far users can resize a Spatial Scene after it opens.
+
+One of the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), `resizability` affects the constraints applied when a user drags the Spatial Scene to resize it after creation. It can provide separate min and max constraints for the width and height of the Spatial Scene.
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | All resizable Spatial Scenes. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md). |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | None. |
+
+## Type Signature {#type}
+
+```ts title="resizability type"
+{
+  minWidth?: number | string
+  minHeight?: number | string
+  maxWidth?: number | string
+  maxHeight?: number | string
+}
+```
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set resizability for a new scene" {6-12}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    resizability: {
+      minWidth: 100,
+      minHeight: "100px",
+      maxWidth: 200,
+      maxHeight: 200,
+    },
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+:::caution[Manifest key naming]
+In a Web App Manifest, convert camelCase keys such as `minWidth` to lowercase snake_case such as `min_width`.
+:::
+
+```json title="Set resizability for the start scene" {5-10}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "resizability": {
+      "min_width": 100,
+      "min_height": "100px",
+      "max_width": 200,
+      "max_height": 200
+    }
+  }
+}
+```
+
+## Default Value {#default-value}
+
+None.
+
+## Accepted Values {#accepted-values}
+
+| Field | Accepted value |
+| --- | --- |
+| `minWidth` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+| `minHeight` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+| `maxWidth` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+| `maxHeight` | A number with `px` as the default unit, or a string with a unit suffix such as `"100px"` or `"2m"`. |
+
+###### `worldScaling`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/worldScaling.md
+
+Control whether a Spatial Scene keeps a constant apparent size or scales with distance.
+
+One of the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), `worldScaling` affects how a Spatial Scene behaves when the user drags it horizontally after creation.
+Only Spatial Scenes of type `volume` support `worldScaling`.
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | Only `volume` Spatial Scenes. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md). |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | `"automatic"` |
+
+## Type Signature {#type}
+
+`"automatic" | "dynamic"`
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set worldScaling for a new scene" {6-7}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    worldScaling: "dynamic",
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+:::caution[Manifest key naming]
+In a Web App Manifest, convert camelCase keys such as `worldScaling` to lowercase snake_case such as `world_scaling`.
+:::
+
+```json title="Set world_scaling for the start scene" {5-6}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "type": "volume",
+    "world_scaling": "dynamic"
+  }
+}
+```
+
+## Default Value {#default-value}
+
+`"automatic"`
+
+## Accepted Values {#accepted-values}
+
+| Value | Meaning |
+| --- | --- |
+| `"automatic"` | Shows a distance-based scaling effect during movement, like a real-world object. |
+| `"dynamic"` | Keeps a constant size relative to the user's field of view during movement, just like the default behavior of a `window` Spatial Scene. |
+
+###### `worldAlignment`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/worldAlignment.md
+
+Control whether a Spatial Scene stays upright, faces the user, or behaves more like a real object.
+
+One of the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md), `worldAlignment` affects how a Spatial Scene behaves when the user drags it vertically after creation.
+Only Spatial Scenes of type `volume` support `worldAlignment`.
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | Only `volume` Spatial Scenes. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md). |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | `"automatic"` |
+
+## Type Signature {#type}
+
+`"automatic" | "gravityAligned"`
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set worldAlignment for a new scene" {6-7}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    worldAlignment: "gravityAligned",
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+:::caution[Manifest key naming]
+In a Web App Manifest, convert camelCase keys such as `worldAlignment` to lowercase snake_case such as `world_alignment`.
+:::
+
+```json title="Set world_alignment for the start scene" {5-6}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "type": "volume",
+    "world_alignment": "gravityAligned"
+  }
+}
+```
+
+## Default Value {#default-value}
+
+`"automatic"`
+
+## Accepted Values {#accepted-values}
+
+| Value | Meaning |
+| --- | --- |
+| `"automatic"` | Tilts automatically during vertical movement so it always faces the user. |
+| `"gravityAligned"` | Does not tilt automatically during vertical movement and always stays aligned with gravity like a real-world object. |
+
+###### `baseplateVisibility`
+
+Source: https://webspatial.dev/docs/api/react-sdk/scene-options/baseplateVisibility.md
+
+Show or hide the baseplate under a volume Spatial Scene.
+
+One of the [initialization properties](https://webspatial.dev/docs/concepts/spatial-scenes.md#scene-initialization) of a [Spatial Scene](https://webspatial.dev/docs/concepts/spatial-scenes.md). Only Spatial Scenes of type `volume` support `baseplateVisibility`, and it affects the visibility of the baseplate under the Volume.
+
+## Availability {#declared-in}
+
+| Item | Value |
+| --- | --- |
+| Applies to | Only `volume` Spatial Scenes. |
+| New scenes | Set through [`initScene`](https://webspatial.dev/docs/api/react-sdk/js-api/initScene.md). |
+| Start scene | Set through the [Web App Manifest](https://webspatial.dev/docs/api/react-sdk/manifest-options/main-scene.md). |
+| Default value | `"automatic"` |
+
+## Type Signature {#type}
+
+`"automatic" | "hidden"`
+
+## Examples
+
+### Using `initScene`
+
+```js title="Set baseplateVisibility for a new scene" {6-7}
+import { initScene } from "@webspatial/react-sdk";
+
+initScene("newSceneName", defaultConfig => {
+  return {
+    ...defaultConfig,
+    type: "volume",
+    baseplateVisibility: "hidden",
+  };
+});
+window.open(newSceneUrl, "newSceneName");
+```
+
+### Using the Web App Manifest
+
+:::caution[Manifest key naming]
+In a Web App Manifest, convert camelCase keys such as `baseplateVisibility` to lowercase snake_case such as `baseplate_visibility`.
+:::
+
+```json title="Set baseplate_visibility for the start scene" {5-6}
+{
+  "name": "example app",
+  "start_url": "/",
+  "xr_main_scene": {
+    "type": "volume",
+    "baseplate_visibility": "hidden"
+  }
+}
+```
+
+## Default Value {#default-value}
+
+`"automatic"`
+
+## Accepted Values {#accepted-values}
+
+| Value | Meaning |
+| --- | --- |
+| `"automatic"` | The baseplate is shown when needed. |
+| `"hidden"` | The baseplate is always hidden. |
+
+#### Builder overview
+
+Source: https://webspatial.dev/docs/api/builder.md
+
+Command reference for previewing, building, and publishing packaged WebSpatial apps.
+
+##### `webspatial-builder run`
+
+Source: https://webspatial.dev/docs/api/builder/run.md
+
+Launch a Packaged WebSpatial App in the simulator for local preview and debugging.
+
+Used to preview a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) in a simulator.
+It automatically packages the app, launches the simulator, pushes the app bundle into the simulator, installs it, and starts it.
+
+## Quick Reference
+
+| Item | Value |
+| --- | --- |
+| Best for | Previewing a Packaged WebSpatial App in a simulator. |
+| Requires device credentials | No. |
+| Common target platform | Platforms without built-in WebSpatial Runtime, such as visionOS. |
+
+## When to Use {#when-to-use}
+
+- When you want to run a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that does not include [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), such as visionOS.
+- When you only need to [preview the effect in a simulator](https://webspatial.dev/docs/introduction/getting-started.md#preview), not on a real device.
+
+## When Not to Use {#when-not-to-use}
+
+- When you want to run on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that includes [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) and supports running a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) directly by URL, such as [PICO OS 6](https://developer.picoxr.com/document/web/web-app/).
+- When you need to [test on a real device](https://webspatial.dev/docs/api/builder/build.md) or [distribute the app widely](https://webspatial.dev/docs/api/builder/publish.md).
+
+## Syntax {#syntax}
+
+```bash title="Preview a Packaged WebSpatial App in a simulator" {2}
+webspatial-builder run \
+  [--base=<base url>] \
+  [--manifest=<local path>] \
+  [--manifest-url=<url>] \
+  [--project=<dist>]
+```
+
+## Option Overview
+
+| Option | Required | What it controls |
+| --- | --- | --- |
+| `--base` | Optional | Provides or overrides the base URL used to resolve `start_url`. |
+| `--manifest` | Optional | Points Builder at a local Web App Manifest file. |
+| `--manifest-url` | Optional | Fetches the manifest directly from a live site URL. |
+| `--project` | Optional | Points Builder at a custom website build output directory. |
+
+## Options {#options}
+
+### `--base`
+
+Specifies the base URL for the start URL ([`start_url`](https://developer.mozilla.org/en-US/docs/Web/Manifest/start_url)) of the current [Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app). The default value is `""`.
+
+If WebSpatial Builder does not know the current Web App's `start_url`, the value of `--base` is used directly as `start_url`.
+
+If the current Web App's `start_url` obtained by WebSpatial Builder is a [relative URL with no domain part](https://webspatial.dev/docs/api/builder/run.md#--manifest), `--base` can provide the domain and complete the URL.
+
+| Resolution state | Runtime behavior |
+| --- | --- |
+| A complete `start_url` is available | The Packaged App loads HTML/CSS/JS and other Web files from the network at runtime. |
+| A complete `start_url` is missing | WebSpatial Builder packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) into the native app bundle, and the app loads website files offline from local files inside the bundle at runtime. |
+
+:::tip[Prefer `--base` during development]
+During development and debugging, offline packaging means every code change requires rerunning Builder and waiting for packaging and installation to finish. It is recommended to provide `--base` whenever possible.
+:::
+
+If WebSpatial Builder already has the complete `start_url` for the current Web App, `--base` can be used to change the base part of `start_url`.
+
+### `--manifest`
+
+Tells WebSpatial Builder which path in the current project contains the Web App Manifest file. By default it reads from `public/manifest.webmanifest` or `public/manifest.json`.
+
+:::info[Fallback manifest during run]
+When running the `run` command, if the manifest cannot be found, WebSpatial Builder uses the following temporary manifest to reduce setup work in the early stage of project development:
+
+```json5 title="Temporary manifest used by run"
+{
+  name: "WebSpatialTest",
+  display: "minimal-ui",
+  start_url: "/",
+  scope: "/",
+}
+```
+:::
+
+Fields such as `start_url` in a Web App Manifest are usually relative URLs and do not hardcode the domain or other base URL parts. That means WebSpatial Builder cannot determine how to access the current Web App by URL from the manifest file in the project repository alone. It needs [`--base` to obtain the domain and complete the URL](https://webspatial.dev/docs/api/builder/run.md#--base). Otherwise, the generated Packaged App will contain all [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) and will not load the site from the network.
+
+### `--manifest-url`
+
+Tells WebSpatial Builder to fetch the Web App Manifest directly from the live site by URL.
+
+Because this URL includes the domain and other base parts, even if fields such as `start_url` in the Manifest are relative URLs, WebSpatial Builder can infer and complete `start_url` automatically just like a browser. In this case, WebSpatial Builder effectively embeds the live Web App into the Packaged App by URL, so local project files and parameters such as [`--base`](https://webspatial.dev/docs/api/builder/run.md#--base) are not required.
+
+### `--project`
+
+If WebSpatial Builder cannot determine how to access the current Web App by URL, it packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) from `dist/` into the native app bundle by default.
+
+You can use `--project` to make WebSpatial Builder read the website build output from a different path.
+
+##### `webspatial-builder build`
+
+Source: https://webspatial.dev/docs/api/builder/build.md
+
+Build a Packaged WebSpatial App that can be installed on test devices or prepared for release workflows.
+
+Used to preview a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) on a test device.
+It only handles packaging. You still need to use the platform's official tools, such as Xcode, to push the app bundle to the test device, install it, and launch it.
+visionOS test devices must be [registered in advance in the Apple developer account console and in Xcode](https://webspatial.dev/docs/how-to/app-store-connect.md#device-testing).
+
+## Quick Reference
+
+| Item | Value |
+| --- | --- |
+| Best for | Previewing a Packaged WebSpatial App on a personal test device. |
+| Required credentials | `--bundle-id` and `--teamId` for visionOS. |
+| Does it upload to a store? | No. |
+
+## When to Use {#when-to-use}
+
+- When you want to run a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that does not include [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), such as visionOS.
+- When you only need to [preview the effect on a personal test device](https://webspatial.dev/docs/how-to/app-store-connect.md#device-testing).
+
+## When Not to Use {#when-not-to-use}
+
+- When you want to run on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that includes [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) and supports running a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) directly by URL, such as [PICO OS 6](https://developer.picoxr.com/document/web/web-app/).
+- When you only need to [preview in a simulator](https://webspatial.dev/docs/api/builder/run.md), or when you want to [distribute the app widely](https://webspatial.dev/docs/api/builder/publish.md).
+
+## Syntax {#syntax}
+
+```bash title="Build an app bundle for a test device" {2-3}
+webspatial-builder build \
+  --bundle-id=<id> \
+  --teamId=<id> \
+  [--export=<local path>] \
+  [--base=<base url>] \
+  [--manifest=<local path>] \
+  [--manifest-url=<url>] \
+  [--project=<dist>]
+```
+
+## Option Overview
+
+| Option | Required | What it controls |
+| --- | --- | --- |
+| `--teamId` | Yes for visionOS | Identifies the Apple developer team used to sign the build. |
+| `--bundle-id` | Yes for visionOS | Selects the registered Apple app identifier. |
+| `--export` | Optional | Changes the output path of the generated native app bundle. |
+| `--base` | Optional | Provides or overrides the base URL used to resolve `start_url`. |
+| `--manifest` | Optional | Points Builder at a local Web App Manifest file. |
+| `--manifest-url` | Optional | Fetches the manifest directly from a live site URL. |
+| `--project` | Optional | Points Builder at a custom website build output directory. |
+
+## Options {#options}
+
+### `--teamId`
+
+Required to preview on a visionOS device. Comes from the Team ID in the developer information of the [Apple developer account console](https://webspatial.dev/docs/how-to/app-store-connect.md#prerequisites).
+
+### `--bundle-id`
+
+Required to preview on a visionOS device. Comes from the Bundle ID obtained by registering the app in the [Apple developer account console](https://webspatial.dev/docs/how-to/app-store-connect.md#prerequisites).
+
+### `--export`
+
+By default, the native app bundle generated by WebSpatial Builder is written to the `build/` directory. Use `--export` to change it to a custom path.
+
+### `--base`
+
+Specifies the base URL for the start URL ([`start_url`](https://developer.mozilla.org/en-US/docs/Web/Manifest/start_url)) of the current [Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app). The default value is `""`.
+
+If WebSpatial Builder does not know the current Web App's `start_url`, the value of `--base` is used directly as `start_url`.
+
+If the current Web App's `start_url` obtained by WebSpatial Builder is a [relative URL with no domain part](https://webspatial.dev/docs/api/builder/build.md#--manifest), `--base` can provide the domain and complete the URL.
+
+| Resolution state | Runtime behavior |
+| --- | --- |
+| A complete `start_url` is available | The Packaged App loads HTML/CSS/JS and other Web files from the network at runtime. |
+| A complete `start_url` is missing | WebSpatial Builder packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) into the native app bundle, and the app loads website files offline from local files inside the bundle at runtime. |
+
+If WebSpatial Builder already has the complete `start_url` for the current Web App, `--base` can be used to change the base part of `start_url`.
+
+### `--manifest`
+
+Tells WebSpatial Builder which path in the current project contains the Web App Manifest file. By default it reads from `public/manifest.webmanifest` or `public/manifest.json`.
+
+Fields such as `start_url` in a Web App Manifest are usually relative URLs and do not hardcode the domain or other base URL parts. That means WebSpatial Builder cannot determine how to access the current Web App by URL from the manifest file in the project repository alone. It needs [`--base` to obtain the domain and complete the URL](https://webspatial.dev/docs/api/builder/build.md#--base). Otherwise, the generated Packaged App will contain all [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) and will not load the site from the network.
+
+### `--manifest-url`
+
+Tells WebSpatial Builder to fetch the Web App Manifest directly from the live site by URL.
+
+Because this URL includes the domain and other base parts, even if fields such as `start_url` in the Manifest are relative URLs, WebSpatial Builder can infer and complete `start_url` automatically just like a browser. In this case, WebSpatial Builder effectively embeds the live Web App into the Packaged App by URL, so local project files and parameters such as [`--base`](https://webspatial.dev/docs/api/builder/build.md#--base) are not required.
+
+### `--project`
+
+If WebSpatial Builder cannot determine how to access the current Web App by URL, it packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) from `dist/` into the native app bundle by default.
+
+You can use `--project` to make WebSpatial Builder read the website build output from a different path.
+
+##### `webspatial-builder publish`
+
+Source: https://webspatial.dev/docs/api/builder/publish.md
+
+Upload a built Packaged WebSpatial App to App Store Connect for TestFlight or App Store submission.
+
+Used to submit a [Packaged WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md#packaged-webspatial-app) to an app store.
+It includes packaging and automatically uploads the app to the store after packaging.
+For the visionOS App Store, app information must be [filled in beforehand in App Store Connect](https://webspatial.dev/docs/how-to/app-store-connect.md#submission-to-the-app-store).
+
+## Quick Reference
+
+| Item | Value |
+| --- | --- |
+| Best for | Publishing a Packaged WebSpatial App to an app store. |
+| Required credentials | `--u`, `--p`, `--version`, `--bundle-id`, and `--teamId` for visionOS. |
+| Does it upload to a store? | Yes, automatically after packaging. |
+
+## When to Use {#when-to-use}
+
+- When you want to run a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that does not include [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime), such as visionOS.
+- When you want to [test on many real devices or distribute the app publicly](https://webspatial.dev/docs/introduction/getting-started.md#distribution).
+
+## When Not to Use {#when-not-to-use}
+
+- When you want to run on a [spatial computing](https://webspatial.dev/docs/concepts/spatial-computing.md) platform that includes [WebSpatial Runtime](https://webspatial.dev/docs/concepts/webspatial-app.md#webspatial-runtime) and supports running a [WebSpatial App](https://webspatial.dev/docs/concepts/webspatial-app.md) directly by URL, such as [PICO OS 6](https://developer.picoxr.com/document/web/web-app/).
+- When you only need to [preview in a simulator](https://webspatial.dev/docs/api/builder/run.md) or [preview on a personal test device](https://webspatial.dev/docs/api/builder/build.md).
+
+## Syntax {#syntax}
+
+```bash title="Package and upload an app-store build" {2-6}
+webspatial-builder publish \
+  --u=<username> \
+  --p=<password> \
+  --version=<app version> \
+  --bundle-id=<id> \
+  --teamId=<id> \
+  [--export=<local path>] \
+  [--base=<base url>] \
+  [--manifest=<local path>] \
+  [--manifest-url=<url>] \
+  [--project=<dist>]
+```
+
+## Option Overview
+
+| Option | Required | What it controls |
+| --- | --- | --- |
+| `--u` | Yes for visionOS | Provides the Apple developer account email used for upload. |
+| `--p` | Yes for visionOS | Provides the app-specific password for the Apple developer account. |
+| `--version` | Yes for visionOS | Sets the app version uploaded to App Store Connect. |
+| `--teamId` | Yes for visionOS | Identifies the Apple developer team used to sign the build. |
+| `--bundle-id` | Yes for visionOS | Selects the registered Apple app identifier. |
+| `--export` | Optional | Changes the output path of the generated native app bundle. |
+| `--base` | Optional | Provides or overrides the base URL used to resolve `start_url`. |
+| `--manifest` | Optional | Points Builder at a local Web App Manifest file. |
+| `--manifest-url` | Optional | Fetches the manifest directly from a live site URL. |
+| `--project` | Optional | Points Builder at a custom website build output directory. |
+
+## Options {#options}
+
+### `--u`
+
+Required to submit to the visionOS App Store. Comes from the account email in the developer information of the [Apple developer account console](https://webspatial.dev/docs/how-to/app-store-connect.md#prerequisites).
+
+### `--p`
+
+Required to submit to the visionOS App Store. Comes from the [app-specific password](https://support.apple.com/102654) of the Apple developer account.
+
+### `--teamId`
+
+Required to submit to the visionOS App Store. Comes from the Team ID in the developer information of the [Apple developer account console](https://webspatial.dev/docs/how-to/app-store-connect.md#prerequisites).
+
+### `--bundle-id`
+
+Required to submit to the visionOS App Store. Comes from the Bundle ID obtained by registering the app in the [Apple developer account console](https://webspatial.dev/docs/how-to/app-store-connect.md#prerequisites).
+
+### `--version`
+
+Required to submit to the visionOS App Store. It must be greater than the version already submitted to App Store Connect.
+
+### `--export`
+
+By default, the native app bundle generated by WebSpatial Builder is written to the `build/` directory. Use `--export` to change it to a custom path.
+
+### `--base`
+
+Specifies the base URL for the start URL ([`start_url`](https://developer.mozilla.org/en-US/docs/Web/Manifest/start_url)) of the current [Web App](https://webspatial.dev/docs/concepts/webspatial-app.md#web-app). The default value is `""`.
+
+If WebSpatial Builder does not know the current Web App's `start_url`, the value of `--base` is used directly as `start_url`.
+
+If the current Web App's `start_url` obtained by WebSpatial Builder is a [relative URL with no domain part](https://webspatial.dev/docs/api/builder/publish.md#--manifest), `--base` can provide the domain and complete the URL.
+
+| Resolution state | Runtime behavior |
+| --- | --- |
+| A complete `start_url` is available | The Packaged App loads HTML/CSS/JS and other Web files from the network at runtime. |
+| A complete `start_url` is missing | WebSpatial Builder packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) into the native app bundle, and the app loads website files offline from local files inside the bundle at runtime. |
+
+If WebSpatial Builder already has the complete `start_url` for the current Web App, `--base` can be used to change the base part of `start_url`.
+
+### `--manifest`
+
+Tells WebSpatial Builder which path in the current project contains the Web App Manifest file. By default it reads from `public/manifest.webmanifest` or `public/manifest.json`.
+
+Fields such as `start_url` in a Web App Manifest are usually relative URLs and do not hardcode the domain or other base URL parts. That means WebSpatial Builder cannot determine how to access the current Web App by URL from the manifest file in the project repository alone. It needs [`--base` to obtain the domain and complete the URL](https://webspatial.dev/docs/api/builder/publish.md#--base). Otherwise, the generated Packaged App will contain all [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) and will not load the site from the network.
+
+### `--manifest-url`
+
+Tells WebSpatial Builder to fetch the Web App Manifest directly from the live site by URL.
+
+Because this URL includes the domain and other base parts, even if fields such as `start_url` in the Manifest are relative URLs, WebSpatial Builder can infer and complete `start_url` automatically just like a browser. In this case, WebSpatial Builder effectively embeds the live Web App into the Packaged App by URL, so local project files and parameters such as [`--base`](https://webspatial.dev/docs/api/builder/publish.md#--base) are not required.
+
+### `--project`
+
+If WebSpatial Builder cannot determine how to access the current Web App by URL, it packages the [website build output](https://webspatial.dev/docs/concepts/webspatial-app.md#web-build-tool) from `dist/` into the native app bundle by default.
+
+You can use `--project` to make WebSpatial Builder read the website build output from a different path.

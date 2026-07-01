@@ -33,7 +33,7 @@ Read-only.
 Example:
 
 ```js
-const currentOffsetZ = ref.current.xrOffsetBack;
+const currentOffsetZ = ref.current.xrOffsetBack
 ```
 
 ## Fallback Behavior

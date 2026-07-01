@@ -86,10 +86,12 @@ export default function Demo() {
   return (
     <div
       style={{
-        "--xr-back": "50px",
-        left: "0",
-      }}></div>
-  );
+        '--xr-back': '50px',
+        'left': '0',
+      }}
+    >
+    </div>
+  )
 }
 ```
 
@@ -143,17 +145,19 @@ export default function Demo({ animatedOffsetZ, animatedOffsetX }) {
   return (
     <div
       style={{
-        "--xr-back": animatedOffsetZ,
-        left: animatedOffsetX,
-      }}></div>
-  );
+        '--xr-back': animatedOffsetZ,
+        'left': animatedOffsetX,
+      }}
+    >
+    </div>
+  )
 }
 ```
 
 DOM API example:
 
 ```js
-ref.current.style["--xr-back"] = animatedOffsetZ;
+ref.current.style['--xr-back'] = animatedOffsetZ
 ```
 
 ## Interaction with Other CSS APIs
@@ -171,7 +175,7 @@ The interaction position information relative to the global coordinate system (`
 After obtaining a ref for an element, you can also directly read and write the `back` value in `style`:
 
 ```js
-const currentOffsetZ = ref.current.style["--xr-back"];
+const currentOffsetZ = ref.current.style['--xr-back']
 ```
 
 ## Fallback Behavior

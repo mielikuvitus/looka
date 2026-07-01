@@ -28,16 +28,16 @@ Only Spatial Scenes of type `volume` support `worldAlignment`.
 **Set worldAlignment for a new scene**
 
 ```js
-import { initScene } from "@webspatial/react-sdk";
+import { initScene } from '@webspatial/react-sdk'
 
-initScene("newSceneName", defaultConfig => {
+initScene('newSceneName', (defaultConfig) => {
   return {
     ...defaultConfig,
-    type: "volume",
-    worldAlignment: "gravityAligned",
-  };
-});
-window.open(newSceneUrl, "newSceneName");
+    type: 'volume',
+    worldAlignment: 'gravityAligned',
+  }
+})
+window.open(newSceneUrl, 'newSceneName')
 ```
 
 ### Using the Web App Manifest

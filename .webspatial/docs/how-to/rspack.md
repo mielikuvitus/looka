@@ -17,19 +17,19 @@ React projects based on [Rspack](https://www.rspack.dev/)/[Rsbuild](https://rsbu
 **rsbuild.config.ts**
 
 ```js
-import { defineConfig } from "@rsbuild/core";
-import { pluginReact } from "@rsbuild/plugin-react";
+import { defineConfig } from '@rsbuild/core'
+import { pluginReact } from '@rsbuild/plugin-react'
 
 export default defineConfig({
   plugins: [
     pluginReact({
       swcReactOptions: {
-        runtime: "automatic",
-        importSource: "@webspatial/react-sdk",
+        runtime: 'automatic',
+        importSource: '@webspatial/react-sdk',
       },
     }),
   ],
-});
+})
 ```
 
 ## Rspack
@@ -44,22 +44,22 @@ export default {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "builtin:swc-loader",
+          loader: 'builtin:swc-loader',
           options: {
             jsc: {
-              parser: { syntax: "typescript", tsx: true },
+              parser: { syntax: 'typescript', tsx: true },
               transform: {
                 react: {
-                  runtime: "automatic",
-                  importSource: "@webspatial/react-sdk",
+                  runtime: 'automatic',
+                  importSource: '@webspatial/react-sdk',
                 },
               },
             },
           },
         },
-        type: "javascript/auto",
+        type: 'javascript/auto',
       },
     ],
   },
-};
+}
 ```

@@ -16,20 +16,20 @@ Converts coordinates between [different coordinate systems](../../../concepts/3d
 ## Signature
 
 ```js
-import { convertCoordinate } from "@webspatial/react-sdk";
+import { convertCoordinate } from '@webspatial/react-sdk'
 
 const e2e = await convertCoordinate(position, {
   from: elementOrEntity,
   to: elementOrEntity,
-});
+})
 const e2w = await convertCoordinate(position, {
   from: elementOrEntity,
   to: window,
-});
+})
 const w2e = await convertCoordinate(position, {
   from: window,
   to: elementOrEntity,
-});
+})
 ```
 
 ## Parameters
@@ -37,7 +37,7 @@ const w2e = await convertCoordinate(position, {
 ### position
 
 ```ts
-type CoordinateLike = { x: number; y: number; z: number };
+interface CoordinateLike { x: number, y: number, z: number }
 ```
 
 The position point to convert.
@@ -51,7 +51,7 @@ This position must use the coordinate values and default unit of the coordinate 
 ## Return Shape
 
 ```ts
-Promise<CoordinateLike>;
+Promise<CoordinateLike>
 ```
 
 Returns a Promise that resolves to the converted coordinate point.

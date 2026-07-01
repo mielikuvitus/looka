@@ -31,7 +31,7 @@ Read-only.
 Example:
 
 ```js
-const currentVolumeDepth = window.xrInnerDepth;
+const currentVolumeDepth = window.xrInnerDepth
 ```
 
 ## Fallback Behavior

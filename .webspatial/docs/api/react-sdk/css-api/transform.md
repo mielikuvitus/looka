@@ -92,15 +92,17 @@ export default function Demo({ animatedOffsetZ, animatedOffsetX }) {
     <div
       style={{
         transform: `translateZ(${animatedOffsetZ}) translateX(${animatedOffsetX})`,
-      }}></div>
-  );
+      }}
+    >
+    </div>
+  )
 }
 ```
 
 DOM API example:
 
 ```js
-ref.current.style.transform = `translateZ(${animatedOffsetZ})`;
+ref.current.style.transform = `translateZ(${animatedOffsetZ})`
 ```
 
 ## Interaction with Other CSS APIs
@@ -114,8 +116,8 @@ Because Spatial Transform does not change an element's layout position and does 
 After obtaining a ref for an element, you can directly read and write the `transform` value in `style`:
 
 ```js
-const currentOffsetZ =
-  ref.current.style.transform.match(/translateZ\(([^)]+)\)/)?.[1] ?? "0px";
+const currentOffsetZ
+  = ref.current.style.transform.match(/translateZ\(([^)]+)\)/)?.[1] ?? '0px'
 ```
 
 ## Fallback Behavior

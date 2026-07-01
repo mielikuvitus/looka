@@ -27,16 +27,16 @@ One of the [initialization properties](../../../concepts/spatial-scenes.md#scene
 **Set baseplateVisibility for a new scene**
 
 ```js
-import { initScene } from "@webspatial/react-sdk";
+import { initScene } from '@webspatial/react-sdk'
 
-initScene("newSceneName", defaultConfig => {
+initScene('newSceneName', (defaultConfig) => {
   return {
     ...defaultConfig,
-    type: "volume",
-    baseplateVisibility: "hidden",
-  };
-});
-window.open(newSceneUrl, "newSceneName");
+    type: 'volume',
+    baseplateVisibility: 'hidden',
+  }
+})
+window.open(newSceneUrl, 'newSceneName')
 ```
 
 ### Using the Web App Manifest

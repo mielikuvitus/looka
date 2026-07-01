@@ -1,8 +1,24 @@
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
 build
 *.local
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Database (SQLite lives on a volume / local disk, never committed)
+backend/data/*.sqlite
+backend/data/*.sqlite-shm
+backend/data/*.sqlite-wal
+
+# Cloned external reference repos (pulled via `pnpm refs:pull`)
+misc/reference/external
 
 # Editor / OS
 .DS_Store

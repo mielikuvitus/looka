@@ -28,7 +28,7 @@ To remain compatible with third-party open-source libraries, the SDK supports th
 3. Add `enableXr: true` in the element's inline style:
 
 ```js
-<div className="card" style={{ enableXr: true, marginTop: "10px" }}></div>
+<div className="card" style={{ enableXr: true, marginTop: '10px' }}></div>
 ```
 
 > [!IMPORTANT]
@@ -42,11 +42,11 @@ Adding this special marker to a parent element of a [spatialized HTML element](.
 
 ```js
 function CardList() {
-  const [showFirstCard, setShowFirstCard] = useState(true);
+  const [showFirstCard, setShowFirstCard] = useState(true)
 
   const onClick = () => {
-    setShowFirstCard(prevState => !prevState);
-  };
+    setShowFirstCard(prevState => !prevState)
+  }
 
   return (
     <div enable-xr-monitor>
@@ -54,6 +54,6 @@ function CardList() {
       <div enable-xr>second card</div>
       <button onClick={onClick}>toggle</button>
     </div>
-  );
+  )
 }
 ```

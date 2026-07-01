@@ -18,32 +18,38 @@ The conversion ratio also differs across spatial computing platforms, so this AP
 ## Signature
 
 ```js
-import { useMetrics } from "@webspatial/react-sdk";
+import { useMetrics } from '@webspatial/react-sdk'
 
 function UnitConvertTest() {
-  const { pointToPhysical, physicalToPoint } = useMetrics();
+  const { pointToPhysical, physicalToPoint } = useMetrics()
 
   return (
     <>
       <pre>
         Scaled conversion
-        {"\n"}
-        physicalToPoint(1): {physicalToPoint(1)}
-        {"\n"}
-        pointToPhysical(1): {pointToPhysical(1)}
+        {'\n'}
+        physicalToPoint(1):
+        {' '}
+        {physicalToPoint(1)}
+        {'\n'}
+        pointToPhysical(1):
+        {' '}
+        {pointToPhysical(1)}
       </pre>
 
       <pre>
         Unscaled conversion
-        {"\n"}
-        physicalToPoint(1):{" "}
-        {physicalToPoint(1, { worldScalingCompensation: "unscaled" })}
-        {"\n"}
-        pointToPhysical(1):{" "}
-        {pointToPhysical(1, { worldScalingCompensation: "unscaled" })}
+        {'\n'}
+        physicalToPoint(1):
+        {' '}
+        {physicalToPoint(1, { worldScalingCompensation: 'unscaled' })}
+        {'\n'}
+        pointToPhysical(1):
+        {' '}
+        {pointToPhysical(1, { worldScalingCompensation: 'unscaled' })}
       </pre>
     </>
-  );
+  )
 }
 ```
 
@@ -54,16 +60,16 @@ None.
 ## Return Shape
 
 ```ts
-type WorldScalingCompensation = "scaled" | "unscaled";
+type WorldScalingCompensation = 'scaled' | 'unscaled'
 
-type MetricConvertOptions = {
-  worldScalingCompensation?: WorldScalingCompensation;
-};
+interface MetricConvertOptions {
+  worldScalingCompensation?: WorldScalingCompensation
+}
 
-type UseMetricsReturn = {
-  pointToPhysical: (value: number, options?: MetricConvertOptions) => number;
-  physicalToPoint: (value: number, options?: MetricConvertOptions) => number;
-};
+interface UseMetricsReturn {
+  pointToPhysical: (value: number, options?: MetricConvertOptions) => number
+  physicalToPoint: (value: number, options?: MetricConvertOptions) => number
+}
 ```
 
 `worldScalingCompensation` determines whether the current Spatial Scene container's `worldScaling` should be compensated during the conversion.

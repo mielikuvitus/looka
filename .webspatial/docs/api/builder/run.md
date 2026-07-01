@@ -82,10 +82,10 @@ Tells WebSpatial Builder which path in the current project contains the Web App 
 >
 > ```json5
 > {
->   name: "WebSpatialTest",
->   display: "minimal-ui",
->   start_url: "/",
->   scope: "/",
+>   "name": "WebSpatialTest",
+>   "display": "minimal-ui",
+>   "start_url": "/",
+>   "scope": "/"
 > }
 > ```
 

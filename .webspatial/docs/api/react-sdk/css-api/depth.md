@@ -46,13 +46,13 @@ export default function ProductPreview() {
   return (
     <Model
       style={{
-        width: "100px",
-        height: "100px",
-        "--xr-depth": "100px",
+        'width': '100px',
+        'height': '100px',
+        '--xr-depth': '100px',
       }}
       src="/assets/product.usdz"
     />
-  );
+  )
 }
 ```
 
@@ -61,15 +61,16 @@ export default function ProductPreview() {
   return (
     <Reality
       style={{
-        width: "1360px",
-        height: "1360px",
-        "--xr-depth": "1360px",
-      }}>
+        'width': '1360px',
+        'height': '1360px',
+        '--xr-depth': '1360px',
+      }}
+    >
       <World>
         <Box width="0.5" height="0.5" depth="0.5" />
       </World>
     </Reality>
-  );
+  )
 }
 ```
 
@@ -109,21 +110,22 @@ export default function ProductPreview({ animatedWidth, animatedDepth }) {
   return (
     <Reality
       style={{
-        width: animatedWidth,
-        "--xr-depth": animatedDepth,
-      }}>
+        'width': animatedWidth,
+        '--xr-depth': animatedDepth,
+      }}
+    >
       <World>
         <Box width="0.5" height="0.5" depth="0.5" />
       </World>
     </Reality>
-  );
+  )
 }
 ```
 
 DOM API example:
 
 ```js
-ref.current.style["--xr-depth"] = animatedDepth;
+ref.current.style['--xr-depth'] = animatedDepth
 ```
 
 ## Interaction with Other CSS APIs
