@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Looka · Use-Case Exploration — How we chose what to build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F3F0E7;--paper-deep:#E8E2D2;--card:#FBFAF4;
+    --ink:#1E1E1A;--ink-soft:#54514A;--ink-faint:#8A8676;
+    --line:#D8D2C1;--line-soft:#E5E0D0;
+    --clay:#C4613C;--clay-deep:#A44B2C;--clay-light:#E4A186;   /* industrial */
+    --teal:#3D6B60;--teal-deep:#2B4F45;--teal-light:#6E9A8E;   /* insurance */
+    --shadow:0 1px 0 rgba(0,0,0,.02),0 18px 40px -28px rgba(46,38,24,.45);
+    --mono:'Spline Sans Mono',ui-monospace,monospace;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(1100px 640px at 84% -10%, rgba(196,97,60,.08), transparent 60%),
+      radial-gradient(1000px 620px at -8% 8%, rgba(61,107,96,.07), transparent 58%);
+  }
+  ::selection{background:var(--ink);color:var(--paper)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;line-height:1.08;margin:0}
+  a{color:inherit;text-decoration:none}
+  .rise{opacity:0;transform:translateY(16px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  .topbar{border-bottom:1px solid var(--line);background:rgba(243,240,231,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:20}
+  .topbar .row{display:flex;align-items:center;gap:18px;height:46px}
+  .topbar .brand{font-family:var(--mono);font-weight:600;letter-spacing:.18em}
+  .topbar .sep{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px)}
+  .topbar .tag{color:var(--ink-faint)}
+
+  /* hero */
+  .hero{padding:76px 0 30px;text-align:center}
+  .hero .kick{color:var(--ink-faint)}
+  .hero h1{font-size:clamp(40px,6.5vw,72px);margin:16px 0 0}
+  .hero h1 em{font-style:italic;color:var(--clay-deep)}
+  .hero .lede{font-size:20px;color:var(--ink-soft);max-width:60ch;margin:22px auto 0}
+  .hero .meta{display:flex;gap:34px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+  .hero .meta div{text-align:left;border-left:2px solid var(--ink);padding-left:12px}
+  .hero .meta b{display:block;font-family:var(--serif);font-size:21px;font-weight:500}
+  .hero .meta span{color:var(--ink-faint)}
+
+  .shead{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  .shead .num{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--ink-faint)}
+  .shead h2{font-size:clamp(25px,3.2vw,38px)}
+  .sdesc{color:var(--ink-soft);max-width:66ch;margin:6px 0 34px}
+  .divider{height:1px;background:var(--line);margin:60px 0}
+
+  /* outcome cards */
+  .outcomes{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .oc{display:block;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s}
+  .oc:hover{transform:translateY(-5px);box-shadow:0 30px 56px -30px rgba(46,38,24,.55)}
+  .oc .bar{position:absolute;top:0;left:0;right:0;height:5px}
+  .oc.ind{border-color:var(--clay-light)}.oc.ind .bar{background:var(--clay)}.oc.ind:hover{border-color:var(--clay)}
+  .oc.ins{border-color:var(--teal-light)}.oc.ins .bar{background:var(--teal)}.oc.ins:hover{border-color:var(--teal)}
+  .oc .tagrow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .oc .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:100px}
+  .oc.ind .pill{color:var(--clay-deep);background:rgba(196,97,60,.1);border:1px solid rgba(196,97,60,.25)}
+  .oc.ins .pill{color:var(--teal-deep);background:rgba(61,107,96,.1);border:1px solid rgba(61,107,96,.25)}
+  .oc .glyph{width:54px;height:54px;margin-bottom:8px}
+  .oc h3{font-size:29px}
+  .oc .sub{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink-soft);margin:6px 0 16px}
+  .oc .arc{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .oc .step{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--line);border-radius:4px;padding:3px 8px;background:var(--paper)}
+  .oc .open{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .oc.ind .open{color:var(--clay-deep)}.oc.ins .open{color:var(--teal-deep)}
+  .oc .open .ar{transition:transform .3s}.oc:hover .open .ar{transform:translateX(5px)}
+
+  /* timeline */
+  .timeline{position:relative;margin-top:8px;padding-left:38px}
+  .timeline::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--clay),var(--teal))}
+  .tl{position:relative;padding:0 0 34px 0}
+  .tl:last-child{padding-bottom:0}
+  .tl .node{position:absolute;left:-33px;top:2px;width:20px;height:20px;border-radius:50%;background:var(--card);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
+  .tl .node b{width:7px;height:7px;border-radius:50%;background:var(--ink)}
+  .tl.c .node{border-color:var(--clay)}.tl.c .node b{background:var(--clay)}
+  .tl.t .node{border-color:var(--teal)}.tl.t .node b{background:var(--teal)}
+  .tl .when{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .tl h4{font-family:var(--serif);font-weight:500;font-size:22px;margin:3px 0 6px}
+  .tl p{margin:0;color:var(--ink-soft);font-size:15.5px;max-width:72ch}
+  .tl .hl{color:var(--ink);font-weight:600}
+  .tl.c .hl{color:var(--clay-deep)}.tl.t .hl{color:var(--teal-deep)}
+
+  /* insight callout */
+  .insight{border:1px solid var(--teal);border-radius:8px;background:linear-gradient(180deg,rgba(61,107,96,.06),var(--card));padding:28px 30px;box-shadow:var(--shadow);position:relative}
+  .insight .badge{position:absolute;top:-13px;left:26px;background:var(--teal);color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:5px 14px;border-radius:4px;text-transform:uppercase}
+  .insight p{margin:6px 0 0;font-family:var(--serif);font-size:20px;font-style:italic;color:var(--ink);max-width:80ch}
+  .insight .src{font-family:var(--mono);font-size:11px;font-style:normal;letter-spacing:.08em;color:var(--ink-faint);margin-top:14px;text-transform:uppercase}
+
+  /* method */
+  .method{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .m{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+  .m .n{font-family:var(--mono);font-size:12px;color:var(--ink-faint);letter-spacing:.1em}
+  .m h4{font-family:var(--serif);font-weight:500;font-size:20px;margin:8px 0 6px}
+  .m p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .m code{font-family:var(--mono);font-size:12.5px;color:var(--clay-deep);background:var(--paper-deep);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+
+  /* next */
+  .next{border:1px dashed var(--clay);border-radius:8px;background:var(--card);padding:26px 30px;box-shadow:var(--shadow)}
+  .next h4{font-family:var(--serif);font-weight:500;font-size:22px;margin:0 0 8px}
+  .next p{margin:0;color:var(--ink-soft);font-size:15.5px;max-width:78ch}
+  .next .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay-deep)}
+
+  footer.foot{border-top:1px solid var(--line);margin-top:68px;padding:30px 0 60px;color:var(--ink-faint);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  @media(max-width:820px){.outcomes,.method{grid-template-columns:1fr}.hero{padding:52px 0 18px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <span class="brand">LOOKA</span>
+    <span class="mono tag">misc / reference / use-case-exploration</span>
+    <span class="sep"></span>
+    <span class="mono tag">XRCC'26 · PICO Tech Layer</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero wrap">
+  <p class="mono kick rise" style="animation-delay:.05s">A session log · for the whole team</p>
+  <h1 class="rise" style="animation-delay:.12s">Where should Looka<br><em>point the room?</em></h1>
+  <p class="lede rise" style="animation-delay:.22s">
+    Looka is a spatial room of AI-agent panels. The same build can enter a second XRCC use-case
+    track with <b>zero rebuild</b> — we just change what the panels look at. This folder is the
+    exploration: two use cases worked end-to-end, and the reasoning that connects them.
+  </p>
+  <div class="meta rise" style="animation-delay:.32s">
+    <div><b>2</b><span class="mono">use cases explored</span></div>
+    <div><b>20</b><span class="mono">agent ideas</span></div>
+    <div><b>4+4</b><span class="mono">shortlisted to ship</span></div>
+    <div><b>1</b><span class="mono">build, unchanged</span></div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="wrap" style="margin-top:40px">
+  <div class="shead"><span class="num">01</span><h2>The two outcomes</h2></div>
+  <p class="sdesc">Each is a standalone design doc — ten candidate agents, a recommended four,
+    and how they slot into the repo. Open either.</p>
+
+  <div class="outcomes">
+    <!-- industrial -->
+    <a class="oc ind rise" style="animation-delay:.05s" href="./industrial-iron-man-hud.html">
+      <span class="bar"></span>
+      <div class="tagrow"><span class="pill">Explored first</span><span class="pill">Iron Man HUD</span></div>
+      <svg class="glyph" viewBox="0 0 48 48" fill="none" stroke="var(--clay)" stroke-width="1.6">
+        <circle cx="24" cy="24" r="17" stroke="var(--line)"/>
+        <circle cx="24" cy="24" r="9" stroke="var(--clay)" stroke-dasharray="3 4"/>
+        <path d="M24 3v10M24 35v10M3 24h10M35 24h10" stroke="var(--ink-faint)"/>
+        <path d="M24 19v10M19 24h10" stroke="var(--clay)"/>
+        <circle cx="24" cy="24" r="2.4" fill="var(--clay)" stroke="none"/>
+      </svg>
+      <h3>Industrial Operations</h3>
+      <p class="sub">"Ten agents for the factory floor."</p>
+      <div class="arc">
+        <span class="step">See · HazardEye</span><span class="step">Read · FloorBoss</span>
+        <span class="step">Ask · SpecOracle</span><span class="step">Log · LogScribe</span>
+      </div>
+      <span class="open">Open the doc <span class="ar">→</span></span>
+    </a>
+
+    <!-- insurance -->
+    <a class="oc ins rise" style="animation-delay:.12s" href="./insurance-companion.html">
+      <span class="bar"></span>
+      <div class="tagrow"><span class="pill">Pivoted to</span><span class="pill">ERGO · highest opportunity</span></div>
+      <svg class="glyph" viewBox="0 0 48 48" fill="none" stroke="var(--teal)" stroke-width="1.6">
+        <rect x="10" y="6" width="24" height="32" rx="2"/>
+        <path d="M15 14h14M15 20h14M15 26h9" stroke="var(--ink-faint)"/>
+        <circle cx="33" cy="32" r="9" fill="var(--card)" stroke="var(--teal)"/>
+        <path d="M29 32l3 3 5-6" stroke="var(--teal)" stroke-width="2"/>
+      </svg>
+      <h3>Insurance Companion</h3>
+      <p class="sub">"Ten agents that kill the paperwork."</p>
+      <div class="arc">
+        <span class="step">Sort · ClaimTriage</span><span class="step">Read · PolicyParser</span>
+        <span class="step">Check · FraudSniff</span><span class="step">Reply · MailDrafter</span>
+      </div>
+      <span class="open">Open the doc <span class="ar">→</span></span>
+    </a>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- TIMELINE -->
+<section class="wrap">
+  <div class="shead"><span class="num">02</span><h2>How the thinking moved</h2></div>
+  <p class="sdesc">The order matters — the insurance direction only emerged because we first built
+    the industrial one and then heard what the insurers actually care about.</p>
+
+  <div class="timeline">
+    <div class="tl">
+      <span class="node"><b></b></span>
+      <div class="when">Starting point</div>
+      <h4>The reusable pattern</h4>
+      <p>Looka is a room of per-member agent panels. Frank's voice orb (OpenAI Realtime over
+        WebRTC) already shipped and proved the loop: <span class="hl">browser panel → /api relay →
+        LLM + tools → one spoken answer</span>. That pattern is what let us try on a whole use case
+        in an afternoon instead of a week.</p>
+    </div>
+
+    <div class="tl c">
+      <span class="node"><b></b></span>
+      <div class="when">Move 01 · Industrial</div>
+      <h4>The "Iron Man HUD" for operations</h4>
+      <p>First exploration. Reframe — not rebuild — the room as a heads-up display for a factory
+        floor. Ten agents (HazardEye, FloorBoss, SpecOracle, LogScribe, GhostPlan, RemoteHand,
+        BinSeeker, ShiftPulse, TwinCheck, DrawDown), shortlisted to a four-panel demo arc
+        <span class="hl">See → Read → Ask → Log</span>. Same PICO build → a second $600 pot.</p>
+    </div>
+
+    <div class="tl t">
+      <span class="node"><b></b></span>
+      <div class="when">Move 02 · The insight</div>
+      <h4>What insurers actually want</h4>
+      <p>Feedback from Dinesh and the insurance team flipped the frame: the flashy spatial
+        field demo (flood-scan through glasses) is <span class="hl">not</span> what insurers buy.
+        Their pain is the back office — <span class="hl">contracts, forms, email, the claims
+        queue</span>. "Make things more efficient" is the feature. And it's the least-contested,
+        highest-opportunity track on the board.</p>
+    </div>
+
+    <div class="tl t">
+      <span class="node"><b></b></span>
+      <div class="when">Move 03 · Insurance</div>
+      <h4>Point the room at the operator's desk</h4>
+      <p>Pivoted the exploration. Ten desk agents that do in seconds what took days (ClaimTriage,
+        PolicyParser, FraudSniff, MailDrafter, FormFiller, IntakeScribe, CoverageMatch,
+        RenewalRadar, SettleMate, AuditTrail), shortlisted to <span class="hl">Sort → Read →
+        Check → Reply</span> — one claim from overnight inbox to filed answer.</p>
+    </div>
+
+    <div class="tl c">
+      <span class="node"><b></b></span>
+      <div class="when">Next · Open</div>
+      <h4>Replace guesses with their real pain</h4>
+      <p>The highest-leverage move isn't more ideas — it's ten minutes with the ERGO people at
+        demo day. Six sharp questions are queued in the insurance doc; their answers re-rank the
+        ten and lock the four. <span class="hl">Then we re-cut and rewrite the trailer's opening
+        line to their exact words.</span></p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- INSIGHT -->
+<section class="wrap">
+  <div class="shead"><span class="num">03</span><h2>The one line to remember</h2></div>
+  <div class="insight">
+    <span class="badge">Cross-cutting insight</span>
+    <p>The winning move for a horizontal agent-room isn't the flashiest field demo — it's finding
+      the industry whose <em>boring, expensive, back-office work</em> our panels can quietly
+      delete. For insurance, that's paperwork. Same room, pointed at the pain.</p>
+    <div class="src">Source · XRCC ERGO brief + Dinesh &amp; insurance-team feedback, 2026-07-01</div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- METHOD -->
+<section class="wrap">
+  <div class="shead"><span class="num">04</span><h2>The method, both times</h2></div>
+  <p class="sdesc">Same recipe for every use case, so any teammate can run the next one.</p>
+  <div class="method">
+    <div class="m"><div class="n">A</div><h4>Ten candidates</h4><p>Generate ten agent ideas grounded in the track brief's own tech lines — not invented, mapped.</p></div>
+    <div class="m"><div class="n">B</div><h4>Ship four</h4><p>Shortlist a coherent four-verb demo arc that tells one story end-to-end for the trailer.</p></div>
+    <div class="m"><div class="n">C</div><h4>One repo slice each</h4><p>Every agent is a <code>features/&lt;name&gt;</code> page + an <code>api/&lt;name&gt;</code> relay — four people, no collisions.</p></div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- NEXT -->
+<section class="wrap">
+  <div class="next">
+    <span class="k">Open follow-up</span>
+    <h4>Validate at the ERGO table — tomorrow</h4>
+    <p>Whoever talks to the insurance folks: grab the six questions in
+      <a href="./insurance-companion.html" style="color:var(--teal-deep);text-decoration:underline">insurance-companion.html</a>
+      → "Validate at the ERGO table". Send the answers back and the ten get re-cut, the four get
+      swapped, and the trailer opens on a real number instead of a vibe.</p>
+  </div>
+</section>
+
+<footer class="foot wrap">
+  <span>LOOKA · lookalabs.com</span>
+  <span>USE-CASE EXPLORATION · INDUSTRIAL ↔ INSURANCE</span>
+  <span>ONE BUILD · MANY TRACKS</span>
+</footer>
+
+</body>
+</html>
