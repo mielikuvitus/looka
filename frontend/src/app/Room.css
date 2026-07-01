@@ -26,6 +26,18 @@
   isolation: isolate;
 }
 
+.scene-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.36),
+    rgba(255, 255, 255, 0.14)
+  );
+  --xr-background-material: translucent;
+  pointer-events: none;
+}
+
 .scene-guides {
   position: absolute;
   inset: calc(var(--scene-padding) * 1.1);
@@ -45,8 +57,12 @@
 
 .guide-axis,
 .guide-horizon {
-  background:
-    linear-gradient(180deg, transparent, rgba(80, 120, 160, 0.4), transparent);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(80, 120, 160, 0.4),
+    transparent
+  );
 }
 
 .guide-axis {
@@ -61,8 +77,12 @@
   right: 9%;
   top: 58%;
   height: 1px;
-  background:
-    linear-gradient(90deg, transparent, rgba(80, 120, 160, 0.35), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(80, 120, 160, 0.35),
+    transparent
+  );
 }
 
 .panel,
@@ -333,8 +353,11 @@
   position: relative;
   min-height: 264px;
   border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.36),
+    rgba(255, 255, 255, 0.14)
+  );
   border: 1px solid rgba(92, 121, 156, 0.16);
   --xr-back: 14px;
   transform: rotateY(-2deg) rotateX(1deg);
@@ -348,7 +371,11 @@
   padding: 18px;
   border-radius: 28px;
   background:
-    radial-gradient(circle at 35% 35%, rgba(19, 126, 139, 0.22), transparent 58%),
+    radial-gradient(
+      circle at 35% 35%,
+      rgba(19, 126, 139, 0.95),
+      transparent 58%
+    ),
     rgba(248, 251, 255, 0.52);
   transform: rotateY(-4deg) rotateX(3deg);
   --xr-back: 10px;

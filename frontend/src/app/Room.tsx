@@ -15,6 +15,7 @@ export function Room() {
 
   return (
     <main className="scene-shell" enable-xr-monitor>
+      <div className="scene-bg" aria-hidden="true" />
       <div className="agent-launcher">
         <button
           type="button"
