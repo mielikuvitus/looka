@@ -9,7 +9,9 @@
 import process from 'node:process'
 
 // Speech-to-speech model for the voice orb. Override with OPENAI_REALTIME_MODEL.
-const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime-2'
+// Use `||` not `??`: docker-compose passes an empty string when the var is
+// unset (`${OPENAI_REALTIME_MODEL:-}`), and we want that to fall back too.
+const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime-2'
 const VOICE = 'alloy'
 
 // Frank's persona, embedded in the minted session. The frontend re-asserts the

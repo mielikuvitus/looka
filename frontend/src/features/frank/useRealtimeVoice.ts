@@ -68,7 +68,7 @@ export function useRealtimeVoice() {
 
       handleRef.current = await connectRealtime({
         token: data.token,
-        model: data.model ?? 'gpt-realtime-2',
+        model: data.model || 'gpt-realtime-2',
         instructions: FRANK_INSTRUCTIONS,
         audioEl,
         onOpen: () => setState('listening'),
