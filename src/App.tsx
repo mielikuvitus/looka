@@ -1,25 +1,10 @@
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
+import {useState} from 'react'
+import { Model } from '@webspatial/react-sdk'
 import './App.css'
-
-const laneCards = [
-  {
-    title: 'North shelf',
-    detail: 'utility nodes staged close to the user',
-    depth: '+220px',
-  },
-  {
-    title: 'Mid drift',
-    detail: 'core cards stay readable but clearly separated',
-    depth: '+150px',
-  },
-  {
-    title: 'Low runway',
-    detail: 'supporting tiles dock lower and farther back',
-    depth: '+110px',
-  },
-]
+import { useSpatialDrag } from './useSpatialDrag'
 
 const metricCards = [
   {
@@ -79,15 +64,28 @@ const flowSteps = [
 ]
 
 function App() {
+  const [agentCreated, setAgentCreated] = useState(false)
+
+  const heroDrag = useSpatialDrag('rotateY(-2deg) rotateX(-2deg)')
+  const stackDrag = useSpatialDrag('rotateY(-9deg) rotateX(-3deg)')
+  const metricsDrag = useSpatialDrag('rotateY(-2deg) rotateX(2deg)')
+  const flowDrag = useSpatialDrag('rotateY(-3deg) rotateX(6deg)')
+  const dioramaDrag = useSpatialDrag('rotateY(-4deg) rotateX(2deg)')
+
   return (
     <main className="scene-shell" enable-xr-monitor>
+      <div className="agent-launcher">
+        <button className="create-agent-button" onClick={() => setAgentCreated(true)}>
+          Create agent
+        </button>
+      </div>
       <div className="scene-guides" aria-hidden="true">
         <span className="guide guide-ring"></span>
         <span className="guide guide-axis"></span>
         <span className="guide guide-horizon"></span>
       </div>
 
-      <section className="panel panel-hero" enable-xr>
+      <section className="panel panel-hero is-hidden" enable-xr {...heroDrag}>
         <div className="surface-chip panel-tag" enable-xr>
           Windowless spatial layout
         </div>
@@ -145,28 +143,7 @@ function App() {
         </div>
       </section>
 
-      <section className="panel panel-map" enable-xr>
-        <div className="surface-chip panel-tag" enable-xr>
-          Spatial lanes
-        </div>
-        <h2 className="panel-title">Order before drama.</h2>
-        <p className="panel-copy">
-          Cards are distributed across fixed shelves so the scene uses the
-          entire window without falling back to scrolling.
-        </p>
-
-        <div className="lane-grid">
-          {laneCards.map((lane) => (
-            <article className="lane-card surface-card" enable-xr key={lane.title}>
-              <strong>{lane.title}</strong>
-              <p>{lane.detail}</p>
-              <span className="lane-depth">{lane.depth}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="panel panel-stack" enable-xr>
+      <section className="panel panel-stack is-hidden" enable-xr {...stackDrag}>
         <div className="surface-chip panel-tag" enable-xr>
           Nested faces
         </div>
@@ -190,7 +167,7 @@ function App() {
         </div>
       </section>
 
-      <section className="panel panel-metrics" enable-xr>
+      <section className="panel panel-metrics is-hidden" enable-xr {...metricsDrag}>
         <div className="surface-chip panel-tag" enable-xr>
           Scene readout
         </div>
@@ -207,7 +184,7 @@ function App() {
         </div>
       </section>
 
-      <section className="panel panel-flow" enable-xr>
+      <section className="panel panel-flow is-hidden" enable-xr {...flowDrag}>
         <div className="surface-chip panel-tag" enable-xr>
           Build pattern
         </div>
@@ -235,6 +212,16 @@ function App() {
           </span>
         </div>
       </section>
+
+      {agentCreated && (
+        <section className="panel panel-diorama" enable-xr {...dioramaDrag}>
+          <Model
+            enable-xr
+            src="/models/diorama.usdz"
+            style={{ width: '100%', height: '220px', '--xr-depth': '220px' }}
+          />
+        </section>
+      )}
     </main>
   )
 }
