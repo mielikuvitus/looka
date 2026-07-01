@@ -13,10 +13,6 @@ export function NonSpatialLanding() {
 
   return (
     <div className="landing-shell">
-      <div className="landing-glow" aria-hidden="true">
-        <img src="/landing/glow-center.svg" alt="" />
-      </div>
-
       <header className="landing-navbar">
         <img className="landing-logo" src="/landing/logo-group.svg" alt="Looka" />
         <div className="landing-navbar-hint-wrap">
@@ -48,6 +44,7 @@ export function NonSpatialLanding() {
           </p>
         </div>
 
+        <div className="landing-hero-glow" aria-hidden="true" />
         <div className="landing-visual">
           <div className="landing-visual-preview">
             <img src="/landing/preview-content.png" alt="" />

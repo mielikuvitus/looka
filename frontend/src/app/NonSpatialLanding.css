@@ -139,6 +139,18 @@
   color: #0d0d0d;
 }
 
+.landing-hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle 320px at 50% 50%,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  pointer-events: none;
+}
+
 .landing-visual {
   position: relative;
   width: 100%;
