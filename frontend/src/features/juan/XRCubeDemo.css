@@ -1,0 +1,45 @@
+/* juan — WebXR cube experiment. Owner: juan (gentle default; edit freely). */
+
+.xr-cube-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: var(--scene-padding, 24px);
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.36),
+    rgba(255, 255, 255, 0.14)
+  );
+}
+
+.xr-cube-status {
+  max-width: 46ch;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: var(--mono, monospace);
+  color: var(--text-strong);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--line-strong, rgba(0, 0, 0, 0.15));
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.xr-cube-status.is-error {
+  color: #fff;
+  background: #c2543a;
+  border-color: #c2543a;
+}
+
+.xr-cube-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

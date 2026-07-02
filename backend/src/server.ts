@@ -114,6 +114,7 @@ const MIME: Record<string, string> = {
   '.jpg': 'image/jpeg',
   '.ico': 'image/x-icon',
   '.usdz': 'model/vnd.usdz+zip',
+  '.glb': 'model/gltf-binary',
   '.wasm': 'application/wasm',
 }
 

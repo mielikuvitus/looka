@@ -1,0 +1,39 @@
+/* juan — launcher card. Owner: juan (gentle default; edit freely). */
+
+.agent-card.is-materialized {
+  opacity: 0.45;
+  filter: grayscale(1);
+  pointer-events: none;
+}
+
+.agent-card-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.juan-status-bar {
+  /* TEMP: hidden for a clean demo/upload — remove this line to bring the
+     debug status bar back. */
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: var(--mono, monospace);
+  text-align: center;
+  color: var(--text-strong);
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid var(--line-strong, rgba(0, 0, 0, 0.15));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.juan-status-bar.is-error {
+  color: #fff;
+  background: #c2543a;
+  border-bottom-color: #c2543a;
+}

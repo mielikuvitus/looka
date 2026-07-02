@@ -1,22 +1,27 @@
-import { Model } from '@webspatial/react-sdk'
-import { useState } from 'react'
-import { FrankCard } from '../features/frank/FrankCard'
-import { JoeCard } from '../features/joe/JoeCard'
+// import { Model } from '@webspatial/react-sdk'
+// import { useState } from 'react'
+// import { FrankCard } from '../features/frank/FrankCard'
+// import { JoeCard } from '../features/joe/JoeCard'
 import { JuanCard } from '../features/juan/JuanCard'
-import { SuviCard } from '../features/suvi/SuviCard'
-import { useSpatialDrag } from '../shared/composables/useSpatialDrag'
+// import { SuviCard } from '../features/suvi/SuviCard'
+// import { useSpatialDrag } from '../shared/composables/useSpatialDrag'
 import './Room.css'
 
 // The room shell: common ground, no owner. It holds the spatial scene —
 // enable-xr surfaces, draggable agent panels, and Juan's 3D diorama.
+//
+// TEMP (perf debugging on the emulator): create-agent button, the diorama,
+// and the frank/suvi/joe cards are commented out — not deleted — so only
+// JuanCard renders while we isolate emulator rendering slowness. Restore by
+// uncommenting.
 export function Room() {
-  const [showDiorama, setShowDiorama] = useState(false)
-  const dioramaDrag = useSpatialDrag('rotateY(-4deg) rotateX(2deg)')
+  // const [showDiorama, setShowDiorama] = useState(false)
+  // const dioramaDrag = useSpatialDrag('rotateY(-4deg) rotateX(2deg)')
 
   return (
     <main className="scene-shell" enable-xr-monitor>
       <div className="scene-bg" aria-hidden="true" />
-      <div className="agent-launcher">
+      {/* <div className="agent-launcher">
         <button
           type="button"
           className="create-agent-button"
@@ -24,7 +29,7 @@ export function Room() {
         >
           Create agent
         </button>
-      </div>
+      </div> */}
 
       <div className="scene-guides" aria-hidden="true">
         <span className="guide guide-ring"></span>
@@ -32,14 +37,14 @@ export function Room() {
         <span className="guide guide-horizon"></span>
       </div>
 
-      <div className="agent-grid">
-        <FrankCard />
+      <div className="agent-grid" style={{ display: 'flex', justifyContent: 'center' }}>
+        {/* <FrankCard /> */}
         <JuanCard />
-        <SuviCard />
-        <JoeCard />
+        {/* <SuviCard /> */}
+        {/* <JoeCard /> */}
       </div>
 
-      {showDiorama && (
+      {/* {showDiorama && (
         <section className="panel panel-diorama" enable-xr {...dioramaDrag}>
           <Model
             enable-xr
@@ -47,7 +52,7 @@ export function Room() {
             style={{ 'width': '100%', 'height': '220px', '--xr-depth': '220px' }}
           />
         </section>
-      )}
+      )} */}
     </main>
   )
 }
