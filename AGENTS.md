@@ -4,6 +4,27 @@ Looka is a WebSpatial spatial-web app for the XRCC PICO hackathon: AI agents
 shown as draggable floating panels in a room. This file is the canonical guide.
 `CLAUDE.md` just points here.
 
+## Current room state: bee-first landing
+
+Per team feedback, `frontend/src/app/Room.tsx` currently renders **only**
+juan's "SolidTime Bee" card (`frontend/src/features/juan/JuanCard.tsx`) —
+no multi-agent grid, no "Create agent" button, no diorama picker. The
+earlier design (all four agent cards laid out in a grid, with a button to
+materialize a diorama) added extra clicks/navigation before reaching the
+thing that actually matters right now, so it was cut to reduce friction.
+
+This is a UI wiring decision, not a code deletion: `FrankCard`, `SuviCard`,
+`JoeCard`, and the diorama feature still exist under their
+`frontend/src/features/<name>/` folders exactly as before — they're just
+not imported/rendered by `Room.tsx` at the moment. `git log -- frontend/src/app/Room.tsx`
+has the previous 4-card grid layout if that direction changes again.
+
+juan's "SolidTime Bee" card materializes a `Model`-free, raw WebXR
+`immersive-ar` session (bypassing WebSpatial's `<Model>`/`<Reality>`
+entirely — see `frontend/src/features/juan/README.md` for why and for the
+gotchas involved in mixing raw WebXR with WebSpatial). That README is the
+canonical doc for anything bee/WebXR-related; this file stays high-level.
+
 ## What's in the repo
 
 ```
@@ -27,6 +48,10 @@ key read from env). These folders are just a starting point — anyone can touch
 anything. `frontend/src/app/` and `frontend/src/shared/` are **common ground**
 with no owner. A shared panel/kit is optional; each card is just HTML on the
 page, so build yours however you like.
+
+Only juan's card is currently wired into `Room.tsx` — see "Current room
+state" above. Everyone else's card code is untouched and ready to be
+re-added to the room whenever that's the direction again.
 
 ## How it runs
 

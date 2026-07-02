@@ -1,35 +1,23 @@
-// import { Model } from '@webspatial/react-sdk'
-// import { useState } from 'react'
-// import { FrankCard } from '../features/frank/FrankCard'
-// import { JoeCard } from '../features/joe/JoeCard'
 import { JuanCard } from '../features/juan/JuanCard'
-// import { SuviCard } from '../features/suvi/SuviCard'
-// import { useSpatialDrag } from '../shared/composables/useSpatialDrag'
 import './Room.css'
 
 // The room shell: common ground, no owner. It holds the spatial scene —
-// enable-xr surfaces, draggable agent panels, and Juan's 3D diorama.
+// enable-xr surfaces and background/guide chrome.
 //
-// TEMP (perf debugging on the emulator): create-agent button, the diorama,
-// and the frank/suvi/joe cards are commented out — not deleted — so only
-// JuanCard renders while we isolate emulator rendering slowness. Restore by
-// uncommenting.
+// Per team feedback, the room now lands directly on JuanCard's full-screen
+// "tap to enter AR" button — no agent grid, no "Create agent" button, no
+// diorama picker, and (per a follow-up round of feedback) no card chrome
+// around the button either: with only one agent and one action, a title +
+// panel wrapping a button was an unnecessary extra screen between landing
+// and AR. FrankCard/SuviCard/JoeCard and the diorama feature are untouched
+// and still exist under features/<name>/ — they're just not wired into
+// this shell at the moment. See frontend/src/features/juan/README.md for
+// the fuller picture, and `git log -- frontend/src/app/Room.tsx` for the
+// previous 4-card grid layout if this direction changes again.
 export function Room() {
-  // const [showDiorama, setShowDiorama] = useState(false)
-  // const dioramaDrag = useSpatialDrag('rotateY(-4deg) rotateX(2deg)')
-
   return (
     <main className="scene-shell" enable-xr-monitor>
       <div className="scene-bg" aria-hidden="true" />
-      {/* <div className="agent-launcher">
-        <button
-          type="button"
-          className="create-agent-button"
-          onClick={() => setShowDiorama(true)}
-        >
-          Create agent
-        </button>
-      </div> */}
 
       <div className="scene-guides" aria-hidden="true">
         <span className="guide guide-ring"></span>
@@ -37,22 +25,9 @@ export function Room() {
         <span className="guide guide-horizon"></span>
       </div>
 
-      <div className="agent-grid" style={{ display: 'flex', justifyContent: 'center' }}>
-        {/* <FrankCard /> */}
+      <div className="bee-stage">
         <JuanCard />
-        {/* <SuviCard /> */}
-        {/* <JoeCard /> */}
       </div>
-
-      {/* {showDiorama && (
-        <section className="panel panel-diorama" enable-xr {...dioramaDrag}>
-          <Model
-            enable-xr
-            src="/models/diorama.usdz"
-            style={{ 'width': '100%', 'height': '220px', '--xr-depth': '220px' }}
-          />
-        </section>
-      )} */}
     </main>
   )
 }

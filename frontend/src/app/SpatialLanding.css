@@ -1,0 +1,100 @@
+.spatial-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.spatial-icon-model {
+  flex-shrink: 0;
+}
+
+.spatial-landing-stack {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+
+@keyframes logo-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+
+.spatial-logo-model {
+  animation: logo-pulse 2.8s ease-in-out infinite;
+}
+
+.spatial-landing-panel {
+  width: min(520px, 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(32px, 4vw, 56px);
+  text-align: center;
+  border-radius: 32px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel-fill-strong);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  --xr-background-material: translucent;
+  box-shadow: var(--shadow);
+}
+
+.spatial-landing-headline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.spatial-headline-model {
+  flex-shrink: 0;
+}
+
+.spatial-landing-subheading {
+  margin: 0;
+  font-family: "Outfit", var(--heading);
+  font-size: clamp(15px, 1.6vw, 20px);
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: -0.02em;
+}
+
+.spatial-landing-cta {
+  margin-top: 12px;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 16px;
+  background: #DC0073;
+  color: #fff;
+  font-weight: 600;
+  font-size: clamp(15px, 1.4vw, 18px);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.spatial-landing-cta.is-busy {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.spatial-error-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: var(--mono, monospace);
+  text-align: center;
+  color: #fff;
+  background: #c2543a;
+}

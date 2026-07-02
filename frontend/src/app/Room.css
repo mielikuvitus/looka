@@ -161,7 +161,8 @@
   display: none;
 }
 
-/* Agent room: draggable floating panels laid out on a grid. */
+/* Agent room: draggable floating panels laid out on a grid. Currently
+   unused (see Room.tsx) — kept for when the multi-agent grid comes back. */
 .agent-grid {
   position: relative;
   z-index: 1;
@@ -170,6 +171,16 @@
   gap: clamp(18px, 2.4vw, 40px);
   width: min(920px, 82%);
   margin: clamp(24px, 4vh, 64px) auto 0;
+}
+
+/* Single-button landing stage: fills the available space so the bee's
+   launch button can be the whole screen, not a small centered card. */
+.bee-stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 .agent-card {
