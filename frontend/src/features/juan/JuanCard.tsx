@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { BeeExpressionController } from './beeExpressions'
 import './JuanCard.css'
 
 type XRStatus = 'idle' | 'starting' | 'in-session' | 'unsupported' | 'error'
@@ -8,7 +9,39 @@ type XRStatus = 'idle' | 'starting' | 'in-session' | 'unsupported' | 'error'
 const SESSION_REQUEST_TIMEOUT_MS = 8000
 const BEE_MODEL_URL = '/models/Bee_Kinde.glb'
 const BEE_TARGET_SIZE_M = 0.4
-const BEE_IDLE_CLIP = 'SitLeftRightLook'
+
+// TEMP debug: PICO controller face buttons (X/Y on the left controller,
+// A/B on the right) -> bee actions, so states can be triggered without
+// touching JS. Two independent input paths are wired to the same actions,
+// since it isn't certain which one the emulator actually surfaces to the
+// page:
+//
+// 1. WebXR gamepad buttons — the standard "xr-standard" mapping for
+//    Quest/PICO-style controllers puts each controller's two face buttons
+//    at indices 4 and 5 (X/Y on 'left', A/B on 'right'). This is the path
+//    real hardware uses. EVERY button press, on any controller/index, is
+//    still logged to console as
+//    `[bee-debug] gamepad button <N> pressed (source <M>, <handedness>)`
+//    regardless of whether it's mapped below, in case the real layout
+//    differs — watch the console and correct DEBUG_GAMEPAD_BUTTON_MAP if so.
+// 2. Plain keyboard keys — this emulator maps physical controller presses
+//    to keyboard input (X -> 'x', Y -> 'z', A -> Space, B -> 'Delete'), so
+//    this listens for those directly as a guaranteed-to-work fallback.
+//
+// Both are freely remappable; edit the two tables below.
+type BeeDebugAction = 'idle' | 'thinking' | 'speaking' | 'blink'
+
+const DEBUG_GAMEPAD_BUTTON_MAP: Record<'left' | 'right', Partial<Record<number, BeeDebugAction>>> = {
+  left: { 4: 'idle', 5: 'thinking' }, // X, Y
+  right: { 4: 'speaking', 5: 'blink' }, // A, B
+}
+
+const DEBUG_KEYBOARD_MAP: Record<string, BeeDebugAction> = {
+  'x': 'idle', // X
+  'z': 'thinking', // Y
+  ' ': 'speaking', // A (Space)
+  'Delete': 'blink', // B (Del)
+}
 
 // Session requests (or the bee load) can hang instead of rejecting — e.g.
 // immersive-ar with no real passthrough camera to grant permission for on
@@ -34,10 +67,12 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 //
 // "Materialize agent" goes straight into an immersive-ar session showing
 // the bee — AR only now (VR was a fallback while diagnosing the emulator's
-// activation/reference-space quirks; no longer needed). Bee_Kinde.glb has
-// three baked clips (confirmed by reading the .glb's JSON chunk directly):
-// SitLeftRightLook (idle/sitting — played on loop here), TalkiTwoHand,
-// WingsAnimation. Only the idle clip plays for now.
+// activation/reference-space quirks; no longer needed). The bee's
+// expression/speech state machine (idle/thinking/speaking clips, blink and
+// mouth-flap morph targets) lives in ./beeExpressions.ts — see that file's
+// header comment for the full API and .glb structure notes. Debug WebXR
+// controller buttons/keyboard keys trigger states too, see
+// DEBUG_GAMEPAD_BUTTON_MAP/DEBUG_KEYBOARD_MAP above.
 //
 // The card intentionally has no `enable-xr` anywhere in its tree — AR
 // worked when this lived in XRCubeDemo/weathery.html (zero enable-xr
@@ -147,6 +182,20 @@ export function JuanCard() {
     const beeAnchor = new THREE.Group()
     scene.add(beeAnchor)
 
+    // Invisible grab-target proxy: three.js raycasts a SkinnedMesh against
+    // its static bind-pose geometry, not its currently animated pose, so
+    // precise raycasting against the bee's real (animated) mesh is
+    // unreliable. A generously-sized invisible sphere, matching the bee's
+    // known auto-fit size, gives a reliable, pose-independent grab target
+    // instead — see onSelectStart below, which raycasts beeAnchor
+    // (recursively, so it still also tests the real mesh — harmless,
+    // just redundant).
+    const grabProxy = new THREE.Mesh(
+      new THREE.SphereGeometry(BEE_TARGET_SIZE_M * 0.75),
+      new THREE.MeshBasicMaterial({ visible: false }),
+    )
+    beeAnchor.add(grabProxy)
+
     // --- Controller: grab-and-drag repositioning -----------------------
     const controller = renderer.xr.getController(0)
     scene.add(controller)
@@ -188,6 +237,7 @@ export function JuanCard() {
 
     session.addEventListener('end', () => {
       cleanupRenderer()
+      window.removeEventListener('keydown', onDebugKeyDown)
       sessionRef.current = null
       setStatus('idle')
       setMessage('XR session ended — ready to materialize again.')
@@ -223,7 +273,7 @@ export function JuanCard() {
     setStatus('in-session')
     setMessage('Loading bee model…')
 
-    let mixer: THREE.AnimationMixer | null = null
+    let beeController: BeeExpressionController | null = null
 
     new GLTFLoader().load(
       BEE_MODEL_URL,
@@ -243,14 +293,8 @@ export function JuanCard() {
 
         beeAnchor.add(model)
 
-        const idleClip = gltf.animations.find(clip => clip.name === BEE_IDLE_CLIP)
-        if (idleClip) {
-          mixer = new THREE.AnimationMixer(model)
-          mixer.clipAction(idleClip).play()
-        }
-        else {
-          console.warn(`[solidtime-bee] "${BEE_IDLE_CLIP}" clip not found; available:`, gltf.animations.map(clip => clip.name))
-        }
+        beeController = new BeeExpressionController(model, gltf.animations)
+        beeController.setState('idle')
 
         setMessage('Bee model loaded.')
       },
@@ -261,9 +305,54 @@ export function JuanCard() {
       },
     )
 
+    function runDebugAction(action: BeeDebugAction) {
+      if (action === 'blink')
+        beeController?.blink()
+      else
+        beeController?.setState(action)
+    }
+
+    // Path 1: WebXR gamepad buttons. Tracks each (input source, button)
+    // pair's previous pressed state to fire only on the rising edge (press,
+    // not hold/repeat-per-frame). See DEBUG_GAMEPAD_BUTTON_MAP above.
+    const prevButtonPressed = new Map<string, boolean>()
+    function pollDebugControllerButtons() {
+      session.inputSources.forEach((inputSource, sourceIndex) => {
+        const gamepad = inputSource.gamepad
+        if (!gamepad)
+          return
+
+        gamepad.buttons.forEach((button, buttonIndex) => {
+          const key = `${sourceIndex}:${buttonIndex}`
+          const wasPressed = prevButtonPressed.get(key) ?? false
+          if (button.pressed && !wasPressed) {
+            console.warn(`[bee-debug] gamepad button ${buttonIndex} pressed (source ${sourceIndex}, ${inputSource.handedness})`)
+            const handednessMap = inputSource.handedness === 'left' || inputSource.handedness === 'right'
+              ? DEBUG_GAMEPAD_BUTTON_MAP[inputSource.handedness]
+              : undefined
+            const action = handednessMap?.[buttonIndex]
+            if (action)
+              runDebugAction(action)
+          }
+          prevButtonPressed.set(key, button.pressed)
+        })
+      })
+    }
+
+    // Path 2: plain keyboard fallback (see DEBUG_KEYBOARD_MAP above).
+    function onDebugKeyDown(event: KeyboardEvent) {
+      const action = DEBUG_KEYBOARD_MAP[event.key]
+      if (action) {
+        console.warn(`[bee-debug] key "${event.key}" pressed -> ${action}`)
+        runDebugAction(action)
+      }
+    }
+    window.addEventListener('keydown', onDebugKeyDown)
+
     const clock = new THREE.Clock()
     renderer.setAnimationLoop(() => {
-      mixer?.update(clock.getDelta())
+      beeController?.update(clock.getDelta())
+      pollDebugControllerButtons()
       renderer.render(scene, camera)
     })
   }
