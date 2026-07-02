@@ -281,24 +281,20 @@ export function JuanCard() {
         {message}
       </div>
 
-      {/* No enable-xr anywhere in this card — see the file-level comment
-          for why (WebXR user-activation broke with it, worked without). */}
-      <section
-        className={`panel agent-card${isBusy ? ' is-materialized' : ''}`}
+      {/* No "card" wrapper on purpose — with only one agent and one action,
+          the panel/title chrome was an unnecessary extra screen between
+          landing and AR. This button IS the landing UI now: tap it and go
+          straight into the WebXR scene. No enable-xr anywhere here either —
+          see the file-level comment for why (WebXR user-activation broke
+          with it, worked without). */}
+      <button
+        type="button"
+        className={`bee-launch-button${isBusy ? ' is-busy' : ''}`}
+        onClick={() => handleMaterialize('immersive-ar')}
+        disabled={isBusy}
       >
-        <h2 className="panel-title">SolidTime Bee</h2>
-
-        <div className="agent-card-actions">
-          <button
-            type="button"
-            className="ping-button"
-            onClick={() => handleMaterialize('immersive-ar')}
-            disabled={isBusy}
-          >
-            {status === 'starting' ? 'Starting…' : 'Materialize agent'}
-          </button>
-        </div>
-      </section>
+        {status === 'starting' ? 'Starting…' : 'Tap to see the bee in AR'}
+      </button>
     </>
   )
 }
