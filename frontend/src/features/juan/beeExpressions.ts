@@ -12,11 +12,15 @@ import * as THREE from 'three'
  * ## What's in the .glb (confirmed by parsing the file directly — see
  * `frontend/src/features/juan/README.md` for the full investigation)
  *
- * Three baked, full-skeleton animation clips:
- * - `SitLeftRightLook` — sitting/idle, looking around
- * - `TalkiTwoHand`     — talking, gestures with both hands
+ * Four baked animation clips:
+ * - `SitLeftRightLook` — sitting/idle, looking around (full skeleton)
+ * - `TalkiTwoHand`     — talking, gestures with both hands (full skeleton)
+ * - `Think`            — a dedicated thinking pose, added later specifically
+ *                        to replace `WingsAnimation` below (full skeleton)
  * - `WingsAnimation`   — a short, isolated wing-flutter (only touches the
- *                        4 wing-adjacent nodes, not the whole skeleton)
+ *                        4 wing-adjacent nodes, not the whole skeleton) —
+ *                        no longer used for `'thinking'` (see below), kept
+ *                        around in the file, unused by this module
  *
  * Plus 4 morph targets (blend shapes) on one mesh (`polySurface9`, the
  * face), **not used by any baked clip** — fully free for procedural
@@ -37,19 +41,19 @@ import * as THREE from 'three'
  * skeletal clip (crossfaded smoothly on change), see `BeeExpressionConfig`
  * to remap which clip plays for which state.
  *
- * KNOWN ISSUE (checkpointed as-is, not yet fixed — see README.md's
- * "Not yet done" section for the full story): `WingsAnimation` only has
- * keyframes for 4 wing-adjacent nodes, not the whole skeleton. Crossfading
- * to it like a normal full-body clip means every *other* bone loses its
- * only active influence once the previous clip's weight reaches 0, and
- * snaps to the rig's bind pose — a T-pose — for as long as 'thinking' is
- * active. Two fixes were tried (additive blending via
- * `AnimationUtils.makeClipAdditive`; procedurally rotating just the wing
- * nodes) and both made the wing motion visually indistinguishable from
- * idle, which is worse than a working-but-imperfect T-pose. Reverted back
- * to this simplest version — visibly broken but visibly *working* (the
- * wings clearly move) — as a known-good checkpoint. Revisit the T-pose
- * without losing wing visibility as a follow-up.
+ * FIXED ISSUE (history, in case this regresses): `'thinking'` originally
+ * played `WingsAnimation`, which only has keyframes for 4 wing-adjacent
+ * nodes, not the whole skeleton — crossfading to it like a normal full-body
+ * clip meant every *other* bone lost its only active influence once the
+ * previous clip's weight reached 0, snapping to the rig's bind pose (a
+ * T-pose) for as long as 'thinking' was active. Two workarounds (additive
+ * blending, procedurally rotating just the wing nodes) were tried and
+ * reverted — both fixed the T-pose but made the wing motion visually
+ * indistinguishable from idle. The actual fix was a proper full-skeleton
+ * `Think` clip (added directly to the .glb), which needs no special-casing
+ * at all — same simple crossfade as idle/speaking. `WingsAnimation` is
+ * unused now; don't reintroduce it as `thinkingClipName` without redoing
+ * one of those workarounds.
  *
  * On top of that:
  *
@@ -94,7 +98,7 @@ export type BeeState = 'idle' | 'thinking' | 'speaking'
 export interface BeeExpressionConfig {
   /** Clip played on loop for the 'idle' state. Default: 'SitLeftRightLook'. */
   idleClipName?: string
-  /** Clip played on loop for the 'thinking' state. Default: 'WingsAnimation'. */
+  /** Clip played on loop for the 'thinking' state. Default: 'Think'. */
   thinkingClipName?: string
   /** Clip played on loop for the 'speaking' state. Default: 'TalkiTwoHand'. */
   speakingClipName?: string
@@ -108,7 +112,7 @@ export interface BeeExpressionConfig {
 
 const DEFAULT_CONFIG: Required<BeeExpressionConfig> = {
   idleClipName: 'SitLeftRightLook',
-  thinkingClipName: 'WingsAnimation',
+  thinkingClipName: 'Think',
   speakingClipName: 'TalkiTwoHand',
   crossfadeSeconds: 0.3,
   blinkHoldSeconds: 0.3,

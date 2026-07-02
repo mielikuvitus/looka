@@ -3,13 +3,20 @@
 Owner: juan (gentle default, per `AGENTS.md` — edit freely). This doc covers
 the "materialize a bee in AR" feature specifically. juan's `/api/juan/*`
 report/weather agent (`backend/src/api/juan/`) is separate and unrelated to
-the WebXR work below. See `AGENTS.md`'s "Current room state" section for why
-`Room.tsx` lands directly here instead of a multi-agent grid.
+the WebXR work below.
+
+**Live entry point:** `App.tsx` renders `SpatialLanding.tsx` (frank's
+branded landing page — logo, headline, "Tap to meet your first assistant!")
+once WebSpatial Runtime is detected, which uses the `useBeeLaunch()` hook
+in this folder for all the AR/bee logic. `Room.tsx`/`JuanCard.tsx` — an
+earlier, simpler landing UI with the same bee logic inlined instead of in a
+hook — are **no longer rendered by anything** since that change, but are
+kept as-is (not deleted); see "Orphaned files" below.
 
 ## What it does
 
-`JuanCard.tsx` renders one full-screen button, "Tap to see the bee in AR"
-(no card/title chrome — see `AGENTS.md`). Tapping it:
+`useBeeLaunch()` (used by `SpatialLanding.tsx`) exposes a `handleMaterialize`
+called from a landing button. Tapping it:
 
 1. Requests a WebXR `immersive-ar` session directly (no intermediate window).
 2. Loads `frontend/public/models/Bee_Kinde.glb` via three.js's `GLTFLoader`.
@@ -65,14 +72,18 @@ A `.glb` is glTF's binary container: a 12-byte header, then a JSON chunk
 run against `misc/beekind/Bee_Kinde.glb`, not through any 3D engine)
 confirmed:
 
-**Three baked, full-skeleton animation clips** (192 channels / 64 target
-nodes each for the two full-body ones):
+**Four baked animation clips**, three of them full-skeleton (192 channels /
+64 target nodes):
 
 | Clip name          | What it is                          | Mapped state |
 | ------------------- | ------------------------------------ | ------------ |
 | `SitLeftRightLook`  | Sitting, looking around              | `idle`       |
 | `TalkiTwoHand`      | Talking, gestures with both hands    | `speaking`   |
-| `WingsAnimation`    | Short wing-flutter (only 4 channels, just the wing meshes — not a full-body clip) | `thinking`   |
+| `Think`             | Dedicated thinking pose, full skeleton | `thinking` |
+| `WingsAnimation`    | Short wing-flutter (only 4 channels, just the wing meshes — not a full-body clip) | *unused* — see below |
+
+`Think` was added later specifically to replace `WingsAnimation` as the
+`'thinking'` clip — see "The state machine" below for why.
 
 **Four morph targets (blend shapes)**, all on one mesh (`polySurface9`, the
 face), confirmed to have **zero animation channels touching them in any
@@ -93,36 +104,26 @@ see these keys at all.
 ### The state machine
 
 `BeeExpressionController.setState('idle' | 'thinking' | 'speaking')`
-crossfades between the three skeletal clips above (`crossFadeTo`, default
-0.3s) — remap which clip plays for which state via the constructor's
-`BeeExpressionConfig` (`idleClipName`/`thinkingClipName`/
-`speakingClipName`) if that mapping ever needs to change.
+crossfades between the three *in-use* clips above (`SitLeftRightLook`/
+`Think`/`TalkiTwoHand` — `crossFadeTo`, default 0.3s) — remap which clip
+plays for which state via the constructor's `BeeExpressionConfig`
+(`idleClipName`/`thinkingClipName`/`speakingClipName`) if that mapping
+ever needs to change.
 
-**Known issue, checkpointed as-is (not yet fixed):** `WingsAnimation` only
-has keyframes for 4 wing-adjacent nodes, not the whole skeleton.
-Crossfading to it like a normal full-body clip means every *other* bone
-loses its only active influence once the previous clip's weight reaches 0,
-and snaps to the rig's bind pose — a T-pose — for as long as `'thinking'`
-is active. Two fixes were tried:
-
-1. Layering `WingsAnimation` in **additively** on top of the idle base
-   (`AnimationUtils.makeClipAdditive` + `AdditiveAnimationBlendMode`)
-   instead of crossfading to it — fixed the T-pose, but the wing motion
-   became visually indistinguishable from idle (the clip's actual
-   rotation delta on those nodes reads as too subtle at this scale).
-2. Dropping the clip entirely and **procedurally** rotating the 4 known
-   wing nodes with a sine-wave oscillation, layered on top of an
-   untouched idle base — same result, no visible difference from idle.
-
-Both were reverted back to this simplest version — visibly broken (the
-T-pose) but visibly *working* (the wings clearly, unmistakably move) — as
-a known-good checkpoint, since "nothing visibly happens" is a worse state
-than "the wrong bones freeze while the wings flap." Revisit getting the
-wings to flap without the T-pose as a follow-up — worth checking whether
-the wing rotation delta needs to be amplified/exaggerated well beyond the
-clip's authored values, or whether the flap should be procedural but with
-a much larger, more obviously-wrong-if-still-invisible amplitude to first
-confirm the wing nodes are even the right target before dialing it back.
+**Fixed issue (history, in case this regresses):** `'thinking'` originally
+played `WingsAnimation`, which only has keyframes for 4 wing-adjacent
+nodes, not the whole skeleton — crossfading to it like a normal full-body
+clip meant every *other* bone lost its only active influence once the
+previous clip's weight reached 0, snapping to the rig's bind pose (a
+T-pose) for as long as `'thinking'` was active. Two workarounds (additive
+blending via `AnimationUtils.makeClipAdditive`; procedurally rotating just
+the wing nodes) were tried and reverted — both fixed the T-pose but made
+the wing motion visually indistinguishable from idle, which was worse than
+a working-but-imperfect T-pose. The actual fix was a proper full-skeleton
+`Think` clip added directly to the `.glb`, which needs no special-casing
+at all — same simple crossfade as idle/speaking. Don't repoint
+`thinkingClipName` at `WingsAnimation` without redoing one of those
+workarounds.
 - `blink()` is a separate, **explicitly-triggered-only** action — not part
   of `setState`. Calling it snaps `Bee_Blink`'s morph weight to 1
   immediately, holds for `blinkHoldSeconds` (default 0.3s), then snaps
@@ -150,7 +151,7 @@ confirm the wing nodes are even the right target before dialing it back.
 - `controller.getState()` — read the current state.
 - `controller.dispose()` — stops all actions and zeroes morph weights; call
   when tearing down the scene/session (not currently wired to the session
-  `'end'` handler in `JuanCard.tsx` since the whole renderer/scene gets
+  `'end'` handler in `useBeeLaunch.ts` since the whole renderer/scene gets
   discarded anyway — add a call there if that stops being true).
 - Adding a 4th state (e.g. `'listening'`) means: add it to the `BeeState`
   union, add a config field + default clip name, add a case in the
@@ -161,8 +162,8 @@ confirm the wing nodes are even the right target before dialing it back.
 
 Four actions (`idle`, `thinking`, `speaking`, `blink`) map onto the PICO
 controllers' four face buttons — X/Y on the left controller, A/B on the
-right. `JuanCard.tsx` wires up **two independent input paths** to the same
-four actions, since it isn't certain which one the emulator actually
+right. `useBeeLaunch.ts` wires up **two independent input paths** to the
+same four actions, since it isn't certain which one the emulator actually
 surfaces to the page:
 
 1. **WebXR gamepad buttons** — the standard "xr-standard" mapping for
@@ -175,13 +176,15 @@ surfaces to the page:
    ```
 2. **Plain keyboard keys** — the Android Studio PICO emulator maps
    physical controller presses to keyboard input (X → `x`, Y → `z`, A →
-   Space, B → `Delete`), so `JuanCard.tsx` also listens for those directly
-   as a guaranteed-to-work fallback, logging:
+   Space, B → `Delete`), so `useBeeLaunch.ts` also listens for those
+   directly as a guaranteed-to-work fallback, logging:
    ```
    [bee-debug] key "<key>" pressed -> <action>
    ```
 
-Both tables live near the top of `JuanCard.tsx` and are freely remappable:
+Both tables live near the top of `useBeeLaunch.ts` and are freely
+remappable (an identical copy also lives in the orphaned `JuanCard.tsx` —
+see "Orphaned files"):
 
 ```ts
 const DEBUG_GAMEPAD_BUTTON_MAP: Record<'left' | 'right', Partial<Record<number, BeeDebugAction>>> = {
@@ -231,9 +234,11 @@ control) — which is what `beeExpressions.ts` is built on.
   inside an `enable-xr` section. Working theory: WebSpatial's synthetic
   spatial-tap event pipeline (see
   `.webspatial/docs/concepts/natural-interactions.md`) doesn't carry
-  trusted user activation the way a real click does. **`JuanCard`'s tree
-  intentionally has no `enable-xr` anywhere** — don't add it back to the
-  button or its ancestors without retesting AR.
+  trusted user activation the way a real click does. **The AR launch
+  button's own tree must have no `enable-xr` anywhere** — true today in
+  both `JuanCard.tsx` and `SpatialLanding.tsx` (whose `<Model enable-xr>`
+  logo elements are unrelated siblings, not ancestors of the CTA button) —
+  don't add it back without retesting AR.
 - **`requestSession` must be the very first `await`** after the click
   handler starts. Any `await` before it — even a fast one, like a separate
   `isSessionSupported` pre-check — can expire the browser's transient user
@@ -274,10 +279,6 @@ control) — which is what `beeExpressions.ts` is built on.
 
 ## Not yet done / known gaps
 
-- **`'thinking'` shows a T-pose** while the wings flap (see "The state
-  machine" above for the full story and what's been tried). Checkpointed
-  as-is because the alternatives tried so far traded the T-pose for no
-  visible wing motion at all, which is worse.
 - Controller grab-and-drag, and the debug-button wiring, are implemented
   per the standard WebXR pattern but **untested on real hardware** — the
   software emulator may not simulate a controller/hand input source at
@@ -291,21 +292,34 @@ control) — which is what `beeExpressions.ts` is built on.
   the framework section above) — revisit once actual speech audio exists.
 - No actual speech/TTS/audio playback exists yet — this framework only
   covers the animation side of "the bee speaks."
-- The debug status bar (`.juan-status-bar`) is currently hidden via
-  `display: none` in `JuanCard.css` for a clean demo — remove that line to
-  bring back step-by-step status text (click → session request → session
-  started → model loading → loaded) with errors highlighted in red.
+- `SpatialLanding.tsx` (the live path) only shows a status bar on error
+  (`spatial-error-bar`) — there's no step-by-step status text (click →
+  session request → session started → model loading → loaded) like
+  `JuanCard.tsx` had (hidden there via `display: none` in `JuanCard.css`
+  for a clean demo). Bring that back in `SpatialLanding.tsx` if
+  step-by-step debugging is needed again.
 
 ## Orphaned files (kept, not deleted)
 
-`WeatheryWindow.tsx`/`.css`, `XRCubeDemo.tsx`/`.css`, `weathery.html`,
-`weathery-main.tsx` implement an earlier iteration: materializing into a
-**separate popup window** (`window.open` + `initScene`, closed-window
-polling to grey out the card) showing a plain test cube instead of the
-bee. Nothing in the active app references them anymore, but they still
-build (still wired into `vite.config.ts`'s `rollupOptions.input`). They're
-useful history for the AR/VR/reference-space debugging journey documented
-above; safe to delete once confirmed unneeded.
+- **`Room.tsx` + `JuanCard.tsx`** — an earlier landing UI (a plain
+  full-screen "Tap to see the bee in AR" button, no branding) with the
+  same AR/bee logic `useBeeLaunch.ts` now has, just inlined directly in
+  the component instead of extracted into a hook. `App.tsx` rendered
+  `Room` until frank's `SpatialLanding` commit replaced it; nothing
+  renders `Room`/`JuanCard` anymore. Keep both files' debug-button tables
+  in sync manually if you change one (there's some duplication between
+  `JuanCard.tsx` and `useBeeLaunch.ts` now — worth deduplicating into a
+  shared hook/module if `JuanCard.tsx` won't be needed again).
+- **`WeatheryWindow.tsx`/`.css`, `XRCubeDemo.tsx`/`.css`, `weathery.html`,
+  `weathery-main.tsx`** — an even earlier iteration: materializing into a
+  **separate popup window** (`window.open` + `initScene`, closed-window
+  polling to grey out the card) showing a plain test cube instead of the
+  bee. Still builds (wired into `vite.config.ts`'s `rollupOptions.input`)
+  but nothing references it.
+
+All of the above are useful history for the AR/VR/reference-space
+debugging journey documented in this file; safe to delete once confirmed
+unneeded.
 
 ## Dependencies added
 

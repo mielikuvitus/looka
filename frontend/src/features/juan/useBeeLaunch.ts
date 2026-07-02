@@ -1,13 +1,33 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { BeeExpressionController } from './beeExpressions'
 
 type XRStatus = 'idle' | 'starting' | 'in-session' | 'unsupported' | 'error'
 
 const SESSION_REQUEST_TIMEOUT_MS = 8000
 const BEE_MODEL_URL = '/models/Bee_Kinde.glb'
 const BEE_TARGET_SIZE_M = 0.4
-const BEE_IDLE_CLIP = 'SitLeftRightLook'
+
+// TEMP debug: PICO controller face buttons (X/Y on the left controller,
+// A/B on the right) -> bee actions, so states can be triggered without
+// touching JS. Two independent input paths are wired to the same actions,
+// since it isn't certain which one the emulator actually surfaces to the
+// page — see frontend/src/features/juan/README.md's "Debugging with PICO
+// controller buttons" section for the full explanation. Freely remappable.
+type BeeDebugAction = 'idle' | 'thinking' | 'speaking' | 'blink'
+
+const DEBUG_GAMEPAD_BUTTON_MAP: Record<'left' | 'right', Partial<Record<number, BeeDebugAction>>> = {
+  left: { 4: 'idle', 5: 'thinking' }, // X, Y
+  right: { 4: 'speaking', 5: 'blink' }, // A, B
+}
+
+const DEBUG_KEYBOARD_MAP: Record<string, BeeDebugAction> = {
+  'x': 'idle', // X
+  'z': 'thinking', // Y
+  ' ': 'speaking', // A (Space)
+  'Delete': 'blink', // B (Del)
+}
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
@@ -16,12 +36,25 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
       ms,
     )
     promise.then(
-      (value) => { window.clearTimeout(timer); resolve(value) },
-      (err) => { window.clearTimeout(timer); reject(err instanceof Error ? err : new Error(String(err))) },
+      (value) => {
+        window.clearTimeout(timer)
+        resolve(value)
+      },
+      (err) => {
+        window.clearTimeout(timer)
+        reject(err instanceof Error ? err : new Error(String(err)))
+      },
     )
   })
 }
 
+// juan — SolidTime Bee's AR launch hook. Owner: juan (gentle default).
+//
+// Used by SpatialLanding.tsx (the app's live entry point once WebSpatial
+// Runtime is detected — see App.tsx). The bee's expression/speech state
+// machine (idle/thinking/speaking clips, blink and mouth-flap morph
+// targets) lives in ./beeExpressions.ts — see that file's header comment
+// for the full API and .glb structure notes.
 export function useBeeLaunch() {
   const [status, setStatus] = useState<XRStatus>('idle')
   const [message, setMessage] = useState('Idle')
@@ -68,6 +101,9 @@ export function useBeeLaunch() {
 
     let session: XRSession
     try {
+      // requestSession must be the very first await after the click — see
+      // README.md's "Key gotchas" section (any await before it can burn
+      // through the browser's user-activation window).
       session = await withTimeout(
         navigator.xr.requestSession(mode, { optionalFeatures: ['local-floor'] }),
         SESSION_REQUEST_TIMEOUT_MS,
@@ -100,6 +136,17 @@ export function useBeeLaunch() {
 
     const beeAnchor = new THREE.Group()
     scene.add(beeAnchor)
+
+    // Invisible grab-target proxy: three.js raycasts a SkinnedMesh against
+    // its static bind-pose geometry, not its currently animated pose, so
+    // precise raycasting against the bee's real (animated) mesh is
+    // unreliable. A generously-sized invisible sphere gives a reliable,
+    // pose-independent grab target instead.
+    const grabProxy = new THREE.Mesh(
+      new THREE.SphereGeometry(BEE_TARGET_SIZE_M * 0.75),
+      new THREE.MeshBasicMaterial({ visible: false }),
+    )
+    beeAnchor.add(grabProxy)
 
     const controller = renderer.xr.getController(0)
     scene.add(controller)
@@ -140,6 +187,7 @@ export function useBeeLaunch() {
 
     session.addEventListener('end', () => {
       cleanupRenderer()
+      window.removeEventListener('keydown', onDebugKeyDown)
       sessionRef.current = null
       setStatus('idle')
       setMessage('XR session ended — ready to materialize again.')
@@ -170,7 +218,7 @@ export function useBeeLaunch() {
     setStatus('in-session')
     setMessage('Loading bee model…')
 
-    let mixer: THREE.AnimationMixer | null = null
+    let beeController: BeeExpressionController | null = null
 
     new GLTFLoader().load(
       BEE_MODEL_URL,
@@ -183,14 +231,8 @@ export function useBeeLaunch() {
         model.position.sub(center)
         beeAnchor.add(model)
 
-        const idleClip = gltf.animations.find(clip => clip.name === BEE_IDLE_CLIP)
-        if (idleClip) {
-          mixer = new THREE.AnimationMixer(model)
-          mixer.clipAction(idleClip).play()
-        }
-        else {
-          console.warn(`[solidtime-bee] "${BEE_IDLE_CLIP}" clip not found; available:`, gltf.animations.map(clip => clip.name))
-        }
+        beeController = new BeeExpressionController(model, gltf.animations)
+        beeController.setState('idle')
 
         setMessage('Bee model loaded.')
       },
@@ -201,9 +243,52 @@ export function useBeeLaunch() {
       },
     )
 
+    function runDebugAction(action: BeeDebugAction) {
+      if (action === 'blink')
+        beeController?.blink()
+      else
+        beeController?.setState(action)
+    }
+
+    // Path 1: WebXR gamepad buttons.
+    const prevButtonPressed = new Map<string, boolean>()
+    function pollDebugControllerButtons() {
+      session.inputSources.forEach((inputSource, sourceIndex) => {
+        const gamepad = inputSource.gamepad
+        if (!gamepad)
+          return
+
+        gamepad.buttons.forEach((button, buttonIndex) => {
+          const key = `${sourceIndex}:${buttonIndex}`
+          const wasPressed = prevButtonPressed.get(key) ?? false
+          if (button.pressed && !wasPressed) {
+            console.warn(`[bee-debug] gamepad button ${buttonIndex} pressed (source ${sourceIndex}, ${inputSource.handedness})`)
+            const handednessMap = inputSource.handedness === 'left' || inputSource.handedness === 'right'
+              ? DEBUG_GAMEPAD_BUTTON_MAP[inputSource.handedness]
+              : undefined
+            const action = handednessMap?.[buttonIndex]
+            if (action)
+              runDebugAction(action)
+          }
+          prevButtonPressed.set(key, button.pressed)
+        })
+      })
+    }
+
+    // Path 2: plain keyboard fallback.
+    function onDebugKeyDown(event: KeyboardEvent) {
+      const action = DEBUG_KEYBOARD_MAP[event.key]
+      if (action) {
+        console.warn(`[bee-debug] key "${event.key}" pressed -> ${action}`)
+        runDebugAction(action)
+      }
+    }
+    window.addEventListener('keydown', onDebugKeyDown)
+
     const clock = new THREE.Clock()
     renderer.setAnimationLoop(() => {
-      mixer?.update(clock.getDelta())
+      beeController?.update(clock.getDelta())
+      pollDebugControllerButtons()
       renderer.render(scene, camera)
     })
   }
