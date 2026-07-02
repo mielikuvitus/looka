@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="ui-monospace, monospace">
+  <defs>
+    <pattern id="hatch" width="14" height="14" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#FAF9F6"/>
+      <line x1="0" y1="0" x2="0" y2="14" stroke="#E4E4E7" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#hatch)"/>
+  <rect x="14" y="14" width="772" height="572" fill="none" stroke="#16150F" stroke-width="2"/>
+  <path d="M120 430 Q220 380 320 425 T520 420 T700 430 L700 470 Q600 505 480 468 T260 472 T120 465 Z" fill="#16150F" opacity="0.12"/>
+  <path d="M140 455 Q260 415 380 452 T640 448" fill="none" stroke="#16150F" stroke-width="3" opacity="0.5"/>
+  <circle cx="620" cy="160" r="46" fill="none" stroke="#16150F" stroke-width="3"/>
+  <line x1="588" y1="128" x2="652" y2="192" stroke="#16150F" stroke-width="3"/>
+  <text x="60" y="120" font-size="40" letter-spacing="8" fill="#16150F">WATER DAMAGE</text>
+  <text x="60" y="160" font-size="20" letter-spacing="6" fill="#71717A">KITCHEN · GROUND FLOOR</text>
+  <text x="60" y="540" font-size="16" letter-spacing="6" fill="#71717A">SAMPLE EVIDENCE PHOTO · CLAIMSBOARD</text>
+</svg>

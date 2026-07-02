@@ -1,0 +1,11 @@
+node_modules
+.nuxt
+.output
+.data
+.env
+dist
+logs
+data/
+uploads/
+*.sqlite*
+server/db/auth-schema.ts

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="ui-monospace, monospace">
+  <defs>
+    <pattern id="hatch2" width="14" height="14" patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#FAF9F6"/>
+      <line x1="0" y1="0" x2="0" y2="14" stroke="#E4E4E7" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#hatch2)"/>
+  <rect x="14" y="14" width="772" height="572" fill="none" stroke="#16150F" stroke-width="2"/>
+  <g transform="translate(150 260)">
+    <rect x="0" y="60" width="500" height="120" rx="26" fill="none" stroke="#16150F" stroke-width="3"/>
+    <path d="M70 60 Q110 -10 220 -6 L360 0 Q430 10 460 60" fill="none" stroke="#16150F" stroke-width="3"/>
+    <circle cx="110" cy="185" r="42" fill="#FAF9F6" stroke="#16150F" stroke-width="3"/>
+    <circle cx="400" cy="185" r="42" fill="#FAF9F6" stroke="#16150F" stroke-width="3"/>
+    <path d="M430 70 L500 40 M445 95 L515 75" stroke="#16150F" stroke-width="3"/>
+    <path d="M455 60 l30 -18 l8 26 l26 -12" fill="none" stroke="#16150F" stroke-width="2" opacity="0.6"/>
+  </g>
+  <text x="60" y="120" font-size="40" letter-spacing="8" fill="#16150F">IMPACT — REAR LEFT</text>
+  <text x="60" y="160" font-size="20" letter-spacing="6" fill="#71717A">VEHICLE · PARKED COLLISION</text>
+  <text x="60" y="540" font-size="16" letter-spacing="6" fill="#71717A">SAMPLE EVIDENCE PHOTO · CLAIMSBOARD</text>
+</svg>

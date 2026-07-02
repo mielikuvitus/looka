@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* @theme = Tailwind DESIGN tokens (colors, fonts) — generates utilities like
+   bg-paper / text-ink / font-serif. */
+@theme static {
+  --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-mono: 'Spline Sans Mono', ui-monospace, monospace;
+  --color-paper: #FAF9F6;
+  --color-ink: #16150F;
+}
+
+/* Nuxt UI SEMANTIC vars are runtime — they must be overridden in :root, NOT in
+   @theme, or the near-black primary would stay zinc mid-gray. */
+:root {
+  --ui-primary: var(--color-ink);
+  --ui-bg: var(--color-paper);
+  --ui-text: var(--color-ink);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+}
+
+/* The editorial "stamp" register: mono, uppercase, tracked out. Used for
+   eyebrows, table headers, badges, metadata lines. Color is inherited. */
+.stamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}

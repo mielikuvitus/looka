@@ -1,0 +1,38 @@
+{
+  "name": "claimsboard",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "mkdir -p data && drizzle-kit migrate",
+    "db:seed": "tsx server/db/seed.ts",
+    "auth:generate": "pnpm dlx @better-auth/cli@latest generate --config server/lib/auth.ts --output ./server/db/auth-schema.ts"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.9.0",
+    "better-auth": "^1.6.23",
+    "better-sqlite3": "^12.11.1",
+    "drizzle-orm": "^0.45.2",
+    "nuxt": "^4.4.8",
+    "tailwindcss": "^4.3.2",
+    "vue": "^3.5.39",
+    "vue-draggable-plus": "^0.6.1",
+    "vue-router": "^5.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.115",
+    "@types/better-sqlite3": "^7.6.13",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.22.4",
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.3.6"
+  }
+}
