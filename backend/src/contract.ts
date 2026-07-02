@@ -27,6 +27,22 @@ export interface PingResponse {
   ok: boolean
 }
 
+/** Body sent to `POST /api/bee/ask` — the orchestrator the room talks to. */
+export interface BeeAskRequest {
+  /** The user's message / transcript. */
+  message: string
+}
+
+/** Reply from `POST /api/bee/ask`. */
+export interface BeeAskResponse {
+  /** Whether the orchestrator got a real reply (vs. a placeholder). */
+  ok: boolean
+  /** Which connector id handled it, or null for general chat. */
+  connector: string | null
+  /** The reply text. */
+  reply: string
+}
+
 // A tiny OpenAPI-ish description of the routes. Not a full spec — just enough
 // to document the shape and to drive `gen:types`. Kept deliberately minimal.
 export const apiContract = {
@@ -40,6 +56,13 @@ export const apiContract = {
         summary: 'Ping an agent and get a short reply',
         request: 'PingRequest',
         response: 'PingResponse',
+      },
+    },
+    '/api/bee/ask': {
+      post: {
+        summary: 'The bee: route a message to the right connector and reply',
+        request: 'BeeAskRequest',
+        response: 'BeeAskResponse',
       },
     },
   },

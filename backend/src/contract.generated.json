@@ -23,6 +23,13 @@
         "request": "PingRequest",
         "response": "PingResponse"
       }
+    },
+    "/api/bee/ask": {
+      "post": {
+        "summary": "The bee: route a message to the right connector and reply",
+        "request": "BeeAskRequest",
+        "response": "BeeAskResponse"
+      }
     }
   }
 }

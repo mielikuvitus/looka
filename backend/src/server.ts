@@ -15,6 +15,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { bee } from './api/bee'
 import { frank } from './api/frank'
 import { joe } from './api/joe'
 import { juan } from './api/juan'
@@ -64,6 +65,7 @@ api.route('/frank', frank)
 api.route('/juan', juan)
 api.route('/suvi', suvi)
 api.route('/joe', joe)
+api.route('/bee', bee)
 
 // --- App --------------------------------------------------------------------
 const app = new Hono()

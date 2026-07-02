@@ -24,3 +24,19 @@ export interface PingResponse {
   /** Whether the agent handled the ping successfully. */
   ok: boolean
 }
+
+/** Body sent to `POST /api/bee/ask` — the orchestrator the room talks to. */
+export interface BeeAskRequest {
+  /** The user's message / transcript. */
+  message: string
+}
+
+/** Reply from `POST /api/bee/ask`. */
+export interface BeeAskResponse {
+  /** Whether the orchestrator got a real reply (vs. a placeholder). */
+  ok: boolean
+  /** Which connector id handled it, or null for general chat. */
+  connector: string | null
+  /** The reply text. */
+  reply: string
+}
