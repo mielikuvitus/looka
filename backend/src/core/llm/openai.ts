@@ -4,6 +4,7 @@
 // call fails), we return a clear placeholder string instead of crashing, so
 // the room stays usable during the hackathon without real credentials.
 
+import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import OpenAI from 'openai'
 
@@ -47,5 +48,58 @@ export async function askOpenAI(prompt: string): Promise<{ text: string, ok: boo
   catch (err) {
     console.error('[openai] request failed:', err)
     return { ok: false, text: '[OpenAI error] The request failed — check the key and try again.' }
+  }
+}
+
+// --- Voice bookends (used only by POST /api/bee/voice) ----------------------
+// Audio exists ONLY here, at the two ends of the loop. Everything between —
+// the orchestrator, the gateway, the connector agents — works on plain text.
+
+const STT_MODEL = process.env.OPENAI_STT_MODEL ?? 'gpt-4o-mini-transcribe'
+const TTS_MODEL = process.env.OPENAI_TTS_MODEL ?? 'gpt-4o-mini-tts'
+const TTS_VOICE = process.env.OPENAI_TTS_VOICE ?? 'coral'
+
+/**
+ * Speech → text. Accepts the multipart `File` straight from Hono's
+ * parseBody(). Never throws — `ok: false` with empty text on any problem.
+ */
+export async function transcribe(audio: File): Promise<{ text: string, ok: boolean }> {
+  const openai = getClient()
+  if (!openai)
+    return { ok: false, text: '' }
+  try {
+    const res = await openai.audio.transcriptions.create({
+      file: audio,
+      model: STT_MODEL,
+    })
+    return { ok: true, text: res.text.trim() }
+  }
+  catch (err) {
+    console.error('[openai] transcription failed:', err)
+    return { ok: false, text: '' }
+  }
+}
+
+/**
+ * Text → mp3 (base64). Never throws — `ok: false` with empty audio on any
+ * problem, so a TTS hiccup degrades to a text-only reply instead of a 500.
+ */
+export async function speak(text: string): Promise<{ audioBase64: string, ok: boolean }> {
+  const openai = getClient()
+  if (!openai)
+    return { ok: false, audioBase64: '' }
+  try {
+    const res = await openai.audio.speech.create({
+      model: TTS_MODEL,
+      voice: TTS_VOICE,
+      input: text,
+      response_format: 'mp3',
+    })
+    const buf = Buffer.from(await res.arrayBuffer())
+    return { ok: true, audioBase64: buf.toString('base64') }
+  }
+  catch (err) {
+    console.error('[openai] speech synthesis failed:', err)
+    return { ok: false, audioBase64: '' }
   }
 }

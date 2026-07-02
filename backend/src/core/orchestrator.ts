@@ -52,6 +52,51 @@ export async function orchestrate(transcript: string): Promise<OrchestratorResul
   return { connector, reply: r.text, ok: r.ok }
 }
 
+const BEE_PERSONA
+  = 'You are the Bee, the one assistant in the Looka room. You just fetched facts '
+    + 'from a connector and now speak them to the user. Warm, short, spoken language — '
+    + 'two or three sentences, no markdown, no lists, no emoji. Keep every fact, name, '
+    + 'and number exactly as given; never add new ones. End with a short offer of the '
+    + 'natural next step when one exists.'
+
+/**
+ * Re-voice a connector's factual reply in the bee's spoken voice. Used by the
+ * voice endpoint before TTS. Degrades to the raw reply on any problem — a
+ * compose hiccup must never eat the facts.
+ */
+export async function composeSpoken(transcript: string, r: OrchestratorResult): Promise<string> {
+  const key = process.env.OPENAI_API_KEY
+  if (!key || !r.ok || !r.connector)
+    return r.reply
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_MODEL ?? 'gpt-5.4-mini',
+        max_completion_tokens: 220,
+        messages: [
+          { role: 'system', content: BEE_PERSONA },
+          {
+            role: 'user',
+            content: `The user asked: "${transcript}"\n\nThe ${r.connector} connector answered:\n${r.reply}\n\nSpeak the answer.`,
+          },
+        ],
+      }),
+    })
+    if (!res.ok)
+      return r.reply
+    const data = await res.json() as { choices?: { message?: { content?: string } }[] }
+    return data.choices?.[0]?.message?.content?.trim() || r.reply
+  }
+  catch {
+    return r.reply
+  }
+}
+
 /**
  * Classify the transcript into a connector id, or null for general chat.
  * Uses a tiny model call when OPENAI_API_KEY is set; otherwise falls back to a

@@ -58,6 +58,10 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 export function useBeeLaunch() {
   const [status, setStatus] = useState<XRStatus>('idle')
   const [message, setMessage] = useState('Idle')
+  // The live expression controller for the in-session bee (null outside a
+  // session). Lets other features (the voice loop) drive idle/thinking/
+  // speaking without owning the three.js scene.
+  const beeControllerRef = useRef<BeeExpressionController | null>(null)
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const sessionRef = useRef<XRSession | null>(null)
 
@@ -189,6 +193,7 @@ export function useBeeLaunch() {
       cleanupRenderer()
       window.removeEventListener('keydown', onDebugKeyDown)
       sessionRef.current = null
+      beeControllerRef.current = null
       setStatus('idle')
       setMessage('XR session ended — ready to materialize again.')
     })
@@ -233,6 +238,7 @@ export function useBeeLaunch() {
 
         beeController = new BeeExpressionController(model, gltf.animations)
         beeController.setState('idle')
+        beeControllerRef.current = beeController
 
         setMessage('Bee model loaded.')
       },
@@ -293,10 +299,15 @@ export function useBeeLaunch() {
     })
   }
 
+  const setBeeState = useCallback((state: 'idle' | 'thinking' | 'speaking') => {
+    beeControllerRef.current?.setState(state)
+  }, [])
+
   return {
     status,
     message,
     handleMaterialize,
+    setBeeState,
     isBusy: status === 'starting' || status === 'in-session',
     isErrorStatus: status === 'unsupported' || status === 'error',
   }

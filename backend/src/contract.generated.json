@@ -30,6 +30,13 @@
         "request": "BeeAskRequest",
         "response": "BeeAskResponse"
       }
+    },
+    "/api/bee/voice": {
+      "post": {
+        "summary": "The bee, spoken: audio in → STT → orchestrate → TTS → audio out",
+        "request": "multipart form field \"audio\" (webm/m4a/mp3)",
+        "response": "BeeVoiceResponse"
+      }
     }
   }
 }

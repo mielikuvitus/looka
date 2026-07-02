@@ -43,6 +43,22 @@ export interface BeeAskResponse {
   reply: string
 }
 
+/** Reply from `POST /api/bee/voice` (request = multipart form field `audio`). */
+export interface BeeVoiceResponse {
+  /** Whether the orchestrator got a real reply (vs. a placeholder). */
+  ok: boolean
+  /** What the STT heard — shown so the user can verify. */
+  transcript: string
+  /** Which connector id handled it, or null for general chat. */
+  connector: string | null
+  /** The spoken reply text (bee-composed). */
+  reply: string
+  /** Base64 mp3 of the reply, or null if synthesis failed. */
+  audio: string | null
+  /** MIME type of `audio` — always "audio/mpeg" today. */
+  audioType: string
+}
+
 // A tiny OpenAPI-ish description of the routes. Not a full spec — just enough
 // to document the shape and to drive `gen:types`. Kept deliberately minimal.
 export const apiContract = {
@@ -63,6 +79,13 @@ export const apiContract = {
         summary: 'The bee: route a message to the right connector and reply',
         request: 'BeeAskRequest',
         response: 'BeeAskResponse',
+      },
+    },
+    '/api/bee/voice': {
+      post: {
+        summary: 'The bee, spoken: audio in → STT → orchestrate → TTS → audio out',
+        request: 'multipart form field "audio" (webm/m4a/mp3)',
+        response: 'BeeVoiceResponse',
       },
     },
   },
