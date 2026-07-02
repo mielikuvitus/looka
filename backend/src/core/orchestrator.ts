@@ -26,7 +26,7 @@ export const CONNECTORS: Connector[] = [
   },
   { id: 'solidtime', app: 'Solidtime', desc: 'time tracking, hours, timers, projects' },
   { id: 'nextcloud', app: 'Nextcloud', desc: 'files, calendars, contacts, passwords' },
-  { id: 'gridfin', app: 'Gridfin', desc: 'finance, invoices, accounting' },
+  { id: 'gridfin', app: 'Gridfin', desc: 'the workshop: where tools live, drawers/Schublade contents, Gridfinity bins and inserts, making a bin/baseplate/drill tray, cutouts, 3D-print exports, tool search (Messschieber, Fräser, Bohrer…) (XRCC industry demo)' },
 ]
 
 /** General-chat agent when no connector matches. */
@@ -104,9 +104,12 @@ async function decide(transcript: string): Promise<string | null> {
   }
 }
 
-/** Offline fallback: claims-shaped words → claimsboard, else general. */
+/** Offline fallback: claims words → claimsboard, workshop words → gridfin, else general. */
 function keywordRoute(transcript: string): string | null {
   if (/\b(?:claim|claimsboard|overload|workload|assign|reassign|approve|paid|pay|sla)\b/i.test(transcript))
     return 'claimsboard'
+  // Deliberately no \bbin\b (German "ich bin …") and no \btool\b (too generic).
+  if (/\b(?:drawer|schublade|einsatz|gridfin(?:ity)?|workshop|werkstatt|baseplate|grundplatte|cutout|fräser|bohrer|gewindebohrer|messschieber|schieblehre|caliper|bohrerablage)\b/i.test(transcript))
+    return 'gridfin'
   return null
 }
