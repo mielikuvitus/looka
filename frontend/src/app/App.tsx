@@ -1,9 +1,7 @@
 import { useSpatialSupport } from '../shared/composables/useSpatialSupport'
 import { NonSpatialLanding } from './NonSpatialLanding'
-import { Room } from './Room'
+import { SpatialLanding } from './SpatialLanding'
 
-// Entry point: browsers without WebSpatial Runtime get a landing page
-// instead of the room, with an explicit escape hatch to view it anyway.
 export function App() {
   const { isSpatial } = useSpatialSupport()
 
@@ -11,5 +9,5 @@ export function App() {
     return <NonSpatialLanding />
   }
 
-  return <Room />
+  return <SpatialLanding />
 }
