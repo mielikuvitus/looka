@@ -1,0 +1,5 @@
+export { ClaimsboardIcon } from './ClaimsboardIcon'
+export { GridfinIcon } from './GridfinIcon'
+export { NextcloudIcon } from './NextcloudIcon'
+export { SolidTimeIcon } from './SolidTimeIcon'
+export type { AgentIconProps } from './types'
