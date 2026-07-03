@@ -12,6 +12,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { loadBee } from './beeLoader'
 import { createMicOrb } from './micOrb'
+import { createVoiceLoop } from './voiceLoop'
 
 export interface CanvasFloor {
   /** Stop rendering (loop + resize handling). Idempotent. */
@@ -57,6 +58,13 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
 
   // The mic orb parents itself to bee.anchor, so it rides along with the bee.
   const orb = createMicOrb(bee)
+  // The voice loop drives the orb + bee from mic capture / playback. The
+  // page status panel is the read-back surface on this (non-AR) view.
+  const voiceLoop = createVoiceLoop({
+    orb,
+    controller: bee.controller,
+    statusEl: document.getElementById('playground-status'),
+  })
 
   // Orbit around the bee's center (the anchor origin). enableDamping needs
   // controls.update() every frame — done in the loop below.
@@ -111,7 +119,7 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
     )
     clickRaycaster.setFromCamera(ndc, camera)
     if (orb.raycast(clickRaycaster))
-      orb.cycleDemo()
+      voiceLoop.tap()
   }
   canvas.addEventListener('pointerdown', onPointerDown)
   canvas.addEventListener('pointerup', onPointerUp)
@@ -143,6 +151,7 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
       canvas.removeEventListener('pointerdown', onPointerDown)
       canvas.removeEventListener('pointerup', onPointerUp)
       controls.dispose()
+      voiceLoop.dispose()
       orb.dispose()
       scene.remove(bee.anchor)
       bee.dispose()

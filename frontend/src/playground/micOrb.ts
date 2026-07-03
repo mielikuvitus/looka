@@ -6,8 +6,8 @@
 // The orb parents itself to bee.anchor, so it rides along for free with
 // tap-to-place (phone) and ray-grab (headset) — no per-adapter follow code.
 // Adapters call raycast() BEFORE their own placement/grab hit-tests so that
-// aiming at the orb wins over moving the bee. Slice 1 wires the visuals and
-// a temporary cycleDemo(); the real voiceLoop replaces cycleDemo() in slice 2.
+// aiming at the orb wins over moving the bee. The voice loop (voiceLoop.ts)
+// drives setState() from the mic/job/playback lifecycle.
 
 import type { LoadedBee } from './beeLoader'
 import * as THREE from 'three'
@@ -29,11 +29,6 @@ export interface MicOrb {
    * so the orb wins.
    */
   raycast: (raycaster: THREE.Raycaster) => boolean
-  /**
-   * SLICE-1 PLACEHOLDER ONLY (replaced by voiceLoop in slice 2): advance
-   * idle -> recording -> working(1 dot) -> speaking -> idle.
-   */
-  cycleDemo: () => void
   /** Per-frame: gentle float, billboard the label/ring/dots toward the camera, animate the current state. */
   update: (dt: number, cameraWorldPos: THREE.Vector3) => void
   /** Remove from parent and dispose ALL geometries, materials, and CanvasTextures created here. */
@@ -178,23 +173,6 @@ export function createMicOrb(bee: LoadedBee): MicOrb {
     },
     raycast(raycaster) {
       return raycaster.intersectObject(proxy, false).length > 0
-    },
-    // TEMPORARY (slice 1): stands in for the real voiceLoop, which will drive
-    // states from mic capture / job progress / TTS in slice 2. Delete then.
-    cycleDemo() {
-      const next: OrbState
-        = state === 'idle'
-          ? 'recording'
-          : state === 'recording'
-            ? 'working'
-            : state === 'working'
-              ? 'speaking'
-              : 'idle'
-      state = next
-      errorTimer = 0
-      if (next === 'working')
-        jobCount = 1
-      applyState()
     },
     update(dt, cameraWorldPos) {
       elapsed += dt

@@ -19,6 +19,7 @@ import type { LoadedBee } from './beeLoader'
 import type { CanvasFloor } from './canvasFloor'
 import type { InputRouter } from './inputRouter'
 import type { MicOrb } from './micOrb'
+import type { VoiceLoop } from './voiceLoop'
 import type { ArSessionContext } from './xrSession'
 import * as THREE from 'three'
 import { loadBee } from './beeLoader'
@@ -27,6 +28,7 @@ import { createHeadsetAdapter } from './headsetAdapter'
 import { createInputRouter } from './inputRouter'
 import { createMicOrb } from './micOrb'
 import { createPhoneAdapter } from './phoneAdapter'
+import { createVoiceLoop } from './voiceLoop'
 import { startArSession } from './xrSession'
 import './playground.css'
 
@@ -103,6 +105,7 @@ async function enterAr() {
   let ended = false
   let bee: LoadedBee | null = null
   let orb: MicOrb | null = null
+  let voiceLoop: VoiceLoop | null = null
   let router: InputRouter | null = null
   let adapter: { dispose: () => void } | null = null
   // When the session is being torn down because of a failure, the error text
@@ -117,6 +120,8 @@ async function enterAr() {
     adapter = null
     router?.dispose()
     router = null
+    voiceLoop?.dispose()
+    voiceLoop = null
     orb?.dispose()
     orb = null
     bee?.dispose()
@@ -176,6 +181,11 @@ async function enterAr() {
   // an adapter places or carries it.
   orb = createMicOrb(bee)
   const sessionOrb = orb
+  // The voice loop drives the orb + bee. No DOM read-back in AR yet — the
+  // in-scene transcript bubble lands in slice 3; for now the orb + sounds
+  // carry the state.
+  voiceLoop = createVoiceLoop({ orb, controller: bee.controller })
+  const sessionVoiceLoop = voiceLoop
 
   const timer = new THREE.Timer()
   const sessionBee = bee
@@ -195,8 +205,8 @@ async function enterAr() {
       // A late 'headset' decision replaces the provisional phone adapter.
       adapter?.dispose()
       adapter = kind === 'headset'
-        ? createHeadsetAdapter({ ctx, bee, orb: sessionOrb })
-        : createPhoneAdapter({ ctx, bee, overlayRoot, orb: sessionOrb })
+        ? createHeadsetAdapter({ ctx, bee, orb: sessionOrb, voiceLoop: sessionVoiceLoop })
+        : createPhoneAdapter({ ctx, bee, overlayRoot, orb: sessionOrb, voiceLoop: sessionVoiceLoop })
     },
   })
 

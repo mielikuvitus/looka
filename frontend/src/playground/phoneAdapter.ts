@@ -10,6 +10,7 @@
 
 import type { LoadedBee } from './beeLoader'
 import type { MicOrb } from './micOrb'
+import type { VoiceLoop } from './voiceLoop'
 import type { ArSessionContext, FrameCallback } from './xrSession'
 import * as THREE from 'three'
 import { BEE_TARGET_SIZE_M } from './beeLoader'
@@ -20,8 +21,10 @@ export interface PhoneAdapterOptions {
   bee: LoadedBee
   /** The #ar-overlay element (revealed by this adapter only), or null when missing. */
   overlayRoot: HTMLElement | null
-  /** The mic orb — a tap on it cycles the orb instead of moving the bee. */
+  /** The mic orb — a tap on it taps the voice loop instead of moving the bee. */
   orb: MicOrb
+  /** The voice loop — invoked when the orb ray hits. */
+  voiceLoop: VoiceLoop
 }
 
 export interface PhoneAdapter {
@@ -29,7 +32,7 @@ export interface PhoneAdapter {
 }
 
 export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
-  const { ctx, bee, overlayRoot, orb } = options
+  const { ctx, bee, overlayRoot, orb, voiceLoop } = options
   const { session, renderer, scene } = ctx
 
   let disposed = false
@@ -115,7 +118,7 @@ export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
         orbRaycaster.ray.origin.copy(tapOrigin)
         orbRaycaster.ray.direction.set(0, 0, -1).applyQuaternion(tapOrientation)
         if (bee.anchor.visible && orb.raycast(orbRaycaster)) {
-          orb.cycleDemo()
+          voiceLoop.tap()
           return
         }
       }
