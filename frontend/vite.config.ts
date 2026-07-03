@@ -25,10 +25,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       // Multi-page app: the room (index.html) plus Weathery's own window
-      // (weathery.html), opened via window.open as a separate Spatial Scene.
+      // (weathery.html), opened via window.open as a separate Spatial Scene,
+      // plus the WebSpatial-free WebXR playground (playground.html).
       input: {
         main: `${root}index.html`,
         weathery: `${root}weathery.html`,
+        playground: `${root}playground.html`,
       },
     },
   },

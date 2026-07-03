@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Looka Playground</title>
+  </head>
+  <body class="playground-body">
+    <!--
+      Cross-platform WebXR playground. Deliberately WebSpatial-free and
+      React-free: this page is plain TypeScript + DOM + three.js so it runs
+      on any WebXR browser (phone AR, PICO, Quest) — see src/playground/.
+    -->
+    <div class="playground-shell">
+      <header class="playground-header">
+        <a class="playground-back" href="/">&larr; Looka</a>
+        <span class="playground-title">Playground</span>
+      </header>
+
+      <div class="playground-stage">
+        <canvas id="playground-canvas"></canvas>
+
+        <div class="playground-panel">
+          <h1 class="playground-headline">Meet the bee</h1>
+          <p id="playground-status" class="playground-status">Checking your device for AR support&hellip;</p>
+          <button id="enter-ar" class="playground-enter" type="button" hidden>Enter your space</button>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      dom-overlay root for phone AR sessions (hidden by default; the phone
+      adapter reveals it). Headsets ignore dom-overlay entirely.
+    -->
+    <div id="ar-overlay" hidden>
+      <p id="ar-hint" class="ar-hint">Point your camera at the floor, then tap to place the bee.</p>
+      <button id="ar-exit" class="ar-exit" type="button">Exit AR</button>
+    </div>
+
+    <script type="module" src="/src/playground/main.ts"></script>
+  </body>
+</html>
