@@ -82,10 +82,15 @@ if (isProd) {
     if (reqPath.startsWith('/api/'))
       return c.notFound()
 
-    // Try the requested file, then fall back to index.html.
+    // Try the requested file, then a matching MPA entry page (e.g.
+    // /playground -> playground.html), then fall back to index.html.
     const filePath = resolveWithinDist(FRONTEND_DIST, reqPath)
     if (filePath && isFile(filePath))
       return sendFile(filePath)
+
+    const htmlPath = resolveWithinDist(FRONTEND_DIST, `${reqPath}.html`)
+    if (htmlPath && isFile(htmlPath))
+      return sendFile(htmlPath)
 
     if (isFile(indexPath))
       return sendFile(indexPath)
