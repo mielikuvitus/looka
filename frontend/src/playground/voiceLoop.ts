@@ -33,10 +33,15 @@ export interface VoiceLoopOptions {
 }
 
 export interface VoiceLoop {
-  /** One orb tap: idle→record, recording→send. Ignored while busy (no cancel). */
+  /** One tap: idle→record, recording→send. Ignored while busy (no cancel). */
   tap: () => void
   /** Stop the mic, the player, and the glance timer. Idempotent. */
   dispose: () => void
+  /**
+   * Subscribe to phase changes; fires once immediately with the current phase.
+   * Returns an unsubscribe fn. Used by the phone overlay's Talk button.
+   */
+  onPhase: (cb: (phase: Phase) => void) => () => void
 }
 
 // The /voice response shape (copied from shared/api-types — do not import it
@@ -50,12 +55,13 @@ interface BeeVoiceResponse {
   audioType: string
 }
 
-type Phase = 'idle' | 'recording' | 'working' | 'speaking'
+export type Phase = 'idle' | 'recording' | 'working' | 'speaking'
 
 export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
   const { orb, controller, statusEl = null } = options
 
   let phase: Phase = 'idle'
+  const phaseSubs = new Set<(p: Phase) => void>()
   let recorder: MediaRecorder | null = null
   let chunks: Blob[] = []
   let player: HTMLAudioElement | null = null
@@ -71,6 +77,7 @@ export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
   // clip, so recording is attentive idle and working is the Think clip.
   function applyPhase(next: Phase) {
     phase = next
+    for (const cb of phaseSubs) cb(next)
     if (next === 'idle') {
       orb.setState('idle')
       controller.setState('idle')
@@ -139,7 +146,14 @@ export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
     }
     catch (err) {
       console.error('[voice] mic unavailable:', err)
-      fail('microphone unavailable')
+      const denied = err instanceof DOMException
+        && (err.name === 'NotAllowedError' || err.name === 'SecurityError')
+      orb.flashError()
+      playTone('buzz')
+      setStatus(denied
+        ? 'The bee needs your mic — allow it, then tap to talk.'
+        : 'No microphone found — tap to retry.')
+      applyPhase('idle')
     }
   }
 
@@ -178,7 +192,9 @@ export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
         return
       }
       // Read-back receipt: show what the bee heard before the (long) wait.
-      setStatus(data.transcript ? `\u201c${data.transcript}\u201d` : '')
+      // Skip empty transcripts so the shared #ar-hint pill isn't left blank.
+      if (data.transcript)
+        setStatus(`\u201c${data.transcript}\u201d`)
       if (data.audio)
         playReply(data.audio, data.audioType || 'audio/mpeg')
       else
@@ -219,6 +235,14 @@ export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
     // 'working' / 'speaking' → no-op (no cancel — handoff decision a)
   }
 
+  function onPhase(cb: (p: Phase) => void) {
+    phaseSubs.add(cb)
+    cb(phase) // initialize the subscriber with the current phase
+    return () => {
+      phaseSubs.delete(cb)
+    }
+  }
+
   function dispose() {
     if (recorder && recorder.state !== 'inactive') {
       recorder.stream.getTracks().forEach(t => t.stop())
@@ -235,7 +259,8 @@ export function createVoiceLoop(options: VoiceLoopOptions): VoiceLoop {
       player = null
     }
     clearGlance()
+    phaseSubs.clear()
   }
 
-  return { tap, dispose }
+  return { tap, dispose, onPhase }
 }

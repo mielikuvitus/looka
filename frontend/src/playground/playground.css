@@ -165,3 +165,59 @@ body {
   cursor: pointer;
   pointer-events: auto;
 }
+
+/* --- "Talk to the bee" — phone AR's primary voice affordance -------------- */
+/* A real DOM button, so a fixed screen tap starts/sends voice instead of
+   trying to hit the small, bobbing 3D orb. Child of #ar-overlay, so the
+   overlay's beforexrselect suppression stops it double-firing placement. */
+.ar-talk {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 100px;
+  background: #dc0073;
+  box-shadow: 0 8px 12px rgba(220, 0, 115, 0.2);
+  color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 180ms ease-out, box-shadow 180ms ease-out;
+}
+
+/* recording: still tappable (second tap = send); pink pulse mirrors the orb ring */
+.ar-talk.is-recording {
+  animation: ar-talk-pulse 1.6s ease-in-out infinite;
+}
+
+/* working / speaking: tap() is a no-op — show busy, non-interactive. Keep
+   pointer-events:auto so a stray tap is still absorbed by the button (and its
+   beforexrselect suppressed) rather than falling through to move the bee. */
+.ar-talk:disabled {
+  opacity: 0.5;
+  cursor: default;
+  box-shadow: none;
+  animation: none;
+  pointer-events: auto;
+}
+
+@keyframes ar-talk-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 0, 115, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(220, 0, 115, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ar-talk { transition: none; }
+  .ar-talk.is-recording {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(220, 0, 115, 0.45); /* static recording cue */
+  }
+}
+
+/* Single-accent rule (DESIGN.md): Talk owns the one pink moment, so demote
+   Exit to a ghost pill when both share the overlay. */
+.ar-exit {
+  background: transparent;
+  border: 1px solid rgba(245, 242, 236, 0.3);
+  color: #f5f2ec;
+}

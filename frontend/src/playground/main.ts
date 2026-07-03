@@ -32,11 +32,6 @@ import { createVoiceLoop } from './voiceLoop'
 import { startArSession } from './xrSession'
 import './playground.css'
 
-const SECURE_CONTEXT_MESSAGE
-  = 'WebXR is unavailable (navigator.xr is undefined). It needs a secure context — '
-    + 'open this page via localhost (e.g. `adb reverse tcp:5173 tcp:5173` for a headset/'
-    + 'phone), not a plain http:// LAN address.'
-
 function requireElement<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id)
   if (!el)
@@ -75,10 +70,30 @@ startCanvasFloor(canvas)
 // The isSessionSupported check happens here, NEVER in the click handler:
 // requestSession must be the first await after the click (see xrSession.ts).
 async function checkArSupport() {
-  if (!navigator.xr) {
-    setStatus(SECURE_CONTEXT_MESSAGE, true)
+  // (a) Insecure origin — the only case the old localhost hint was right about.
+  // Dev-only; production is always https. This IS a real error.
+  if (!window.isSecureContext) {
+    setStatus(
+      'Spatial mode needs a secure connection — open this over https, or '
+      + 'localhost in dev (e.g. `adb reverse tcp:5173 tcp:5173`). You can still '
+      + 'orbit the bee here.',
+      true,
+    )
     return
   }
+
+  // (b) Secure but no WebXR engine (iPhone/Safari, desktop Firefox, …). Not an
+  // error: the canvas floor below IS the experience for this browser.
+  if (!navigator.xr) {
+    setStatus(
+      'This browser doesn’t do WebXR — so here’s the bee up close. '
+      + 'Drag to orbit, tap to talk. For the full spatial bee, grab a headset or '
+      + 'open this in Android Chrome.',
+    )
+    return
+  }
+
+  // (c) Has WebXR but not the immersive-ar session type we need.
   let supported = false
   try {
     supported = await navigator.xr.isSessionSupported('immersive-ar')
@@ -86,6 +101,8 @@ async function checkArSupport() {
   catch (err) {
     console.warn('[playground] isSessionSupported check failed:', err)
   }
+
+  // (d) Fully supported.
   if (supported) {
     enterButton.hidden = false
     setStatus('Your device supports AR. Drag to orbit the bee, or step into your space.')
@@ -184,7 +201,14 @@ async function enterAr() {
   // The voice loop drives the orb + bee. No DOM read-back in AR yet — the
   // in-scene transcript bubble lands in slice 3; for now the orb + sounds
   // carry the state.
-  voiceLoop = createVoiceLoop({ orb, controller: bee.controller })
+  voiceLoop = createVoiceLoop({
+    orb,
+    controller: bee.controller,
+    // The #ar-hint pill doubles as the mic/permission read-back surface in AR
+    // until the in-scene transcript bubble lands. On headset it resolves to an
+    // element that is never revealed, so writes are harmless.
+    statusEl: overlayRoot.querySelector<HTMLElement>('#ar-hint'),
+  })
   const sessionVoiceLoop = voiceLoop
 
   const timer = new THREE.Timer()

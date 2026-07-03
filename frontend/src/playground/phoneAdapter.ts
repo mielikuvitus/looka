@@ -10,7 +10,7 @@
 
 import type { LoadedBee } from './beeLoader'
 import type { MicOrb } from './micOrb'
-import type { VoiceLoop } from './voiceLoop'
+import type { Phase, VoiceLoop } from './voiceLoop'
 import type { ArSessionContext, FrameCallback } from './xrSession'
 import * as THREE from 'three'
 import { BEE_TARGET_SIZE_M } from './beeLoader'
@@ -51,6 +51,32 @@ export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
   if (overlayRoot)
     overlayRoot.hidden = false
   exitButton?.addEventListener('click', endSession)
+
+  // --- "Talk to the bee" button — phone AR's primary voice affordance -------
+  // A fixed DOM button, so voice starts on a reliable screen tap instead of
+  // requiring a precise hit on the small, bobbing 3D orb. The click is a user
+  // gesture, so the getUserMedia mic prompt (voiceLoop.tap → startRecording)
+  // is allowed to fire. Its label mirrors the voice phase.
+  const talkButton = overlayRoot?.querySelector<HTMLButtonElement>('#ar-talk') ?? null
+  const initialTalkLabel = talkButton?.textContent ?? 'Talk to the bee'
+  const onTalk = () => voiceLoop.tap()
+  talkButton?.addEventListener('click', onTalk)
+
+  const TALK_LABEL: Record<Phase, string> = {
+    idle: 'Talk to the bee',
+    recording: 'Tap to send',
+    working: 'Thinking…',
+    speaking: 'Speaking…',
+  }
+  const unsubscribePhase = voiceLoop.onPhase((phase) => {
+    if (!talkButton)
+      return
+    talkButton.textContent = TALK_LABEL[phase]
+    talkButton.classList.toggle('is-recording', phase === 'recording')
+    // working/speaking are tap() no-ops — disable so the dead tap reads as busy.
+    talkButton.disabled = phase === 'working' || phase === 'speaking'
+  })
+
   // Taps that land on overlay UI (the exit button) must not double as
   // placement 'select' events — per the WebXR DOM Overlays spec they do
   // unless beforexrselect's default is prevented. #ar-overlay itself is
@@ -146,6 +172,15 @@ export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
       hitTestSource = null
       reticle.dispose()
       exitButton?.removeEventListener('click', endSession)
+      talkButton?.removeEventListener('click', onTalk)
+      unsubscribePhase()
+      if (talkButton) {
+        // Restore the pristine label so a re-entered session never opens on a
+        // stale "Speaking…"/disabled state (mirrors the initialHint restore).
+        talkButton.textContent = initialTalkLabel
+        talkButton.disabled = false
+        talkButton.classList.remove('is-recording')
+      }
       overlayRoot?.removeEventListener('beforexrselect', suppressXrSelect)
       if (hintEl)
         hintEl.textContent = initialHint
