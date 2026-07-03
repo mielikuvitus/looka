@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .thumb {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    background: var(--surface-brand);
+    font-family: var(--sans);
+    color: var(--ink);
+  }
+  .glow {
+    position: absolute;
+    width: 900px;
+    height: 900px;
+    right: -120px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7), rgba(255,255,255,0) 62%);
+    pointer-events: none;
+  }
+  .topbar {
+    position: absolute;
+    top: 44px; left: 64px; right: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 3;
+  }
+  .topbar .wordmark { height: 30px; }
+  .topbar .site { font-size: 15px; color: var(--ink-faint); font-weight: 600; letter-spacing: 0.01em; }
+
+  .content {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 64px;
+    gap: 48px;
+    z-index: 2;
+  }
+  .copy { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; padding-top: 30px; }
+  .headline {
+    font-family: var(--heading);
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+  .headline .accent { color: var(--looka-pink); }
+  .subcopy {
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    max-width: 30ch;
+  }
+
+  .visual {
+    position: relative;
+    width: 100%;
+    height: 470px;
+    padding: 3px;
+    border-radius: 26px;
+    border: 1px solid rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.16);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 50px rgba(13,13,13,0.14);
+  }
+  .visual .shot {
+    width: 100%; height: 100%;
+    border-radius: 23px;
+    object-fit: cover;
+    object-position: 42% 50%;
+    display: block;
+  }
+  .float-badge {
+    position: absolute;
+    top: 28px; left: -22px;
+    display: flex; align-items: center; gap: 9px;
+    padding: 11px 17px;
+    border-radius: 40px;
+    background: #fff;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+    font-size: 15px; font-weight: 600; color: var(--ink);
+    white-space: nowrap;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--looka-pink); box-shadow: 0 0 0 4px var(--pink-shadow); }
+</style>
+</head>
+<body>
+  <div class="thumb">
+    <div class="glow"></div>
+
+    <div class="topbar">
+      <span class="wordmark"><img src="assets/looka-logo.svg" alt="Looka"></span>
+      <span class="site">lookalabs.com</span>
+    </div>
+
+    <div class="content">
+      <div class="copy">
+        <span class="badge">PICO · WebSpatial</span>
+        <h1 class="headline">Your agents,<br>out in the <span class="accent">real world.</span></h1>
+        <p class="subcopy">Looka turns your agentic workflow into a spatial companion you can see, place, and talk to.</p>
+      </div>
+
+      <div class="visual">
+        <img class="shot" src="assets/hero-terrace.png" alt="">
+        <div class="float-badge"><span class="dot"></span>Spatial Enabled</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .card {
+    position: relative;
+    width: 1600px;
+    height: 1000px;
+    overflow: hidden;
+    background: var(--surface-brand);
+    font-family: var(--sans);
+    color: var(--ink);
+    padding: 64px 64px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .glow {
+    position: absolute;
+    top: -260px; left: 50%;
+    width: 1300px; height: 780px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.55), rgba(255,255,255,0) 65%);
+    pointer-events: none;
+  }
+  .frame {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 26px 44px rgba(13,13,13,0.14);
+  }
+  .frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tag {
+    position: absolute;
+    left: 28px; bottom: 28px;
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 10px 16px 10px 14px;
+    border-radius: 40px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    font-size: 17px; font-weight: 600; color: var(--ink);
+  }
+  .tag .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--looka-pink); box-shadow: 0 0 0 4px var(--pink-shadow); }
+
+  .footer {
+    z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 128px;
+  }
+  .footer .wordmark { height: 26px; }
+  .footer .cap {
+    font-family: var(--heading);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .footer .cap b { color: var(--looka-pink); font-weight: 700; }
+  .step { font-size: 15px; color: var(--ink-faint); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="glow"></div>
+    <div class="frame">
+      <img id="shot" src="assets/hero-terrace.png" alt="">
+      <div class="tag"><span class="dot"></span><span id="tag">Live in AR</span></div>
+    </div>
+    <div class="footer">
+      <span class="wordmark"><img src="assets/looka-logo.svg" alt="Looka"></span>
+      <span class="cap" id="cap">Your agent, <b>in the real world</b></span>
+    </div>
+  </div>
+  <script>
+    const p = new URLSearchParams(location.search);
+    if (p.get('img')) document.getElementById('shot').src = 'assets/' + p.get('img');
+    if (p.get('pos')) document.getElementById('shot').style.objectPosition = p.get('pos');
+    if (p.get('tag')) document.getElementById('tag').textContent = p.get('tag');
+    if (p.get('cap')) document.getElementById('cap').innerHTML = p.get('cap');
+  </script>
+</body>
+</html>

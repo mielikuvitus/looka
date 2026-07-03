@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .slate {
+    position: relative;
+    width: 1600px;
+    height: 1000px;
+    overflow: hidden;
+    background: var(--surface-brand);
+    font-family: var(--sans);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1200px; height: 900px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.62), rgba(255,255,255,0) 60%);
+    pointer-events: none;
+  }
+  .mark { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); }
+  .mark img { display: block; height: 40px; width: auto; }
+
+  .stack { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+  .headline {
+    font-family: var(--heading);
+    font-weight: 700;
+    font-size: 92px;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    text-align: center;
+  }
+  .headline .accent { color: var(--looka-pink); }
+  .sub {
+    font-size: 24px;
+    color: var(--ink-muted);
+    max-width: 44ch;
+    text-align: center;
+    line-height: 1.55;
+  }
+  .foot {
+    position: absolute;
+    bottom: 56px; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    font-size: 16px; color: var(--ink-faint); font-weight: 600;
+    z-index: 1;
+  }
+  .foot .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-faint); }
+</style>
+</head>
+<body>
+  <div class="slate">
+    <div class="glow"></div>
+    <div class="mark"><img src="assets/looka-logo.svg" alt="Looka"></div>
+
+    <div class="stack">
+      <h1 class="headline">Chatbots open windows.<br><span class="accent">We open doors.</span></h1>
+      <p class="sub">Looka brings your agentic workflow off the screen and into the room — a spatial companion for the PICO headset.</p>
+    </div>
+
+    <div class="foot">
+      <span>lookalabs.com</span><span class="sep"></span><span>PICO · WebSpatial</span><span class="sep"></span><span>AI × XR</span>
+    </div>
+  </div>
+</body>
+</html>
