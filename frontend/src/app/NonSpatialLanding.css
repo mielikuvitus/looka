@@ -265,6 +265,16 @@
   color: #0d0d0d;
 }
 
+.landing-footer-link {
+  color: rgba(13, 13, 13, 0.45);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.landing-footer-link:hover {
+  color: #dc0073;
+}
+
 @media (max-width: 720px) {
   .landing-navbar {
     padding: 16px 20px;

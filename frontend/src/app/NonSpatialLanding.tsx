@@ -56,15 +56,16 @@ export function NonSpatialLanding() {
         </div>
 
         <div className="landing-cta-note">
-            <img src="/landing/info-icon.svg" alt="" />
-            <span>Optimization for non-spatial browsers is currently in beta.</span>
-          </div>
+          <img src="/landing/info-icon.svg" alt="" />
+          <span>Optimization for non-spatial browsers is currently in beta.</span>
+        </div>
       </main>
 
       <footer className="landing-footer">
         <div className="landing-footer-line" aria-hidden="true"></div>
         <div className="landing-footer-row">
           <span>© 2026 Looka Labs. All rights reserved.</span>
+          <a className="landing-footer-link" href="/playground">meet the bee</a>
         </div>
       </footer>
     </div>
