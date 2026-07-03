@@ -19,6 +19,13 @@ export interface MicOrb {
   group: THREE.Group
   getState: () => OrbState
   setState: (state: OrbState) => void
+  /**
+   * Whether the controller/screen ray is currently over the orb (call every
+   * frame from the same raycast that feeds raycast() below). Only visible
+   * while `state === 'idle'` — highlights the core white and scales up
+   * slightly, since that's the only state where tapping does anything.
+   */
+  setHovered: (hovered: boolean) => void
   /** 0..3 white dots orbiting in 'working' (clamp to [0,3]). */
   setJobCount: (n: number) => void
   /** Transient error flash (~300ms 'error' visual) then returns to 'idle'. */
@@ -37,6 +44,7 @@ export interface MicOrb {
 
 // Design tokens (DESIGN.md, canonical).
 const SHELL = 0x2A2730 // idle core
+const SHELL_HOVER = 0x453F4A // idle core, hovered — same hue, just lighter
 const PINK = 0xDC0073 // Looka pink rim + recording fill
 const WHITE = 0xF5F2EC // dots + speaking pulse
 const ERROR = 0xBF3B2F // error rim flash
@@ -133,6 +141,7 @@ export function createMicOrb(bee: LoadedBee): MicOrb {
   let jobCount = 0
   let elapsed = 0 // drives bob / ring pulse / dot orbit / speaking pulse
   let errorTimer = 0 // >0 while the transient error flash plays
+  let hovered = false
 
   function updateDots() {
     const shown = state === 'working' ? Math.min(jobCount, MAX_DOTS) : 0
@@ -162,6 +171,9 @@ export function createMicOrb(bee: LoadedBee): MicOrb {
       errorTimer = 0
       applyState()
     },
+    setHovered(next) {
+      hovered = next
+    },
     setJobCount(n) {
       jobCount = Math.max(0, Math.min(MAX_DOTS, Math.floor(n)))
       updateDots()
@@ -183,6 +195,14 @@ export function createMicOrb(bee: LoadedBee): MicOrb {
       // Billboard the facing parts toward the viewer (lookAt accounts for the
       // parent world matrix, so this is correct even after tap-to-place).
       facing.lookAt(cameraWorldPos)
+
+      // Hover highlight: only meaningful in 'idle' (the only state tapping
+      // does anything) — a subtle lightening of the same shell color, no
+      // scale change, so aiming at the orb is noticeable without looking
+      // jarring. Runs every frame so it always wins over applyState()'s
+      // baseline color for the current state.
+      if (state === 'idle')
+        coreMat.color.setHex(hovered ? SHELL_HOVER : SHELL)
 
       if (state === 'recording') {
         // ~1.6s ease-in-out pulse: scale + fade the ring outward.

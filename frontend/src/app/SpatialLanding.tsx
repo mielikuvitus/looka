@@ -1,19 +1,10 @@
 import { Model } from '@webspatial/react-sdk'
 import { useBeeLaunch } from '../features/juan/useBeeLaunch'
-import { useBeeVoice } from '../features/juan/useBeeVoice'
 import './Room.css'
 import './SpatialLanding.css'
 
-const VOICE_LABEL = {
-  idle: '🎙 Ask the bee',
-  listening: '⏹ Listening — tap to send',
-  thinking: 'The bee is working…',
-  speaking: 'The bee is speaking…',
-} as const
-
 export function SpatialLanding() {
-  const { status, message, handleMaterialize, setBeeState, isBusy, isErrorStatus } = useBeeLaunch()
-  const voice = useBeeVoice({ onBeeState: setBeeState })
+  const { status, message, handleMaterialize, isBusy, isErrorStatus } = useBeeLaunch()
 
   return (
     <main className="scene-shell" enable-xr-monitor>
@@ -77,36 +68,6 @@ export function SpatialLanding() {
           >
             {status === 'starting' ? 'Starting…' : 'Tap to meet your first assistant!'}
           </button>
-
-          <button
-            type="button"
-            className={`bee-voice-cta is-${voice.state}`}
-            onClick={voice.toggle}
-            disabled={voice.state === 'thinking' || voice.state === 'speaking'}
-          >
-            {VOICE_LABEL[voice.state]}
-          </button>
-
-          {(voice.transcript || voice.error) && (
-            <div className="bee-voice-panel">
-              {voice.transcript && (
-                <p className="bee-voice-transcript">
-                  “
-                  {voice.transcript}
-                  ”
-                </p>
-              )}
-              {voice.connector && (
-                <span className="bee-voice-chip">
-                  →
-                  {' '}
-                  {voice.connector}
-                </span>
-              )}
-              {voice.reply && <p className="bee-voice-reply">{voice.reply}</p>}
-              {voice.error && <p className="bee-voice-error">{voice.error}</p>}
-            </div>
-          )}
         </div>
       </div>
     </main>
