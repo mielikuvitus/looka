@@ -20,9 +20,12 @@ looka-thumbnail.png        Hero thumbnail — greige, wordmark, AR bee in a glas
 gallery/
   01-meet-looka.png        The "Meet Looka" flow: you ask → bee → orchestrator → agents
   02-meet-the-bee.png      The 3D bee on the dark scene surface
-  03-real-world.png        AR bee out in the real world (from the pitch video)
-  04-in-the-room.png       Meet the bee alongside a person (from the pitch video)
-  05-open-doors.png        Brand slate — "Chatbots open windows. We open doors."
+  03-emulator-landing.png  The landing running in the PICO emulator browser
+  04-emulator-spatial.png  The spatial "Welcome to Looka" panel in the emulator room
+  05-handheld-ar.png       The bee placed in a real room via handheld WebXR
+  06-real-world.png        AR bee out in the real world (from the pitch video)
+  07-in-the-room.png       Meet the bee alongside a person (from the pitch video)
+  08-open-doors.png        Brand slate — "Chatbots open windows. We open doors."
 brand/                     Gathered landing/brand source assets (logo, glow, icons,
                            spatial preview). Copies — the live landing still serves
                            its own originals from frontend/public/landing/.
@@ -37,9 +40,12 @@ at 2× and downscaled for crisp edges.
 - **01 / 02** are cleaned crops of real product screens (`source/screenshots/`):
   the upcoming "Meet Looka" landing and the 3D bee, browser chrome removed,
   framed on the brand surface.
-- **03 / 04** are frames pulled from `../looka-pitch-video.mp4` (the AR bee
+- **03 / 04 / 05** are on-device proof shots (`source/screenshots/`): the
+  landing in the PICO emulator browser, the spatial panel placed in the
+  emulator room, and the bee placed in a real room via handheld WebXR AR.
+- **06 / 07** are frames pulled from `../looka-pitch-video.mp4` (the AR bee
   composited into real scenes), cropped clean of the video's colour bars.
-- **05** is a type-only brand slate built from the design tokens.
+- **08** is a type-only brand slate built from the design tokens.
 
 ## Re-rendering / editing
 
