@@ -19,22 +19,50 @@ kept as-is (not deleted); see "Orphaned files" below.
 called from a landing button. Tapping it:
 
 1. Requests a WebXR `immersive-ar` session directly (no intermediate window).
-2. Loads `frontend/public/models/Bee_Kinde.glb` via three.js's `GLTFLoader`.
-3. Auto-scales the model to ~0.4m and re-centers it (native export scale/
-   origin is unknown ahead of time), positions it ~0.6m in front of the
-   user.
-4. Hands the loaded model to a `BeeExpressionController`
-   (`beeExpressions.ts` — see the dedicated section below), which starts it
-   in the `'idle'` state (sitting/looking-around animation).
-5. Lets the user grab and reposition the bee with a WebXR controller: point
+2. Loads the bee via `loadBee()` (`../../playground/beeLoader.ts` — shared
+   with the `playground/` page): fetches `Bee_Kinde.glb`, auto-scales it to
+   ~0.4m and re-centers it (native export scale/origin is unknown ahead of
+   time) inside a fresh anchor group, and starts a
+   `BeeExpressionController` (`beeExpressions.ts` — see the dedicated
+   section below) in the `'idle'` state. Positions the anchor ~0.6m in
+   front of the user.
+3. Lets the user grab and reposition the bee with a WebXR controller: point
    the controller ray at the bee, hold select to pick it up
    (`controller.attach(beeAnchor)`), release to drop it wherever moved
    (`scene.attach(beeAnchor)`). A thin ray line renders from the controller
    for aiming feedback.
+4. Creates a **mic orb** above the bee's head (`createMicOrb`,
+   `../../playground/micOrb.ts`) and a **voice loop**
+   (`createVoiceLoop`, `../../playground/voiceLoop.ts`) — both reused
+   directly from the `playground/` page, which pioneered this pattern (see
+   "Voice: the in-scene mic orb" below).
 
 Ending the session (system/headset exit gesture, or Escape key as a
 desktop-testing fallback) resets the button back to idle, ready to
 materialize again.
+
+## Voice: the in-scene mic orb
+
+Talking to the bee happens entirely **inside the AR session**, via a small
+tappable sphere that floats above its head — not a separate DOM button. Aim
+the controller ray at the orb and pull the trigger: first tap starts
+recording (pink pulsing ring), second tap sends it to `POST /api/bee/voice`
+(orbiting "working" dot + `Think` clip), then the reply plays back
+(`TalkiTwoHand` clip + audio). The orb-hit check in `onSelectStart` runs
+*before* the bee-grab check, so aiming at the orb always wins over picking
+up the bee.
+
+This reuses `playground/{micOrb,voiceLoop}.ts` as-is (both are plain
+three.js/TypeScript with no React or WebSpatial dependency, so importing
+them here doesn't violate the playground's own "no React" isolation rule —
+that rule only constrains what `playground/` itself imports). Previously,
+voice was a standalone DOM button (`useBeeVoice.ts`, since deleted) sitting
+next to the "Tap to meet your first assistant!" button on `SpatialLanding`.
+That button's `getUserMedia` call raced the live XR session for a browser
+permission prompt, which killed the session — looking exactly like a page
+reload, with no way back into AR. Moving voice into the scene (the pattern
+`playground/` used from the start) removes the second, independent input
+path entirely, which removes the race.
 
 ## Bee expression / speech framework (`beeExpressions.ts`)
 
@@ -289,9 +317,14 @@ control) — which is what `beeExpressions.ts` is built on.
   likely correct. Watch the `[bee-debug]` console logs and correct either
   table if needed.
 - The mouth-flap loop is a randomized placeholder, not real lip-sync (see
-  the framework section above) — revisit once actual speech audio exists.
-- No actual speech/TTS/audio playback exists yet — this framework only
-  covers the animation side of "the bee speaks."
+  the framework section above) — revisit once real per-phoneme audio
+  amplitude data is available to drive it (the STT/TTS round trip and
+  reply-audio playback themselves are real, via the mic orb's voice loop —
+  see "Voice: the in-scene mic orb" above).
+- The in-scene mic orb has no phone-style hit-test/tap-to-place counterpart
+  ported from `playground/phoneAdapter.ts` — `useBeeLaunch` only implements
+  the fixed-placement + controller-ray-grab ("headset") interaction style,
+  same as before voice moved in-scene.
 - `SpatialLanding.tsx` (the live path) only shows a status bar on error
   (`spatial-error-bar`) — there's no step-by-step status text (click →
   session request → session started → model loading → loaded) like
