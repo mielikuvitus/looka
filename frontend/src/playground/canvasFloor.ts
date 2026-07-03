@@ -11,6 +11,7 @@ import type { LoadedBee } from './beeLoader'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { loadBee } from './beeLoader'
+import { createMicOrb } from './micOrb'
 
 export interface CanvasFloor {
   /** Stop rendering (loop + resize handling). Idempotent. */
@@ -54,6 +55,9 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
   const bee: LoadedBee = await loadBee()
   scene.add(bee.anchor)
 
+  // The mic orb parents itself to bee.anchor, so it rides along with the bee.
+  const orb = createMicOrb(bee)
+
   // Orbit around the bee's center (the anchor origin). enableDamping needs
   // controls.update() every frame — done in the loop below.
   const controls = new OrbitControls(camera, canvas)
@@ -73,17 +77,44 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
   resize()
   window.addEventListener('resize', resize)
 
+  const camWorld = new THREE.Vector3()
   const timer = new THREE.Timer()
   function startLoop() {
     timer.reset() // swallow the pause gap so the bee doesn't jump
     renderer.setAnimationLoop(() => {
       timer.update()
-      bee.controller.update(timer.getDelta())
+      const dt = timer.getDelta()
+      bee.controller.update(dt)
+      orb.update(dt, camera.getWorldPosition(camWorld))
       controls.update()
       renderer.render(scene, camera)
     })
   }
   startLoop()
+
+  // Click-to-cycle the orb demo, guarded so it doesn't fire on an orbit drag:
+  // only a pointerup that barely moved from its pointerdown counts as a click.
+  const CLICK_SLOP_PX = 6
+  const downPos = new THREE.Vector2()
+  const ndc = new THREE.Vector2()
+  const clickRaycaster = new THREE.Raycaster()
+  function onPointerDown(event: PointerEvent) {
+    downPos.set(event.clientX, event.clientY)
+  }
+  function onPointerUp(event: PointerEvent) {
+    if (Math.hypot(event.clientX - downPos.x, event.clientY - downPos.y) >= CLICK_SLOP_PX)
+      return
+    const rect = canvas.getBoundingClientRect()
+    ndc.set(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1,
+    )
+    clickRaycaster.setFromCamera(ndc, camera)
+    if (orb.raycast(clickRaycaster))
+      orb.cycleDemo()
+  }
+  canvas.addEventListener('pointerdown', onPointerDown)
+  canvas.addEventListener('pointerup', onPointerUp)
 
   let running = true
   let disposed = false
@@ -109,7 +140,10 @@ async function buildFloor(renderer: THREE.WebGLRenderer, canvas: HTMLCanvasEleme
       running = false
       renderer.setAnimationLoop(null)
       window.removeEventListener('resize', resize)
+      canvas.removeEventListener('pointerdown', onPointerDown)
+      canvas.removeEventListener('pointerup', onPointerUp)
       controls.dispose()
+      orb.dispose()
       scene.remove(bee.anchor)
       bee.dispose()
       renderer.dispose()

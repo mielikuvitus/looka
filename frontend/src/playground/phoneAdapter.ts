@@ -9,6 +9,7 @@
 // leaving an invisible bee.
 
 import type { LoadedBee } from './beeLoader'
+import type { MicOrb } from './micOrb'
 import type { ArSessionContext, FrameCallback } from './xrSession'
 import * as THREE from 'three'
 import { BEE_TARGET_SIZE_M } from './beeLoader'
@@ -19,6 +20,8 @@ export interface PhoneAdapterOptions {
   bee: LoadedBee
   /** The #ar-overlay element (revealed by this adapter only), or null when missing. */
   overlayRoot: HTMLElement | null
+  /** The mic orb — a tap on it cycles the orb instead of moving the bee. */
+  orb: MicOrb
 }
 
 export interface PhoneAdapter {
@@ -26,7 +29,7 @@ export interface PhoneAdapter {
 }
 
 export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
-  const { ctx, bee, overlayRoot } = options
+  const { ctx, bee, overlayRoot, orb } = options
   const { session, renderer, scene } = ctx
 
   let disposed = false
@@ -92,7 +95,31 @@ export function createPhoneAdapter(options: PhoneAdapterOptions): PhoneAdapter {
 
   // --- tap to place -----------------------------------------------------------
   const placement = new THREE.Vector3()
-  function onSelect() {
+  const orbRaycaster = new THREE.Raycaster()
+  const tapOrigin = new THREE.Vector3()
+  const tapOrientation = new THREE.Quaternion()
+  function onSelect(event: XRInputSourceEvent) {
+    // Orb first: a screen tap whose ray hits the orb cycles it and skips
+    // placement, so the orb stays reachable once the bee is down. Gated on
+    // the bee being placed — three.js raycasting ignores `visible=false`, so
+    // without this guard the orb's proxy (parented to the still-invisible
+    // anchor at the tracking origin) would intercept the FIRST placement tap.
+    const referenceSpace = renderer.xr.getReferenceSpace()
+    const targetRaySpace = event.inputSource?.targetRaySpace
+    if (event.frame && targetRaySpace && referenceSpace) {
+      const pose = event.frame.getPose(targetRaySpace, referenceSpace)
+      if (pose) {
+        const { position, orientation } = pose.transform
+        tapOrigin.set(position.x, position.y, position.z)
+        tapOrientation.set(orientation.x, orientation.y, orientation.z, orientation.w)
+        orbRaycaster.ray.origin.copy(tapOrigin)
+        orbRaycaster.ray.direction.set(0, 0, -1).applyQuaternion(tapOrientation)
+        if (bee.anchor.visible && orb.raycast(orbRaycaster)) {
+          orb.cycleDemo()
+          return
+        }
+      }
+    }
     if (!reticle.mesh.visible)
       return
     placement.setFromMatrixPosition(reticle.mesh.matrix)

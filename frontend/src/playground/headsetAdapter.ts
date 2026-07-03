@@ -10,6 +10,7 @@
 // invisible sphere gives a stable, pose-independent grab target.
 
 import type { LoadedBee } from './beeLoader'
+import type { MicOrb } from './micOrb'
 import type { ArSessionContext } from './xrSession'
 import * as THREE from 'three'
 import { BEE_TARGET_SIZE_M } from './beeLoader'
@@ -17,6 +18,8 @@ import { BEE_TARGET_SIZE_M } from './beeLoader'
 export interface HeadsetAdapterOptions {
   ctx: ArSessionContext
   bee: LoadedBee
+  /** The mic orb — aiming at it + trigger cycles the orb instead of grabbing the bee. */
+  orb: MicOrb
 }
 
 export interface HeadsetAdapter {
@@ -24,7 +27,7 @@ export interface HeadsetAdapter {
 }
 
 export function createHeadsetAdapter(options: HeadsetAdapterOptions): HeadsetAdapter {
-  const { ctx, bee } = options
+  const { ctx, bee, orb } = options
   const { renderer, scene } = ctx
 
   // Eye height with a floor-relative space, floor height otherwise (the
@@ -59,7 +62,15 @@ export function createHeadsetAdapter(options: HeadsetAdapterOptions): HeadsetAda
     controllerRotation.identity().extractRotation(controller.matrixWorld)
     raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld)
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(controllerRotation)
-    if (raycaster.intersectObject(bee.anchor, true).length > 0) {
+    // Orb wins over the bee grab: aiming at it + trigger cycles the orb.
+    if (orb.raycast(raycaster)) {
+      orb.cycleDemo()
+      return
+    }
+    // Grab-test ONLY the bee's invisible sphere proxy (non-recursive), never
+    // the whole bee.anchor subtree: the mic orb is a child of bee.anchor, so
+    // a recursive test would let the orb's label/dots register as a bee grab.
+    if (raycaster.intersectObject(grabProxy, false).length > 0) {
       controller.attach(bee.anchor)
       heldByController = true
     }

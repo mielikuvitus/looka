@@ -18,12 +18,14 @@
 import type { LoadedBee } from './beeLoader'
 import type { CanvasFloor } from './canvasFloor'
 import type { InputRouter } from './inputRouter'
+import type { MicOrb } from './micOrb'
 import type { ArSessionContext } from './xrSession'
 import * as THREE from 'three'
 import { loadBee } from './beeLoader'
 import { startCanvasFloor } from './canvasFloor'
 import { createHeadsetAdapter } from './headsetAdapter'
 import { createInputRouter } from './inputRouter'
+import { createMicOrb } from './micOrb'
 import { createPhoneAdapter } from './phoneAdapter'
 import { startArSession } from './xrSession'
 import './playground.css'
@@ -100,6 +102,7 @@ async function enterAr() {
 
   let ended = false
   let bee: LoadedBee | null = null
+  let orb: MicOrb | null = null
   let router: InputRouter | null = null
   let adapter: { dispose: () => void } | null = null
   // When the session is being torn down because of a failure, the error text
@@ -114,6 +117,8 @@ async function enterAr() {
     adapter = null
     router?.dispose()
     router = null
+    orb?.dispose()
+    orb = null
     bee?.dispose()
     bee = null
     floor?.resume()
@@ -167,11 +172,19 @@ async function enterAr() {
   bee.anchor.visible = false // the winning adapter decides placement + visibility
   ctx.scene.add(bee.anchor)
 
+  // The mic orb parents itself to bee.anchor, so it follows the bee wherever
+  // an adapter places or carries it.
+  orb = createMicOrb(bee)
+  const sessionOrb = orb
+
   const timer = new THREE.Timer()
   const sessionBee = bee
+  const camWorld = new THREE.Vector3()
   ctx.addFrameCallback(() => {
     timer.update()
-    sessionBee.controller.update(timer.getDelta())
+    const dt = timer.getDelta()
+    sessionBee.controller.update(dt)
+    sessionOrb.update(dt, ctx.camera.getWorldPosition(camWorld))
   })
 
   router = createInputRouter({
@@ -182,8 +195,8 @@ async function enterAr() {
       // A late 'headset' decision replaces the provisional phone adapter.
       adapter?.dispose()
       adapter = kind === 'headset'
-        ? createHeadsetAdapter({ ctx, bee })
-        : createPhoneAdapter({ ctx, bee, overlayRoot })
+        ? createHeadsetAdapter({ ctx, bee, orb: sessionOrb })
+        : createPhoneAdapter({ ctx, bee, overlayRoot, orb: sessionOrb })
     },
   })
 
