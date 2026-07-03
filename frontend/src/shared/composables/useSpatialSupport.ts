@@ -5,6 +5,13 @@ import { useState } from 'react'
 // Everywhere else — desktop/mobile Safari, Chrome, etc. — this is absent and
 // the page renders as a normal, non-spatial webpage.
 function hasWebSpatialRuntime() {
+  // `?spatial` forces the spatial UI in a plain browser tab. Needed on the
+  // PICO emulator: inside the WebSpatial app container an immersive-ar
+  // request hangs (nested XR session), so the bee must be materialized from
+  // the flat PICO browser tab — which the UA sniff alone would send to the
+  // non-spatial landing.
+  if (new URLSearchParams(window.location.search).has('spatial'))
+    return true
   return /WebSpatial\/\S+/.test(navigator.userAgent)
 }
 
